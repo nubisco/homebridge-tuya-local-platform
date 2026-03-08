@@ -55,8 +55,11 @@
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
-    "*.ts": "eslint --fix",
-    "*.{ts,json,md,mts,mjs}": "prettier --write"
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,mts,mjs}": "prettier --write"
   },
   "dependencies": {
     "async": "^3.2.2"
