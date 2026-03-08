@@ -16,9 +16,6 @@ docs/.vitepress/cache/
 .DS_Store
 Thumbs.db
 
-# Lockfile (regenerated on install)
-package-lock.json
-
 # Environment
 .env
 .env.*
