@@ -41,7 +41,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "prepublishOnly": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "format": "prettier --write .",
@@ -79,7 +79,8 @@
     "simple-git-hooks": "^2.13.1",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "homebridge": ">=1.6.0"
