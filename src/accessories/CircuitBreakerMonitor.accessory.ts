@@ -22,6 +22,7 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
   temperatureSensor: any;
   leakSensor: any;
   faultSensor: any;
+  characteristicEnergy: any;
   dpTemperature!: string;
   dpLeakageCurrent!: string;
   dpFault!: string;
@@ -70,7 +71,7 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
   }
 
   _registerCharacteristics(dps: DPSState): void {
-    const { Characteristic } = this.hap;
+    const { Characteristic, EnergyCharacteristics } = this.hap;
 
     // DP configuration with defaults
     this.dpTemperature = this._getCustomDP(this.device.context.dpTemperature) || '103';
@@ -109,6 +110,15 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
         })
         .updateValue(this._getTemperature(dps))
         .on('get', this.getTemperature.bind(this));
+
+      // Add total energy consumption characteristic
+      if (this.device.context.exposeEnergyCharacteristic !== false) {
+        const energyValue = this._getEnergy(dps);
+        this.characteristicEnergy = this.temperatureSensor
+          .getCharacteristic(EnergyCharacteristics.KilowattHours)
+          .updateValue(energyValue)
+          .on('get', this.getEnergy.bind(this));
+      }
     }
 
     // Register Leak Sensor
@@ -170,6 +180,29 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
     return temperature;
   }
 
+  // Energy Consumption
+
+  getEnergy(callback: HomebridgeCallback): void {
+    this.getState(this.dpTotalForwardEnergy, (err: Error | null, dp: DPSValue) => {
+      if (err) return callback(err);
+      callback(null, this._getEnergy({ [this.dpTotalForwardEnergy]: dp }));
+    });
+  }
+
+  _getEnergy(dps: DPSState): number {
+    const rawValue = dps[this.dpTotalForwardEnergy];
+
+    if (rawValue === undefined || rawValue === null) {
+      this.log.warn('[CircuitBreakerMonitor] Energy DP %s is undefined', this.dpTotalForwardEnergy);
+      return 0;
+    }
+
+    const energy = parseInt(String(rawValue)) / this.energyDivisor;
+    this.telemetry.totalForwardEnergy = energy;
+
+    return energy;
+  }
+
   // Leak Detection (Leakage Current)
 
   getLeakDetected(callback: HomebridgeCallback): void {
@@ -219,7 +252,7 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
 
     if (rawValue === undefined || rawValue === null) {
       this.log.warn('[CircuitBreakerMonitor] Fault DP %s is undefined', this.dpFault);
-      return Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
+      return Characteristic.ContactSensorState.CONTACT_DETECTED;
     }
 
     const faultBitmap = parseInt(String(rawValue));
@@ -231,9 +264,10 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
       this.log.warn('[CircuitBreakerMonitor] ⚠️  FAULT DETECTED: bitmap = 0x%s', faultBitmap.toString(16));
     }
 
+    // Inverted logic: CONTACT_DETECTED = normal/no fault, CONTACT_NOT_DETECTED = fault/open circuit
     return hasFault
-      ? Characteristic.ContactSensorState.CONTACT_DETECTED
-      : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
+      ? Characteristic.ContactSensorState.CONTACT_NOT_DETECTED
+      : Characteristic.ContactSensorState.CONTACT_DETECTED;
   }
 
   // Telemetry Updates (Internal Only)
@@ -247,6 +281,10 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
       this.temperatureSensor
         .getCharacteristic(Characteristic.CurrentTemperature)
         .updateValue(this._getTemperature(state));
+    }
+
+    if (changes.hasOwnProperty(this.dpTotalForwardEnergy) && this.characteristicEnergy) {
+      this.characteristicEnergy.updateValue(this._getEnergy(state));
     }
 
     if (changes.hasOwnProperty(this.dpLeakageCurrent) && this.leakSensor) {
