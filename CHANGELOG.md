@@ -1,3 +1,9 @@
+# [1.1.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.0.1...v1.1.0) (2026-03-08)
+
+### Features
+
+- add perliminary unit tests ([#4](https://github.com/nubisco/homebridge-tuya-local-platform/issues/4)) ([92b11d7](https://github.com/nubisco/homebridge-tuya-local-platform/commit/92b11d7cf521622807863d270120a925a6d382a8))
+
 ## [1.0.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.0.0...v1.0.1) (2026-03-08)
 
 ### Bug Fixes
