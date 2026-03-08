@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.1...v1.1.2) (2026-03-08)
+
+### Bug Fixes
+
+- circuit breaker inverted logic ([8d667f9](https://github.com/nubisco/homebridge-tuya-local-platform/commit/8d667f97a5f23149c9345369ed67c973fc818ec9))
+
 ## [1.1.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.0...v1.1.1) (2026-03-08)
 
 ### Bug Fixes
