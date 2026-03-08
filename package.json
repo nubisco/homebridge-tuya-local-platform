@@ -1,0 +1,81 @@
+{
+  "name": "@nubisco/homebridge-tuya-local-platform",
+  "version": "0.0.1",
+  "description": "Homebridge plugin to control Tuya devices locally over LAN",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nubisco/homebridge-tuya-local-platform.git"
+  },
+  "author": "José Silva <jose@nubisco.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nubisco/homebridge-tuya-local-platform/issues"
+  },
+  "homepage": "https://github.com/nubisco/homebridge-tuya-local-platform#readme",
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "homebridge-tuya-local-platform",
+    "tuya",
+    "tuya-lan",
+    "local"
+  ],
+  "engines": {
+    "homebridge": ">=1.6.0",
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "prepare": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix",
+    "*.{ts,json,md,mts,mjs}": "prettier --write"
+  },
+  "dependencies": {
+    "async": "^3.2.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/async": "^3.2.24",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "homebridge": "^1.8.0",
+    "lint-staged": "^16.3.2",
+    "prettier": "^3.8.1",
+    "simple-git-hooks": "^2.13.1",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.56.1",
+    "vitepress": "^1.6.4"
+  },
+  "peerDependencies": {
+    "homebridge": ">=1.6.0"
+  }
+}

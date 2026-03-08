@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;">
+  <style type="text/css">
+	.st0{fill:#424242;}
+	.st1{fill:#FB8C00;}
+	.st2{fill:#EFEBE9;}
+	.st3{fill:#1E88E5;}
+	.st4{fill:#FFFFFF;}
+</style>
+  <g>
+    <path class="st0" d="M256,0c-70.4,0-128,57.6-128,128v51.2h51.2V128c0-42.2,34.6-76.8,76.8-76.8s76.8,34.6,76.8,76.8v51.2H384V128 C384,57.6,326.4,0,256,0z" style="fill: rgb(146, 146, 146);"/>
+    <path class="st1" d="M409.6,512H102.4c-28.2,0-51.2-23-51.2-51.2V230.4c0-28.2,23-51.2,51.2-51.2h307.2c28.2,0,51.2,23,51.2,51.2 v230.4C460.8,489,437.8,512,409.6,512z"/>
+    <circle class="st2" cx="256" cy="345.6" r="76.8"/>
+    <circle class="st3" cx="256" cy="345.6" r="38.4"/>
+    <circle class="st4" cx="281.6" cy="320" r="12.8"/>
+  </g>
+</svg>

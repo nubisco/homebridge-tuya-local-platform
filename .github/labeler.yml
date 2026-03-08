@@ -1,0 +1,43 @@
+# Configuration for actions/labeler
+# Labels are applied to PRs based on file paths changed
+
+accessories:
+  - changed-files:
+      - any-glob-to-any-file: 'src/accessories/**'
+
+protocol:
+  - changed-files:
+      - any-glob-to-any-file: 'src/protocol/**'
+
+types:
+  - changed-files:
+      - any-glob-to-any-file: 'src/types.ts'
+
+config-schema:
+  - changed-files:
+      - any-glob-to-any-file: 'config.schema.json'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - '*.md'
+          - '!CHANGELOG.md'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'
+
+tooling:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'tsconfig.json'
+          - 'eslint.config.mjs'
+          - '.prettierrc'
+          - '.editorconfig'

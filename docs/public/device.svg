@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;">
+  <style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#2476FF;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#EDEDED;}
+	.st2{opacity:0.35;fill-rule:evenodd;clip-rule:evenodd;enable-background:new    ;}
+	.st3{fill-rule:evenodd;clip-rule:evenodd;fill:#142A3B;}
+</style>
+  <g id="group-145svg">
+    <path id="path-1" class="st0" d="M436.38,446.97h-362c-6.25,0-11.31-5.03-11.31-11.25V75.8c0-6.22,5.06-11.25,11.31-11.25h362 c6.25,0,11.31,5.03,11.31,11.25v359.92C447.69,441.94,442.63,446.97,436.38,446.97z"/>
+    <path id="path-2" class="st1" d="M368.5,379.48H142.25c-6.25,0-11.31-5.03-11.31-11.24V143.29c0-6.22,5.06-11.25,11.31-11.25H368.5 c6.25,0,11.31,5.03,11.31,11.25v224.95C379.81,374.45,374.75,379.48,368.5,379.48z"/>
+    <path id="path-3" class="st2" d="M142.25,379.49h18.55v-216.4c0-6.22,5.06-11.25,11.31-11.25h207.69v-8.55 c0-6.22-5.06-11.25-11.31-11.25H142.25c-6.25,0-11.31,5.03-11.31,11.25v224.95C130.94,374.45,136,379.49,142.25,379.49z"/>
+    <path id="path-4" class="st3" d="M104.13,63.14H87.16V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-5" class="st3" d="M149.38,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-6" class="st3" d="M194.63,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-7" class="st3" d="M239.88,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-8" class="st3" d="M285.13,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-9" class="st3" d="M330.38,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-10" class="st3" d="M375.63,63.14h-16.97V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-11" class="st3" d="M420.88,63.14H403.9V1.18h16.97V63.14z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-12" class="st3" d="M104.13,510.34H87.16v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-13" class="st3" d="M149.38,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-14" class="st3" d="M194.63,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-15" class="st3" d="M239.88,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-16" class="st3" d="M285.13,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-17" class="st3" d="M330.38,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-18" class="st3" d="M375.63,510.34h-16.97v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-19" class="st3" d="M420.88,510.34H403.9v-61.96h16.97V510.34z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-20" class="st3" d="M61.6,420.36H-0.62v-16.97H61.6V420.36z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-21" class="st3" d="M61.6,375.37H-0.62V358.4H61.6V375.37z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-22" class="st3" d="M61.6,330.39H-0.62v-16.97H61.6V330.39z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-23" class="st3" d="M61.6,285.39H-0.62v-16.97H61.6V285.39z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-24" class="st3" d="M61.6,240.41H-0.62v-16.97H61.6V240.41z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-25" class="st3" d="M61.6,195.41H-0.62v-16.97H61.6V195.41z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-26" class="st3" d="M61.6,150.42H-0.62v-16.97H61.6V150.42z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-27" class="st3" d="M61.6,105.43H-0.62V88.46H61.6V105.43z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-28" class="st3" d="M511.38,420.36h-62.22v-16.97h62.22V420.36z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-29" class="st3" d="M511.38,375.37h-62.22V358.4h62.22V375.37z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-30" class="st3" d="M511.38,330.39h-62.22v-16.97h62.22V330.39z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-31" class="st3" d="M511.38,285.39h-62.22v-16.97h62.22V285.39z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-32" class="st3" d="M511.38,240.41h-62.22v-16.97h62.22V240.41z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-33" class="st3" d="M511.38,195.41h-62.22v-16.97h62.22V195.41z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-34" class="st3" d="M511.38,150.42h-62.22v-16.97h62.22V150.42z" style="fill: rgb(181, 149, 56);"/>
+    <path id="path-35" class="st3" d="M511.38,105.43h-62.22V88.46h62.22V105.43z" style="fill: rgb(181, 149, 56);"/>
+  </g>
+</svg>

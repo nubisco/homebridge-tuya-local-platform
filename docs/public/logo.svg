@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="320px" height="320px" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient-1" gradientUnits="userSpaceOnUse" x1="119.61" y1="36.855" x2="119.61" y2="381.922" spreadMethod="pad" gradientTransform="matrix(-0.887141, -0.461497, 0.40987, -0.999167, 140.11236, 473.94595)">
+      <title>Left Leg Gradient</title>
+      <stop offset="0" stop-color="rgb(254,216,103)"/>
+      <stop offset="0.51" stop-color="rgb(250,71,78)"/>
+      <stop offset="1" stop-color="rgb(173,55,159)"/>
+    </linearGradient>
+    <linearGradient id="gradient-3" gradientUnits="userSpaceOnUse" x1="143.989" y1="36.855" x2="143.989" y2="179.9" gradientTransform="matrix(0.887207, 0.461371, -0.426978, 0.821069, 78.224142, -58.961861)">
+      <title>Left Top Shadow</title>
+      <stop offset="0" stop-color="rgb(0,0,0)" stop-opacity="0.17"/>
+      <stop offset="1" stop-color="rgb(0,0,0)" stop-opacity="0.03"/>
+    </linearGradient>
+    <linearGradient id="gradient-2" gradientUnits="userSpaceOnUse" x1="91.703" y1="328.267" x2="91.703" y2="381.922" gradientTransform="matrix(-0.601925, -0.798552, 1.256661, -1.089764, -307.90801, 812.885223)">
+      <title>Left Bottom Shadow</title>
+      <stop offset="0" stop-color="rgb(0,0,0)" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="rgb(0,0,0)" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="gradient-8" gradientUnits="userSpaceOnUse" x1="348.688" y1="35.889" x2="348.688" y2="116.548" gradientTransform="matrix(-0.503716, -0.863869, 1.170135, -0.682295, 434.155647, 419.539108)">
+      <title>Right Top Highlight</title>
+      <stop offset="0" stop-color="rgb(254,171,107)" stop-opacity="0.56"/>
+      <stop offset="0.745" stop-color="rgb(255,253,207)"/>
+      <stop offset="1" stop-color="rgb(255,253,207)"/>
+    </linearGradient>
+    <linearGradient id="gradient-10" gradientUnits="userSpaceOnUse" x1="338.142" y1="47.006" x2="338.142" y2="121.215" gradientTransform="matrix(0.75452, 0.656277, -1.016572, 1.16875, 168.120543, -239.018367)">
+      <title>Right Bright Spot</title>
+      <stop offset="0" stop-color="rgb(255,255,255)" stop-opacity="0.35"/>
+      <stop offset="0.611" stop-color="rgb(255,255,255)" stop-opacity="0.2"/>
+      <stop offset="0.656" stop-color="rgb(255,255,255)" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="rgb(255,255,255)" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="gradient-7" gradientUnits="userSpaceOnUse" x1="286.279" y1="128.145" x2="286.279" y2="381.893" gradientTransform="matrix(0.980122, -0.198399, 0.201333, 0.99503, -34.83682, 58.72465)">
+      <title>Right Bottom Shadow</title>
+      <stop offset="0" stop-color="rgb(94,33,120)" stop-opacity="0"/>
+      <stop offset="0.23" stop-color="rgb(94,33,116)" stop-opacity="0"/>
+      <stop offset="1" stop-color="rgb(94,32,119)" stop-opacity="0.77"/>
+    </linearGradient>
+    <linearGradient id="gradient-0" gradientUnits="userSpaceOnUse" x1="220.396" y1="36.815" x2="220.396" y2="381.893" gradientTransform="matrix(0.909593, -0.415502, 0.458149, 0.999272, -61.507814, 91.882297)">
+      <title>Middle Leg Gradient</title>
+      <stop offset="0" stop-color="rgb(105,187,99)"/>
+      <stop offset="0.5" stop-color="rgb(16,169,164)"/>
+      <stop offset="1" stop-color="rgb(11,130,207)"/>
+    </linearGradient>
+    <linearGradient id="gradient-4" gradientUnits="userSpaceOnUse" x1="197.5" y1="36.815" x2="197.5" y2="132.342" gradientTransform="matrix(0.419296, -0.90785, 1.050658, 0.485253, 18.526692, 214.196105)">
+      <title>Middle Top Highlight</title>
+      <stop offset="0" stop-color="rgb(255,255,255)" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="rgb(7,226,201)" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="gradient-5" gradientUnits="userSpaceOnUse" x1="197.5" y1="59.48" x2="197.5" y2="132.342" gradientTransform="matrix(0.450388, -0.892832, 1.886975, 0.951884, -71.46741, 184.345316)">
+      <title>Middle Top Bright Highlight</title>
+      <stop offset="0" stop-color="rgb(255,255,255)" stop-opacity="0.6"/>
+      <stop offset="0.461" stop-color="rgb(255,255,255)" stop-opacity="0.71"/>
+      <stop offset="1" stop-color="rgb(255,255,255)" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="gradient-6" gradientUnits="userSpaceOnUse" x1="258.091" y1="319.547" x2="258.091" y2="338.393" gradientTransform="matrix(0.172631, -0.984987, 3.998703, 0.700821, -1101.160809, 355.271073)">
+      <title>Middle Bottom Bright Highlight</title>
+      <stop offset="0" stop-color="rgb(5,219,226)" stop-opacity="0.96"/>
+      <stop offset="0.493" stop-color="rgb(5,219,226)" stop-opacity="0.74"/>
+      <stop offset="1" stop-color="rgb(5,219,226)" stop-opacity="0.34"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(0.924856, 0, 0, 0.924856, -44.998852, -33.191986)" style="">
+    <title>Logo</title>
+    <g id="group-1">
+      <title>left</title>
+      <path fill="url(#gradient-1)" d="M 48.655 381.922 C 119.827 257.14 51.704 41.212 190.566 36.855 C 173.148 402.723 82.723 380.123 48.655 381.922 Z">
+        <title>main</title>
+      </path>
+      <path fill="url(#gradient-3)" d="M 177.776 179.9 C 120.488 51.712 97.413 142.969 97.413 142.969 C 107.668 83.266 128.325 38.808 190.566 36.855 C 187.88 93.268 183.459 140.445 177.776 179.9 Z">
+        <title>top shadow</title>
+      </path>
+      <path fill="url(#gradient-2)" d="M 48.655 381.922 C 58.078 365.401 65.06 347.282 70.403 328.267 C 88.094 346.662 134.752 331.941 134.752 331.941 C 103.379 387.36 67.445 380.93 48.655 381.922 Z">
+        <title>bottom shadow</title>
+      </path>
+      <path fill="rgb(255,254,155)" d="M 134.752 331.941 C 121.122 337.936 81.551 344.779 70.403 328.267 C 88.094 346.662 134.752 331.941 134.752 331.941 Z">
+        <title>highlight</title>
+      </path>
+    </g>
+    <g id="object-1">
+      <title>right</title>
+      <path fill="url(#gradient-1)" d="M 313.875 381.893 C 288.098 381.893 268.627 375.477 253.751 364.466 C 216.182 182.535 312.866 21.948 394.655 36.85 C 335.339 159.09 350.166 381.893 313.875 381.893 Z">
+        <title>main</title>
+      </path>
+      <path fill="url(#gradient-8)" d="M 367.694 116.548 C 367.694 116.548 352.527 74.893 302.72 88.001 C 329.996 51.072 363.412 31.158 394.655 36.85 C 383.206 60.444 374.519 87.785 367.694 116.548 Z">
+        <title>Top Highlight</title>
+      </path>
+      <path fill="rgb(255,255,255)" fill-opacity="0.46" d="M 367.694 116.548 C 367.694 116.548 352.527 74.893 302.72 88.001 C 352.21 71.129 367.694 116.548 367.694 116.548 Z">
+        <title>Top Bright Spot</title>
+      </path>
+      <path fill="url(#gradient-10)" d="M 384.493 47.025 C 335.553 54.802 291.791 121.215 291.791 121.215 C 291.791 121.215 326.809 45.627 384.493 47.025 Z">
+        <title>Bright Spot</title>
+      </path>
+      <path fill="url(#gradient-7)" d="M 313.875 381.893 C 288.098 381.893 268.627 375.477 253.751 364.466 C 235.099 274.144 249.538 189.083 278.815 128.145 C 290.999 161.58 298.453 349.688 327.158 367.997 C 323.596 376.899 319.308 381.893 313.875 381.893 Z">
+        <title>Right Leg</title>
+      </path>
+    </g>
+    <g id="object-2">
+      <title>Middle</title>
+      <path fill="url(#gradient-0)" d="M 313.875 381.893 C 139.653 381.893 253.533 88.786 126.916 65.199 C 141.046 48.182 160.854 37.738 190.253 36.815 C 311.395 48.025 251.672 276.857 313.875 381.893 Z">
+        <title>main</title>
+      </path>
+      <path fill="url(#gradient-4)" d="M 268.085 132.342 C 268.085 132.342 206.404 63.594 126.916 65.199 C 141.046 48.182 160.854 37.738 190.253 36.815 C 238.545 41.284 258.095 80.336 268.085 132.342 Z">
+        <title>top highlight</title>
+      </path>
+      <path fill="url(#gradient-5)" d="M 268.085 132.342 C 268.085 132.342 206.404 63.594 126.916 65.199 C 183.216 63.321 231.803 93.322 268.085 132.342 Z">
+        <title>top bright highlight</title>
+      </path>
+      <path fill="url(#gradient-2)" d="M 313.875 381.893 C 262.355 381.893 236.028 356.261 221.227 319.547 C 258.674 349.427 294.501 333.052 294.954 334.741 C 299.608 352.085 305.684 368.063 313.875 381.893 Z">
+        <title>bottom shadow</title>
+      </path>
+      <path fill="url(#gradient-6)" d="M 294.954 334.741 C 271.602 341.74 244.333 340.344 221.227 319.547 C 258.674 349.427 294.501 333.052 294.954 334.741 Z">
+        <title>bottom bright highlight</title>
+      </path>
+      <path fill="rgb(255,255,255)" fill-opacity="0.11" d="M 164.386 48.742 C 244.371 44.544 268.345 190.719 268.345 190.719 C 249.39 92.792 222.974 38.013 164.386 48.742 Z">
+        <title>bright spot</title>
+      </path>
+    </g>
+  </g>
+</svg>

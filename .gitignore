@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lockfile (regenerated on install)
+package-lock.json
+
+# Environment
+.env
+.env.*
+
+# Coverage / test output
+coverage/
+.nyc_output/

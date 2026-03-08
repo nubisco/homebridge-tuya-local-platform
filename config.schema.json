@@ -1,0 +1,852 @@
+{
+  "pluginAlias": "TuyaLocalPlatform",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "For setup instructions, device configuration, and troubleshooting, visit the [documentation](https://nubisco.github.io/homebridge-tuya-local-platform/).",
+  "footerDisplay": "",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "devices": {
+        "type": "array",
+        "orderable": false,
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "required": true,
+              "default": "null",
+              "oneOf": [
+                {
+                  "title": "Please select device type...",
+                  "enum": ["null"]
+                },
+                {
+                  "title": "Smart Plug / Barely Smart Power Strip",
+                  "enum": ["Outlet"]
+                },
+                {
+                  "title": "Simple Light Bulb / Socket",
+                  "enum": ["SimpleLight"]
+                },
+                {
+                  "title": "Tunable White Light Bulb",
+                  "enum": ["TWLight"]
+                },
+                {
+                  "title": "White and Color Light Bulb",
+                  "enum": ["RGBTWLight"]
+                },
+                {
+                  "title": "Smart Power Strip",
+                  "enum": ["MultiOutlet"]
+                },
+                {
+                  "title": "Non-sequential Power Strip",
+                  "enum": ["CustomMultiOutlet"]
+                },
+                {
+                  "title": "Air Conditioner",
+                  "enum": ["AirConditioner"]
+                },
+                {
+                  "title": "Heat Convector",
+                  "enum": ["Convector"]
+                },
+                {
+                  "title": "Simple Dimmer",
+                  "enum": ["SimpleDimmer"]
+                },
+                {
+                  "title": "Simple Heater",
+                  "enum": ["SimpleHeater"]
+                },
+                {
+                  "title": "Mapped Heat Pump Heater (Virtual Room Target)",
+                  "enum": ["MappedHeatPumpHeater"]
+                },
+                {
+                  "title": "Garage Door",
+                  "enum": ["GarageDoor"]
+                },
+                {
+                  "title": "Simple Blinds",
+                  "enum": ["SimpleBlinds"]
+                },
+                {
+                  "title": "Smart Plug w/ White and Color Lights",
+                  "enum": ["RGBTWOutlet"]
+                },
+                {
+                  "title": "Simple Fan",
+                  "enum": ["Fan"]
+                },
+                {
+                  "title": "Simple Fan Light",
+                  "enum": ["FanLight"]
+                },
+                {
+                  "title": "Air Purifier",
+                  "enum": ["AirPurifier"]
+                },
+                {
+                  "title": "Dehumidifier",
+                  "enum": ["Dehumidifier"]
+                },
+                {
+                  "title": "Circuit Breaker Monitor (Read-Only)",
+                  "enum": ["CircuitBreakerMonitor"]
+                }
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "Anything you'd like to use to identify this device. You can always change the name from within the Home app later.",
+              "required": true,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "id": {
+              "type": "string",
+              "title": "Tuya ID",
+              "description": "If you don't have the Tuya ID or Key, follow the steps in the <a href='https://nubisco.github.io/homebridge-tuya-local-platform/get-local-keys' target='_blank'>Getting Local Keys</a> guide.",
+              "required": true,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "key": {
+              "title": "Tuya Key",
+              "type": "string",
+              "required": true,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "ip": {
+              "title": "IP Address",
+              "type": "string",
+              "required": false,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "manufacturer": {
+              "type": "string",
+              "description": "Anything you'd like to use to help identify this device.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "model": {
+              "type": "string",
+              "description": "Anything you'd like to use to help identify this device.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
+            "voltsId": {
+              "type": "integer",
+              "placeholder": "9",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "ampsId": {
+              "type": "integer",
+              "placeholder": "8",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "wattsId": {
+              "type": "integer",
+              "placeholder": "7",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "voltsDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "ampsDivisor": {
+              "type": "integer",
+              "placeholder": "1000",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "wattsDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpPower": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Outlet', 'TWLight', 'RGBTWLight', 'SimpleDimmer','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpBrightness": {
+              "type": "integer",
+              "placeholder": "2",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['TWLight', 'RGBTWLight', 'SimpleDimmer','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpColorTemperature": {
+              "type": "integer",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['TWLight', 'RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "minWhiteColor": {
+              "type": "integer",
+              "placeholder": "140",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['TWLight', 'RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "maxWhiteColor": {
+              "type": "integer",
+              "placeholder": "400",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['TWLight', 'RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpMode": {
+              "type": "integer",
+              "placeholder": "2",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWLight', 'RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpColor": {
+              "type": "integer",
+              "placeholder": "5",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "colorFunction": {
+              "type": "string",
+              "placeholder": "HEXHSB",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "scaleBrightness": {
+              "type": "integer",
+              "placeholder": "255",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "scaleWhiteColor": {
+              "type": "integer",
+              "placeholder": "255",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWLight','RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "outletCount": {
+              "type": "integer",
+              "placeholder": "5",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MultiOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "outlets": {
+              "type": "array",
+              "orderable": false,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "dp": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CustomMultiOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "noCool": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "noHeat": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "cmdCool": {
+              "type": "string",
+              "placeholder": "COOL",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "cmdHeat": {
+              "type": "string",
+              "placeholder": "HEAT",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "noSwing": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "minTemperature": {
+              "type": "integer",
+              "placeholder": "15",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner','Convector', 'SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "maxTemperature": {
+              "type": "integer",
+              "placeholder": "40",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner','Convector', 'SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "minTemperatureSteps": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpCurrentTemperature": {
+              "type": "integer",
+              "placeholder": "110",
+              "title": "Current Temperature DP",
+              "description": "Data point for current temperature reading. For dehumidifiers, use the temperature DP, not humidity.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "temperatureDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "title": "Current Temperature Divisor",
+              "description": "Divisor for current temperature. Use 1 if temperature is already in degrees, 10 if in tenths of degree.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['AirConditioner'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpActive": {
+              "type": "integer",
+              "placeholder": "7",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector', 'SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpDesiredTemperature": {
+              "type": "integer",
+              "placeholder": "2",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector', 'SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpCurrentTemperature": {
+              "type": "integer",
+              "placeholder": "3",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector', 'SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpRotationSpeed": {
+              "type": "integer",
+              "placeholder": "4",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "maxSpeed": {
+              "type": "integer",
+              "placeholder": "3",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Fan', 'FanLight'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "fanDefaultSpeed": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Fan', 'FanLight'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpChildLock": {
+              "type": "integer",
+              "placeholder": "6",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpTemperatureDisplayUnits": {
+              "type": "integer",
+              "placeholder": "19",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "cmdLow": {
+              "type": "string",
+              "placeholder": "Low",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "cmdHigh": {
+              "type": "string",
+              "placeholder": "High",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "noChildLock": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "noTemperatureUnit": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['Convector'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "temperatureDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "thresholdTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "targetTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpAmbientTemperature": {
+              "type": "integer",
+              "placeholder": "21",
+              "title": "Ambient Temperature DP",
+              "description": "Optional data point for ambient/room temperature. If set, creates a separate temperature sensor accessory.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "ambientTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "title": "Ambient Temperature Divisor",
+              "description": "Divisor for ambient temperature. Use 1 if temperature is already in degrees, 10 if in tenths of degree.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "ambientTemperatureName": {
+              "type": "string",
+              "placeholder": "Heating Ambient",
+              "title": "Ambient Temperature Sensor Name",
+              "description": "Optional custom name for the ambient temperature sensor. Defaults to device name + ' Ambient'.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpReturnTemperature": {
+              "type": "integer",
+              "placeholder": "25",
+              "title": "Return/Tank Temperature DP",
+              "description": "Data point for tank/return water temperature (shown as current temperature in HomeKit).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "returnTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "title": "Return Temperature Divisor",
+              "description": "Divisor for return temperature. Use 1 if temperature is in degrees, 10 if in tenths.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpWaterTarget": {
+              "type": "integer",
+              "placeholder": "117",
+              "title": "Water Target Temperature DP",
+              "description": "Data point to write the calculated water target temperature to.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "waterTargetDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "title": "Water Target Divisor",
+              "description": "Multiplier when writing water target. Use 1 for degrees, 10 for tenths.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpOutsideTemperature": {
+              "type": "integer",
+              "placeholder": "21",
+              "title": "Outside Air Temperature DP",
+              "description": "Optional data point for outside air temperature sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "outsideTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "title": "Outside Temperature Divisor",
+              "description": "Divisor for outside temperature.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpFlowTemperature": {
+              "type": "integer",
+              "placeholder": "24",
+              "title": "Flow Temperature DP",
+              "description": "Optional data point for flow/output water temperature sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "flowTemperatureDivisor": {
+              "type": "integer",
+              "placeholder": "10",
+              "title": "Flow Temperature Divisor",
+              "description": "Divisor for flow temperature.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "roomTargetMin": {
+              "type": "number",
+              "placeholder": "18",
+              "title": "Minimum Room Target Temperature",
+              "description": "Minimum room temperature that can be set in HomeKit.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "roomTargetMax": {
+              "type": "number",
+              "placeholder": "24",
+              "title": "Maximum Room Target Temperature",
+              "description": "Maximum room temperature that can be set in HomeKit.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "waterTargetMin": {
+              "type": "number",
+              "placeholder": "35",
+              "title": "Minimum Water Target Temperature",
+              "description": "Minimum water temperature that will be sent to the device.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "waterTargetMax": {
+              "type": "number",
+              "placeholder": "55",
+              "title": "Maximum Water Target Temperature",
+              "description": "Maximum water temperature that will be sent to the device.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "defaultRoomTarget": {
+              "type": "number",
+              "placeholder": "20",
+              "title": "Default Room Target Temperature",
+              "description": "Default room target temperature on first use.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "roomToWaterMap": {
+              "type": "array",
+              "title": "Room to Water Temperature Mapping",
+              "description": "Map of desired room temperatures to required water temperatures. Plugin will interpolate between points.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "room": {
+                    "type": "number",
+                    "title": "Room Temperature"
+                  },
+                  "water": {
+                    "type": "number",
+                    "title": "Water Temperature"
+                  }
+                }
+              },
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeOutsideSensor": {
+              "type": "boolean",
+              "title": "Expose Outside Temperature Sensor",
+              "description": "Create a separate temperature sensor for outside air temperature.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "outsideSensorName": {
+              "type": "string",
+              "placeholder": "Heating Outside",
+              "title": "Outside Sensor Name",
+              "description": "Custom name for outside temperature sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeFlowSensor": {
+              "type": "boolean",
+              "title": "Expose Flow Temperature Sensor",
+              "description": "Create a separate temperature sensor for flow/output water temperature.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "flowSensorName": {
+              "type": "string",
+              "placeholder": "Heating Flow",
+              "title": "Flow Sensor Name",
+              "description": "Custom name for flow temperature sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeReturnSensor": {
+              "type": "boolean",
+              "title": "Expose Return Temperature Sensor",
+              "description": "Create a separate temperature sensor for tank/return water temperature (in addition to main tile).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "returnSensorName": {
+              "type": "string",
+              "placeholder": "Heating Return",
+              "title": "Return Sensor Name",
+              "description": "Custom name for return temperature sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['MappedHeatPumpHeater'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpTemperature": {
+              "type": "integer",
+              "placeholder": "103",
+              "title": "DP: Device Temperature",
+              "description": "Data point for circuit breaker temperature sensor (default: 103).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpLeakageCurrent": {
+              "type": "integer",
+              "placeholder": "15",
+              "title": "DP: Leakage Current",
+              "description": "Data point for leakage current in mA (default: 15).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpFault": {
+              "type": "integer",
+              "placeholder": "9",
+              "title": "DP: Fault Bitmap",
+              "description": "Data point for fault alarm bitmap (default: 9). Non-zero = fault active.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpTotalForwardEnergy": {
+              "type": "integer",
+              "placeholder": "1",
+              "title": "DP: Total Energy",
+              "description": "Data point for total forward energy (default: 1).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpPhaseA": {
+              "type": "integer",
+              "placeholder": "6",
+              "title": "DP: Phase Data",
+              "description": "Data point for raw phase telemetry (voltage/current/power) (default: 6).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpSwitch": {
+              "type": "integer",
+              "placeholder": "16",
+              "title": "DP: Switch State (READ-ONLY)",
+              "description": "Data point for breaker switch state. ⚠️ This is logged but NEVER exposed to HomeKit for safety (default: 16).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "temperatureDivisor": {
+              "type": "integer",
+              "placeholder": "1",
+              "title": "Temperature Divisor",
+              "description": "Divisor for temperature value (default: 1).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "energyDivisor": {
+              "type": "integer",
+              "placeholder": "100",
+              "title": "Energy Divisor",
+              "description": "Divisor for energy value to convert to kWh (default: 100 for scale-2).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "leakageThreshold": {
+              "type": "integer",
+              "placeholder": "30",
+              "title": "Leakage Current Threshold (mA)",
+              "description": "Threshold in mA for leakage detection warning (default: 30).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeTemperatureSensor": {
+              "type": "boolean",
+              "title": "Expose Temperature Sensor",
+              "description": "Show device temperature sensor in HomeKit (default: true).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeLeakSensor": {
+              "type": "boolean",
+              "title": "Expose Leak Sensor",
+              "description": "Show leakage current warning in HomeKit (default: true).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "exposeFaultSensor": {
+              "type": "boolean",
+              "title": "Expose Fault Sensor",
+              "description": "Show fault alarm sensor in HomeKit (default: true).",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "leakSensorName": {
+              "type": "string",
+              "placeholder": "Energy meter Leakage",
+              "title": "Leak Sensor Name",
+              "description": "Custom name for leakage current sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "faultSensorName": {
+              "type": "string",
+              "placeholder": "Energy meter Fault",
+              "title": "Fault Sensor Name",
+              "description": "Custom name for fault alarm sensor.",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['CircuitBreakerMonitor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpAction": {
+              "type": "integer",
+              "placeholder": "1",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['GarageDoor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpStatus": {
+              "type": "integer",
+              "placeholder": "2",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['GarageDoor'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "flipState": {
+              "type": "boolean",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['GarageDoor','SimpleBlinds'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "timeToOpen": {
+              "type": "integer",
+              "placeholder": "45",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleBlinds'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "timeToTighten": {
+              "type": "integer",
+              "placeholder": "0",
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleBlinds'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpLight": {
+              "type": "integer",
+              "placeholder": 1,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['RGBTWOutlet'].includes(model.devices[arrayIndices].type);"
+              }
+            },
+            "dpBlindType": {
+              "type": "integer",
+              "placeholder": 1,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices] && ['SimpleBlinds'].includes(model.devices[arrayIndices].type);"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

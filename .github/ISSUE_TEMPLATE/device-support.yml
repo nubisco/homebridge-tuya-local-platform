@@ -1,0 +1,75 @@
+name: Device Support Request
+description: Request support for a new Tuya device type
+labels: [device-support]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want this plugin to support a new type of Tuya device? Fill in the details below so we can evaluate and implement it.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and this device hasn't been requested yet
+          required: true
+        - label: I have confirmed the device uses the Tuya protocol (Wi-Fi, not Zigbee/BLE-only)
+          required: true
+
+  - type: input
+    id: device-name
+    attributes:
+      label: Device name
+      description: Brand and model of the device
+      placeholder: 'Generic Brand Smart Humidifier XYZ-200'
+    validations:
+      required: true
+
+  - type: textarea
+    id: device-description
+    attributes:
+      label: Device description
+      description: What does the device do? What controls/features does it have?
+      placeholder: |
+        Wi-Fi humidifier with:
+        - On/off toggle
+        - 3 mist levels (low, medium, high)
+        - Target humidity setting (40–80%)
+        - Water tank level indicator
+        - LED light on/off
+    validations:
+      required: true
+
+  - type: dropdown
+    id: partial-support
+    attributes:
+      label: Does the device partially work with any existing type?
+      options:
+        - "No, it doesn't work at all"
+        - "Yes, basic on/off works but other features don't"
+        - 'Yes, most features work but some are missing'
+        - "I haven't tried yet"
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing-type
+    attributes:
+      label: Existing type tried (if any)
+      description: If you tried an existing device type, which one and what worked/didn't?
+
+  - type: textarea
+    id: data-points
+    attributes:
+      label: Device data points (DPs)
+      description: |
+        Paste the device's DP schema if you have it. You can obtain this from the Tuya IoT Platform or by inspecting traffic.
+        Include the DP number, name, and possible values.
+      render: json
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Links to product page, photos, Tuya IoT Platform screenshots, or anything else

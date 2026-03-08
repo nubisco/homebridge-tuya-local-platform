@@ -1,0 +1,51 @@
+# EditorConfig — https://EditorConfig.org
+root = true
+
+# Default for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# TypeScript / JavaScript source
+[*.{ts,js}]
+indent_size = 2
+
+# Config and data files
+[*.{json,yml,yaml}]
+indent_size = 2
+
+# Markdown — preserve trailing whitespace for line breaks
+[*.md]
+trim_trailing_whitespace = false
+
+# GitHub Actions
+[.github/**/*.yml]
+indent_size = 2
+
+# TypeScript and JavaScript files
+[*.{js,ts,jsx,tsx,vue}]
+indent_size = 2
+
+# SCSS and CSS files
+[*.{css,scss,sass}]
+indent_size = 2
+
+# HTML files
+[*.html]
+indent_size = 2
+
+# Configuration files
+[*.{toml,ini,cfg,conf}]
+indent_size = 2
+
+# Makefile
+[Makefile]
+indent_style = tab
+
+# Batch files
+[*.{bat,cmd}]
+end_of_line = crlf
