@@ -129,7 +129,9 @@ class TuyaDiscovery extends EventEmitter {
         decryptedMsg = decipher.update(cleanMsg, undefined, 'utf8');
         decryptedMsg += decipher.final('utf8');
       } catch (_ex) {
-        /* ignore */
+        // Encrypted broadcast could not be decrypted — device may already
+        // have been discovered on port 6666.  Silently ignore.
+        return;
       }
     }
 

@@ -3,7 +3,7 @@ import type { DPSState, DPSValue, HomebridgeCallback } from '../types';
 
 class SimpleFanLightAccessory extends BaseAccessory {
   static getCategory(Categories: any): number {
-    return Categories.FANLIGHT;
+    return Categories.FAN;
   }
 
   dpFanOn!: string;

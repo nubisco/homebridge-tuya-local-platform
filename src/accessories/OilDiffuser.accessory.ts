@@ -4,7 +4,7 @@ import type { DPSState, DPSValue, HomebridgeCallback, HSBColor } from '../types'
 
 class OilDiffuserAccessory extends BaseAccessory {
   static getCategory(Categories: any): number {
-    return Categories.DEHUMIDIFIER;
+    return Categories.AIR_DEHUMIDIFIER;
   }
 
   dpLight!: string;

@@ -24,13 +24,13 @@ Check that the plugin is registered:
 npm list -g @nubisco/homebridge-tuya-local-platform
 ```
 
-## Upgrading from `homebridge-tuya` / `TuyaLan`
+## Upgrading from `homebridge-tuya` / `TuyaLocalPlatform`
 
-If you previously used the `homebridge-tuya` plugin with `"platform": "TuyaLan"`:
+If you previously used the `homebridge-tuya` plugin with `"platform": "TuyaLocalPlatform"`:
 
 1. Uninstall the old plugin.
 2. Install this plugin.
-3. Update your `config.json` — change `"platform": "TuyaLan"` to `"platform": "TuyaLocalPlatform"`.
+3. Update your `config.json` — change `"platform": "TuyaLocalPlatform"` to `"platform": "TuyaLocalPlatform"`.
 4. Restart Homebridge.
 
 All device configurations remain compatible.

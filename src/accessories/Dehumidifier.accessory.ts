@@ -7,7 +7,7 @@ interface DefaultDpsMap {
 
 class DehumidifierAccessory extends BaseAccessory {
   static getCategory(Categories: any): number {
-    return Categories.DEHUMIDIFIER;
+    return Categories.AIR_DEHUMIDIFIER;
   }
 
   cmdDehumidify!: string;
@@ -40,11 +40,16 @@ class DehumidifierAccessory extends BaseAccessory {
   }
 
   _registerPlatformAccessory(): void {
-    const { Service } = this.hap;
+    const { Service, Characteristic } = this.hap;
 
-    this.accessory.addService(Service.TemperatureSensor, this.device.context.name);
-    this.accessory.addService(Service.HumiditySensor, this.device.context.name);
-    this.accessory.addService(Service.HumidifierDehumidifier, this.device.context.name);
+    this.accessory
+      .addService(Service.TemperatureSensor, this.device.context.name)
+      .setCharacteristic(Characteristic.CurrentTemperature, 0);
+    this.accessory
+      .addService(Service.HumiditySensor, this.device.context.name)
+      .setCharacteristic(Characteristic.CurrentRelativeHumidity, 0);
+    const dehumidifierService = this.accessory.addService(Service.HumidifierDehumidifier, this.device.context.name);
+    dehumidifierService.setCharacteristic(Characteristic.CurrentRelativeHumidity, 0);
 
     if (!this.device.context.noChildLock) {
       this.accessory.addService(Service.LockMechanism, this.device.context.name + ' - Child Lock');
