@@ -6,26 +6,31 @@ If you are looking for verified configurations for your specific device, see the
 
 ## Device Type Reference
 
-| Device                               |        Type         | Notes                                                                                                   |
-| :----------------------------------- | :-----------------: | :------------------------------------------------------------------------------------------------------ |
-| Smart Plug                           |      `Outlet`       | Smart plugs that just turn on and off ([details](#outlets))                                             |
-| Smart Light Bulb Socket              |    `SimpleLight`    | Light sockets that just turn on and off                                                                 |
-| Simple Light Bulb                    |    `SimpleLight`    | Light bulbs that just turn on and off                                                                   |
-| Tunable White Light Bulb             |      `TWLight`      | Bulbs with tunable white and dimming functionality ([details](#tunable-white-light-bulbs))              |
-| White and Color Light Bulb           |    `RGBTWLight`     | Colored bulbs with tunable white and dimming ([details](#white-and-color-light-bulbs))                  |
-| Smart Power Strip                    |    `MultiOutlet`    | Power strips with sequential data-points for individual outlet control ([details](#smart-power-strips)) |
-| Non-sequential Power Strip           | `CustomMultiOutlet` | Power strips with non-sequential data-points per outlet ([details](#non-sequential-power-strips))       |
-| Barely Smart Power Strip             |      `Outlet`       | Power strips that don't allow individual control of the outlets                                         |
-| Air Conditioner                      |  `AirConditioner`   | Cooling and heating devices ([details](#air-conditioners))                                              |
-| Heat Convector                       |     `Convector`     | Heating panels ([details](#heat-convectors))                                                            |
-| Simple Dimmer                        |   `SimpleDimmer`    | Dimmer switches with power control ([details](#simple-dimmers))                                         |
-| Simple Heater                        |   `SimpleHeater`    | Heating solutions with only temperature control ([details](#simple-heaters))                            |
-| Garage Door                          |    `GarageDoor`     | Smart garage doors or garage door openers ([details](#garage-doors))                                    |
-| Simple Blinds                        |   `SimpleBlinds`    | Smart blinds and smart switches that control blinds ([details](#simple-blinds))                         |
-| Simple Blinds 2                      |   `SimpleBlinds2`   | Alternate blinds implementation — use if `SimpleBlinds` doesn't work ([details](#simple-blinds))        |
-| Smart Plug w/ White and Color Lights |    `RGBTWOutlet`    | Smart plugs with controllable RGBTW LEDs ([details](#outlets-with-white-and-color-lights))              |
-| Smart Fan Regulator                  |        `Fan`        | Fan regulators with controllable speeds ([details](#smart-fan-regulators))                              |
-| Smart Fan with Light                 |     `FanLight`      | Fan devices with controllable speeds, direction, and built-in light ([details](#smart-fan-with-light))  |
+| Device                               |          Type           | Notes                                                                                                   |
+| :----------------------------------- | :---------------------: | :------------------------------------------------------------------------------------------------------ |
+| Air Conditioner                      |    `AirConditioner`     | Cooling and heating devices ([details](#air-conditioners))                                              |
+| Air Purifier                         |      `AirPurifier`      | Purifiers with fan speed control ([details](#air-purifiers))                                            |
+| Circuit Breaker Monitor              | `CircuitBreakerMonitor` | **Read-only** energy and safety monitoring ([details](#circuit-breaker-monitors))                       |
+| Heat Convector                       |       `Convector`       | Heating panels ([details](#heat-convectors))                                                            |
+| Non-sequential Power Strip           |   `CustomMultiOutlet`   | Power strips with non-sequential data-points per outlet ([details](#non-sequential-power-strips))       |
+| Dehumidifier                         |     `Dehumidifier`      | Humidity control with fan speed ([details](#dehumidifiers))                                             |
+| Smart Fan Regulator                  |          `Fan`          | Fan regulators with controllable speeds ([details](#smart-fan-regulators))                              |
+| Smart Fan with Light                 |       `FanLight`        | Fan with speeds, direction, and built-in light ([details](#smart-fan-with-light))                       |
+| Garage Door                          |      `GarageDoor`       | Smart garage doors or garage door openers ([details](#garage-doors))                                    |
+| Mapped Heat Pump Heater              | `MappedHeatPumpHeater`  | Heat pump with room-to-water temp mapping ([details](#mapped-heat-pump-heaters))                        |
+| Smart Power Strip                    |      `MultiOutlet`      | Power strips with sequential data-points for individual outlet control ([details](#smart-power-strips)) |
+| Oil Diffuser                         |      `OilDiffuser`      | Essential oil diffuser with humidifier and RGB light ([details](#oil-diffusers))                        |
+| Smart Plug                           |        `Outlet`         | Smart plugs that turn on and off ([details](#outlets))                                                  |
+| Smart Plug w/ White and Color Lights |      `RGBTWOutlet`      | Smart plugs with controllable RGBTW LEDs ([details](#outlets-with-white-and-color-lights))              |
+| White and Color Light Bulb           |      `RGBTWLight`       | Colored bulbs with tunable white and dimming ([details](#white-and-color-light-bulbs))                  |
+| Simple Blinds                        |     `SimpleBlinds`      | Smart blinds and smart switches that control blinds ([details](#simple-blinds))                         |
+| Simple Dimmer                        |     `SimpleDimmer`      | Dimmer switches with power control ([details](#simple-dimmers))                                         |
+| Simple Dimmer 2                      |     `SimpleDimmer2`     | Alternative dimmer (DP 3 brightness) ([details](#simple-dimmer-2))                                      |
+| Simple Heater                        |     `SimpleHeater`      | Heating solutions with only temperature control ([details](#simple-heaters))                            |
+| Simple Light Bulb                    |      `SimpleLight`      | Light bulbs that just turn on and off                                                                   |
+| Multi-Switch                         |        `Switch`         | Multi-switch with debounced power ([details](#multi-switch-accessories))                                |
+| Tunable White Light Bulb             |        `TWLight`        | Bulbs with tunable white and dimming functionality ([details](#tunable-white-light-bulbs))              |
+| Water Valve                          |      `WaterValve`       | Smart valves with timer support ([details](#water-valves))                                              |
 
 ::: tip
 The `type` value is case-insensitive. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.
@@ -571,5 +576,296 @@ These are fan devices with controllable speeds, direction, and a built-in light.
   dpRotationSpeed: 62,
   maxSpeed: 9,
   dpRotationDirection: 63,
+}
+```
+
+### Air Purifiers
+
+Air purifiers with fan speed control. Supports manufacturers like Breville, Proscenic, and Siguro with different speed configurations.
+
+```json5
+{
+  name: 'My Air Purifier',
+  type: 'AirPurifier',
+  manufacturer: 'Breville',
+  model: 'Smart Air Purifier',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default phrase for auto mode (default: 'AUTO') */
+  cmdAuto: 'AUTO',
+
+  /* Disable rotation speed control if your device uses preset modes */
+  noRotationSpeed: true,
+
+  /* Number of fan speed steps (only when noRotationSpeed is true) */
+  fanSpeedSteps: 3,
+
+  /* Display air quality sensor in HomeKit */
+  showAirQuality: true,
+
+  /* Custom name for air quality sensor */
+  nameAirQuality: 'Air Quality',
+}
+```
+
+### Dehumidifiers
+
+Dehumidifiers with target humidity control, fan speed adjustment, and optional child lock.
+
+```json5
+{
+  name: 'My Dehumidifier',
+  type: 'Dehumidifier',
+  manufacturer: 'Pro Breeze',
+  model: 'Smart Dehumidifier',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifiers */
+  dpActive: '1',
+  dpMode: '2',
+  dpTargetHumidity: '4',
+  dpFanSpeed: '6',
+  dpChildLock: '7',
+  dpCurrentTemperature: '103',
+  dpCurrentHumidity: '104',
+
+  /* Disable child lock service */
+  noChildLock: true,
+
+  /* Disable fan speed control service */
+  noSpeed: true,
+
+  /* Fan speed range (default: 1-2) */
+  minSpeed: 1,
+  maxSpeed: 3,
+  speedSteps: 1,
+}
+```
+
+### Circuit Breaker Monitors
+
+**Safety-critical read-only device** for monitoring digital circuit breakers. Exposes temperature, leakage current detection, fault alarms, and energy consumption to HomeKit.
+
+::: danger Read-Only Safety Device
+The breaker switch (DP 16) is **never exposed to HomeKit** for safety reasons. This device is for monitoring only.
+:::
+
+```json5
+{
+  name: 'Main Panel Monitor',
+  type: 'CircuitBreakerMonitor',
+  manufacturer: 'Tuya',
+  model: 'Digital Circuit Breaker',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifiers */
+  dpTemperature: '103',
+  dpLeakageCurrent: '15',
+  dpFault: '9',
+  dpTotalForwardEnergy: '1',
+  dpPhaseA: '6',
+  dpSwitch: '16',
+
+  /* Temperature divisor (device reports temp * divisor) */
+  temperatureDivisor: 1,
+
+  /* Energy divisor (device reports kWh * divisor) */
+  energyDivisor: 100,
+
+  /* Leakage current threshold in mA for alarm (default: 30) */
+  leakageThreshold: 30,
+
+  /* Disable specific sensors */
+  exposeTemperatureSensor: false,
+  exposeLeakSensor: false,
+  exposeFaultSensor: false,
+
+  /* Disable energy characteristic (KilowattHours) */
+  exposeEnergyCharacteristic: false,
+
+  /* Custom sensor names */
+  leakSensorName: 'Panel Leakage',
+  faultSensorName: 'Panel Fault',
+}
+```
+
+**Exposed HomeKit Services:**
+
+- **TemperatureSensor** — Device temperature with optional KilowattHours energy characteristic
+- **LeakSensor** — Leakage current alarm (triggers when current ≥ threshold)
+- **ContactSensor** — Fault alarm (Closed = no fault, Open = fault detected)
+
+### Mapped Heat Pump Heaters
+
+Heat pump heaters with virtual room-to-water temperature mapping. Displays tank/return temperature as current temperature and maps a virtual room target to actual water setpoint using an interpolation table.
+
+```json5
+{
+  name: 'Heat Pump',
+  type: 'MappedHeatPumpHeater',
+  manufacturer: 'Ferroli',
+  model: 'Omnia S 3.2',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifiers */
+  dpActive: '1',
+  dpReturnTemperature: '25',
+  dpWaterTarget: '117',
+  dpOutsideTemperature: '118',
+  dpFlowTemperature: '119',
+
+  /* Temperature divisors (device reports temp * divisor) */
+  returnTemperatureDivisor: 10,
+  waterTargetDivisor: 1,
+  outsideTemperatureDivisor: 10,
+  flowTemperatureDivisor: 10,
+
+  /* Virtual room temperature range (°C) */
+  roomTargetMin: 18,
+  roomTargetMax: 24,
+  defaultRoomTarget: 20,
+  minTemperatureSteps: 0.5,
+
+  /* Actual water temperature range (°C) */
+  waterTargetMin: 35,
+  waterTargetMax: 55,
+
+  /* Room-to-water temperature mapping table */
+  roomToWaterMap: [
+    { room: 18, water: 35 },
+    { room: 20, water: 40 },
+    { room: 22, water: 47 },
+    { room: 24, water: 55 },
+  ],
+
+  /* Expose optional temperature sensors */
+  exposeOutsideSensor: true,
+  outsideSensorName: 'Heat Pump Outside',
+  exposeFlowSensor: true,
+  flowSensorName: 'Heat Pump Flow',
+  exposeReturnSensor: true,
+  returnSensorName: 'Heat Pump Return',
+}
+```
+
+### Multi-Switch Accessories
+
+Multi-switch accessories with debounced power switching to prevent rapid on/off cycles.
+
+```json5
+{
+  name: 'My Switch',
+  type: 'Switch',
+  manufacturer: 'Treatlife',
+  model: '3-Gang Smart Switch',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Number of switches (default: 1) */
+  switchCount: 3,
+}
+```
+
+**Notes:**
+
+- Each switch appears as a separate accessory in HomeKit labeled `{name} 1`, `{name} 2`, etc.
+- Switch commands are debounced by 500ms to prevent rapid toggling issues.
+
+### Water Valves
+
+Smart valves with timer support for irrigation, shower heads, or faucets.
+
+```json5
+{
+  name: 'Garden Valve',
+  type: 'WaterValve',
+  manufacturer: 'Smart Home',
+  model: 'WiFi Water Valve',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifier for power */
+  dpPower: '1',
+
+  /* Valve type: GENERIC (0), IRRIGATION (1), SHOWER_HEAD (2), WATER_FAUCET (3) */
+  valveType: 'IRRIGATION',
+
+  /* Default duration in seconds (default: 600) */
+  defaultDuration: 1800,
+
+  /* Disable timer functionality */
+  noTimer: true,
+}
+```
+
+### Oil Diffusers
+
+Essential oil diffusers combining humidifier and RGB light functionality.
+
+```json5
+{
+  name: 'My Diffuser',
+  type: 'OilDiffuser',
+  manufacturer: 'Asakuki',
+  model: 'Essential Oil Diffuser',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifiers */
+  dpActive: '1',
+  dpRotationSpeed: '2',
+  dpLight: '5',
+  dpMode: '6',
+  dpColor: '8',
+  dpWaterLevel: '9',
+
+  /* Maximum mist intensity level */
+  maxSpeed: 2,
+
+  /* Flip speed slider (reverse min/max) */
+  enableFlipSpeedSlider: true,
+}
+```
+
+**Exposed HomeKit Services:**
+
+- **HumidifierDehumidifier** — Mist output control
+- **Lightbulb** — RGB color control with hue/saturation
+
+### Simple Dimmer 2
+
+Alternative dimmer implementation using DP 3 for brightness. Use this if `SimpleDimmer` doesn't work for your device.
+
+```json5
+{
+  name: 'My Dimmer',
+  type: 'SimpleDimmer2',
+  manufacturer: 'Smart Home',
+  model: 'Wall Dimmer Switch',
+  id: '032000123456789abcde',
+  key: '0123456789abcdef',
+
+  /* Additional parameters to override defaults only if needed */
+
+  /* Override the default datapoint identifier for power */
+  dpPower: '1',
+
+  /* Brightness is always DP 3 for this device type */
 }
 ```
