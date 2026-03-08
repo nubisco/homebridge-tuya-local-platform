@@ -17,6 +17,11 @@ config-schema:
   - changed-files:
       - any-glob-to-any-file: 'config.schema.json'
 
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'tests/**'
+
 documentation:
   - changed-files:
       - any-glob-to-any-file:

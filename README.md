@@ -2,8 +2,8 @@
 
 ![logos](docs/public/logos.png)
 
-[![npm](https://img.shields.io/npm/v/@nubisco/homebridge-tuya-local-platform.svg)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
-[![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@nubisco/homebridge-tuya-local-platform)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
+[![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform)](LICENSE)
 
 Control Tuya-based smart devices locally over LAN through Apple HomeKit — no cloud dependency required.
 
