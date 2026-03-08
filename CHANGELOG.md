@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.0...v1.1.1) (2026-03-08)
+
+### Bug Fixes
+
+- bump not matrix to minimum 20 ([378c406](https://github.com/nubisco/homebridge-tuya-local-platform/commit/378c4060cbabebb4ec216b9f8b1c0da5d74337e6))
+
 # [1.1.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.0.1...v1.1.0) (2026-03-08)
 
 ### Features
