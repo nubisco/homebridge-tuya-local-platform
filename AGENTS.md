@@ -126,6 +126,13 @@ When making changes, ensure these files stay consistent:
 | New config param | `config.schema.json` (schema + condition), accessory class (read from context)                                                                                                   |
 | New dependency   | `package.json`, verify `npm run build` still passes                                                                                                                              |
 
+## Release and Documentation
+
+- **CHANGELOG.md** is **auto-generated** by semantic-release in CI during version bumps. Do NOT manually edit it.
+- **Commit messages** follow Conventional Commits format (`feat:`, `fix:`, `docs:`, etc.) to trigger automatic releases and changelog generation.
+- **Version bumps** happen automatically via semantic-release when commits are pushed to master with the proper format.
+- **Documentation** is built from `docs/` and deployed to GitHub Pages automatically on release.
+
 ## Things to Avoid
 
 - Do not add `"type": "module"` to `package.json` — the project is CommonJS and Homebridge expects `require()`.
