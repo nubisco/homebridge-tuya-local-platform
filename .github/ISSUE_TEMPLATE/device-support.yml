@@ -1,11 +1,11 @@
-name: Device Support Request
-description: Request support for a new Tuya device type
+name: Device support request
+description: Request support for a Tuya device that is not fully supported yet
 labels: [device-support]
 body:
   - type: markdown
     attributes:
       value: |
-        Want this plugin to support a new type of Tuya device? Fill in the details below so we can evaluate and implement it.
+        Thanks for sharing device details. This information helps us evaluate support faster.
 
   - type: checkboxes
     id: checklist
@@ -18,58 +18,52 @@ body:
           required: true
 
   - type: input
-    id: device-name
+    id: device_model
     attributes:
-      label: Device name
-      description: Brand and model of the device
-      placeholder: 'Generic Brand Smart Humidifier XYZ-200'
+      label: Device model
+      description: Brand + model name
+      placeholder: Generic Brand Smart Humidifier XYZ-200
     validations:
       required: true
 
-  - type: textarea
-    id: device-description
+  - type: input
+    id: tuya_category
     attributes:
-      label: Device description
-      description: What does the device do? What controls/features does it have?
-      placeholder: |
-        Wi-Fi humidifier with:
-        - On/off toggle
-        - 3 mist levels (low, medium, high)
-        - Target humidity setting (40–80%)
-        - Water tank level indicator
-        - LED light on/off
-    validations:
-      required: true
+      label: Tuya category (if known)
+      placeholder: e.g. dj, kg, fs, wk
 
-  - type: dropdown
-    id: partial-support
+  - type: input
+    id: product_id
     attributes:
-      label: Does the device partially work with any existing type?
-      options:
-        - "No, it doesn't work at all"
-        - "Yes, basic on/off works but other features don't"
-        - 'Yes, most features work but some are missing'
-        - "I haven't tried yet"
-    validations:
-      required: true
+      label: Tuya product ID (if known)
+      placeholder: e.g. abcdef1234567890
 
   - type: textarea
-    id: existing-type
+    id: dps_details
     attributes:
-      label: Existing type tried (if any)
-      description: If you tried an existing device type, which one and what worked/didn't?
-
-  - type: textarea
-    id: data-points
-    attributes:
-      label: Device data points (DPs)
-      description: |
-        Paste the device's DP schema if you have it. You can obtain this from the Tuya IoT Platform or by inspecting traffic.
-        Include the DP number, name, and possible values.
+      label: DataPoints (DPS) details
+      description: Include DP ids, names, and expected values/ranges where possible.
       render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste Homebridge logs while interacting with this device.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      description: Add screenshots of Tuya IoT DP schema, product page, or Home app behavior if helpful.
 
   - type: textarea
     id: additional
     attributes:
       label: Additional context
-      description: Links to product page, photos, Tuya IoT Platform screenshots, or anything else
+      description: Anything else maintainers should know
