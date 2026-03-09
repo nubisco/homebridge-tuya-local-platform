@@ -66,13 +66,17 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for dev
 
 For security vulnerabilities, please see [SECURITY.md](SECURITY.md) for responsible disclosure procedures.
 
-## Support / Sponsorship
+## ❤️ Support this project
 
-If you find this plugin useful, consider:
+If this plugin helps your Homebridge setup, consider sponsoring development.
 
-- Starring the repository on [GitHub](https://github.com/nubisco/homebridge-tuya-local-platform)
-- Contributing device support, bug fixes, or documentation improvements
-- Sponsoring maintenance via [GitHub Sponsors](https://github.com/sponsors/joseporto)
+Maintaining device integrations, testing hardware, and providing support takes significant time.
+
+GitHub Sponsors helps ensure long-term maintenance.
+
+👉 [Sponsor via GitHub](https://github.com/sponsors/joseporto)
+
+⭐️ [Starring the repository on GitHub](https://github.com/nubisco/homebridge-tuya-local-platform)
 
 ## License
 
