@@ -1,0 +1,118 @@
+name: Bug report
+description: Report a reproducible problem with the plugin
+labels: [bug]
+assignees: [joseporto]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please provide enough detail for maintainers to reproduce it.
+
+  - type: dropdown
+    id: device_category
+    attributes:
+      label: Device / category
+      description: Device type or Tuya category involved in this issue
+      options:
+        - outlet
+        - simplelight
+        - rgbtwlight
+        - rgbtwoutlet
+        - twlight
+        - multioutlet
+        - custommultioutlet
+        - airconditioner
+        - airpurifier
+        - dehumidifier
+        - convector
+        - garagedoor
+        - simpledimmer
+        - simpledimmer2
+        - simpleblinds
+        - simpleheater
+        - mappedheatpumpheater
+        - circuitbreakermonitor
+        - switch
+        - fan
+        - fanlight
+        - watervalve
+        - oildiffuser
+        - unknown / other
+    validations:
+      required: true
+
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin version
+      placeholder: 1.1.2
+    validations:
+      required: true
+
+  - type: input
+    id: homebridge_version
+    attributes:
+      label: Homebridge version
+      placeholder: 1.8.x
+    validations:
+      required: true
+
+  - type: input
+    id: node_version
+    attributes:
+      label: Node.js version
+      placeholder: 20.x or 22.x
+    validations:
+      required: true
+
+  - type: input
+    id: platform_os
+    attributes:
+      label: Platform / OS
+      placeholder: Raspberry Pi OS, Ubuntu, macOS, Docker, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: config_snippet
+    attributes:
+      label: Config snippet (redacted)
+      description: Paste the relevant part of `config.json`. Remove or replace sensitive values (`id`, `key`).
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste relevant Homebridge logs. Use debug mode (`-D`) when possible.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Configure device with type ...
+        2. Restart Homebridge
+        3. Open Home app
+        4. Trigger action ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

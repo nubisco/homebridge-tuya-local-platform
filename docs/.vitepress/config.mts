@@ -2,11 +2,24 @@ import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   title: 'Homebridge Tuya Local Platform',
-  description: 'Control Tuya devices locally over LAN through Apple HomeKit',
+  description: 'Control Tuya devices locally over LAN through Apple HomeKit.',
 
   base: '/homebridge-tuya-local-platform/',
 
-  head: [['link', { rel: 'icon', href: '/homebridge-tuya-local-platform/favicon.ico' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/homebridge-tuya-local-platform/favicon.ico' }],
+    ['meta', { name: 'theme-color', content: '#2f855a' }],
+    ['meta', { name: 'keywords', content: 'homebridge, tuya, local, homekit, plugin' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Homebridge Tuya Local Platform' }],
+    ['meta', { property: 'og:description', content: 'Control Tuya devices locally over LAN through Apple HomeKit.' }],
+  ],
+
+  sitemap: {
+    hostname: 'https://nubisco.github.io/homebridge-tuya-local-platform/',
+  },
+
+  lastUpdated: true,
 
   themeConfig: {
     siteTitle: 'Local Platform',
@@ -65,6 +78,10 @@ export default defineConfig({
 
     search: {
       provider: 'local',
+    },
+
+    lastUpdated: {
+      text: 'Last updated',
     },
 
     footer: {
