@@ -1,3 +1,9 @@
+# [1.2.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.2...v1.2.0) (2026-03-09)
+
+### Features
+
+- add comprehensive test coverage and project health improvements ([a1885a3](https://github.com/nubisco/homebridge-tuya-local-platform/commit/a1885a3f201a199d410efe7d624bec96fdf09ee8))
+
 ## [1.1.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.1...v1.1.2) (2026-03-08)
 
 ### Bug Fixes
