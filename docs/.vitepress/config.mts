@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Homebridge Tuya Local Platform',
@@ -89,4 +89,4 @@ export default defineConfig({
       copyright: 'Copyright © 2026 Nubisco',
     },
   },
-});
+})

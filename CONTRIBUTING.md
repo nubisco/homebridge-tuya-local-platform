@@ -27,6 +27,12 @@ Notes:
 - Minimum supported Node.js version is `20`
 - Homebridge compatibility is `>=1.6.0`
 
+Compatibility policy:
+
+- `peerDependencies` declare the minimum supported Homebridge version for users (`>=1.6.0`)
+- `devDependencies` track the latest stable Homebridge 1.x for local development and CI
+- Keep both in sync with real compatibility: widen support only when verified by tests and manual validation
+
 ## Branch and PR Expectations
 
 - Create focused branches (one concern per PR)

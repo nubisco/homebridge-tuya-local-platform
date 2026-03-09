@@ -1,6 +1,6 @@
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintConfigPrettier from 'eslint-config-prettier';
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -9,9 +9,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ['tests/*.ts', 'vitest.config.ts'],
-        },
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -25,4 +23,4 @@ export default tseslint.config(
   {
     ignores: ['dist/', 'docs/', 'node_modules/', '*.js', '*.mjs'],
   },
-);
+)

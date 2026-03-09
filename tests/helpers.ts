@@ -1,17 +1,17 @@
-import { EventEmitter } from 'events';
-import type { DPSState, TuyaDeviceContext } from '../src/types';
+import { EventEmitter } from 'events'
+import type { DPSState, TuyaDeviceContext } from '../src/types'
 
 /**
  * Minimal mock logger matching the Homebridge Logger interface.
  */
 export function createMockLogger() {
-  return {
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-    log: vi.fn(),
-  };
+  const logFn = vi.fn()
+  // Logger must be callable AND have methods
+  logFn.info = vi.fn()
+  logFn.warn = vi.fn()
+  logFn.error = vi.fn()
+  logFn.debug = vi.fn()
+  return logFn
 }
 
 /**
@@ -37,7 +37,7 @@ export function createMockCharacteristic() {
     RotationSpeed: 'rotation-speed',
     SwingMode: { UUID: 'swing-uuid' },
     WaterLevel: 'water-level',
-  };
+  }
 }
 
 /**
@@ -46,15 +46,18 @@ export function createMockCharacteristic() {
 export function createMockService() {
   return {
     AccessoryInformation: { UUID: 'accessory-info-uuid' },
-    TemperatureSensor: 'temp-sensor',
-    HumiditySensor: 'humidity-sensor',
-    HumidifierDehumidifier: 'dehumidifier',
-    LockMechanism: 'lock',
-    Fan: 'fan',
-    HeaterCooler: 'heater-cooler',
-    ContactSensor: 'contact-sensor',
-    LeakSensor: 'leak-sensor',
-  };
+    TemperatureSensor: { UUID: 'temp-sensor-uuid' },
+    HumiditySensor: { UUID: 'humidity-sensor-uuid' },
+    HumidifierDehumidifier: { UUID: 'dehumidifier-uuid' },
+    LockMechanism: { UUID: 'lock-uuid' },
+    Fan: { UUID: 'fan-uuid' },
+    HeaterCooler: { UUID: 'heater-cooler-uuid' },
+    ContactSensor: { UUID: 'contact-sensor-uuid' },
+    LeakSensor: { UUID: 'leak-sensor-uuid' },
+    Outlet: { UUID: 'outlet-uuid' },
+    Lightbulb: { UUID: 'lightbulb-uuid' },
+    Switch: { UUID: 'switch-uuid' },
+  }
 }
 
 /**
@@ -74,20 +77,31 @@ export function createMockCategories() {
     WINDOW_COVERING: 14,
     GARAGE_DOOR_OPENER: 4,
     FAUCET: 29,
-  };
+  }
+}
+
+/**
+ * Mock Energy Characteristics for outlets with monitoring.
+ */
+export function createMockEnergyCharacteristics() {
+  return {
+    Volts: { UUID: 'volts-uuid' },
+    Amperes: { UUID: 'amperes-uuid' },
+    Watts: { UUID: 'watts-uuid' },
+  }
 }
 
 /**
  * Create a mock TuyaAccessory (protocol client) that extends EventEmitter.
  */
 export function createMockTuyaDevice(overrides: Partial<TuyaDeviceContext> = {}): EventEmitter & {
-  context: TuyaDeviceContext;
-  state: DPSState;
-  connected: boolean;
-  update: ReturnType<typeof vi.fn>;
-  _connect: ReturnType<typeof vi.fn>;
+  context: TuyaDeviceContext
+  state: DPSState
+  connected: boolean
+  update: ReturnType<typeof vi.fn>
+  _connect: ReturnType<typeof vi.fn>
 } {
-  const device = new EventEmitter() as any;
+  const device = new EventEmitter() as any
   device.context = {
     id: 'test-device-id-001',
     key: 'test-local-key-16c',
@@ -99,100 +113,148 @@ export function createMockTuyaDevice(overrides: Partial<TuyaDeviceContext> = {})
     log: createMockLogger(),
     connect: false,
     ...overrides,
-  };
-  device.state = {};
-  device.connected = false;
-  device.update = vi.fn().mockReturnValue(true);
-  device._connect = vi.fn();
-  return device;
+  }
+  device.state = {}
+  device.connected = false
+  device.update = vi.fn().mockReturnValue(true)
+  device._connect = vi.fn()
+  return device
 }
 
 /**
  * Create a mock Homebridge PlatformAccessory.
  */
-export function createMockPlatformAccessory(name = 'Test', uuid = 'test-uuid') {
-  const services = new Map<string, any>();
+export function createMockPlatformAccessory(contextOverrides: any = {}) {
+  const services = new Map<string, any>()
+  const servicesBySubtype = new Map<string, any>()
+
+  const context = {
+    id: 'test-device-id',
+    name: 'Test Device',
+    UUID: 'test-uuid',
+    ...contextOverrides,
+  }
+
   const accessory: any = {
-    UUID: uuid,
-    displayName: name,
+    UUID: context.UUID,
+    displayName: context.name,
     category: undefined,
+    context,
     services: [],
     on: vi.fn(),
-    getService: vi.fn((type: string) => services.get(type)),
-    addService: vi.fn((type: string, displayName: string) => {
-      const service = createMockHAPService(type, displayName);
-      services.set(type, service);
-      accessory.services.push(service);
-      return service;
+    getService: vi.fn((type: any) => {
+      const uuid = typeof type === 'object' ? type.UUID : type
+      return services.get(uuid)
     }),
-  };
-  // Pre-add AccessoryInformation
-  const infoService = createMockHAPService('accessory-info-uuid', 'Accessory Information');
-  infoService.UUID = 'accessory-info-uuid';
-  services.set('accessory-info-uuid', infoService);
-  accessory.services.push(infoService);
+    getServiceByUUIDAndSubType: vi.fn((type: any, subtype: string) => {
+      const uuid = typeof type === 'object' ? type.UUID : type
+      const key = `${uuid}:${subtype}`
+      return servicesBySubtype.get(key)
+    }),
+    addService: vi.fn((type: any, displayName: string, subtype?: string) => {
+      const uuid = typeof type === 'object' ? type.UUID : type
+      const service = createMockHAPService(uuid, displayName, subtype)
 
-  return accessory;
+      if (subtype) {
+        const key = `${uuid}:${subtype}`
+        servicesBySubtype.set(key, service)
+      } else {
+        services.set(uuid, service)
+      }
+
+      accessory.services.push(service)
+      return service
+    }),
+    removeService: vi.fn((service: any) => {
+      const index = accessory.services.indexOf(service)
+      if (index > -1) {
+        accessory.services.splice(index, 1)
+      }
+
+      // Remove from maps
+      if (service.subtype) {
+        const key = `${service.UUID}:${service.subtype}`
+        servicesBySubtype.delete(key)
+      } else {
+        services.delete(service.UUID)
+      }
+    }),
+  }
+
+  // Pre-add AccessoryInformation
+  const infoService = createMockHAPService('accessory-info-uuid', 'Accessory Information')
+  infoService.UUID = 'accessory-info-uuid'
+  services.set('accessory-info-uuid', infoService)
+  accessory.services.push(infoService)
+
+  return accessory
 }
 
 /**
  * Create a mock HAP Service with chainable characteristic methods.
  */
-function createMockHAPService(type: string, displayName?: string) {
-  const characteristics = new Map<string, any>();
+function createMockHAPService(type: string, displayName?: string, subtype?: string) {
+  const characteristics = new Map<string, any>()
 
   const service: any = {
     UUID: type,
     displayName: displayName || type,
+    subtype: subtype || undefined,
     characteristics: [],
     getCharacteristic: vi.fn((charType: any) => {
-      const key = typeof charType === 'object' ? charType.UUID || charType : charType;
+      const key = typeof charType === 'object' ? charType.UUID || charType : charType
       if (!characteristics.has(key)) {
-        const char = createMockCharacteristicInstance(key);
-        characteristics.set(key, char);
-        service.characteristics.push(char);
+        const char = createMockCharacteristicInstance(key)
+        characteristics.set(key, char)
+        service.characteristics.push(char)
       }
-      return characteristics.get(key);
+      return characteristics.get(key)
     }),
     addCharacteristic: vi.fn((charType: any) => {
-      const key = typeof charType === 'object' ? charType.UUID || charType : charType;
-      const char = createMockCharacteristicInstance(key);
-      characteristics.set(key, char);
-      service.characteristics.push(char);
-      return char;
+      const key = typeof charType === 'object' ? charType.UUID || charType : charType
+      const char = createMockCharacteristicInstance(key)
+      characteristics.set(key, char)
+      service.characteristics.push(char)
+      return char
     }),
     setCharacteristic: vi.fn(function (this: any, _charType: any, _value: any) {
-      return this;
+      return this
     }),
     removeCharacteristic: vi.fn(),
-  };
+  }
 
-  return service;
+  return service
 }
 
 /**
  * Create a mock characteristic instance with chainable methods.
  */
 function createMockCharacteristicInstance(name: string) {
+  const emitter = new EventEmitter()
+
   const char: any = {
     UUID: name,
     displayName: name,
     value: undefined,
     props: { perms: [] },
     updateValue: vi.fn(function (this: any, val: any) {
-      this.value = val;
-      return this;
+      this.value = val
+      return this
     }),
     setValue: vi.fn(function (this: any, val: any) {
-      this.value = val;
-      return this;
+      this.value = val
+      return this
     }),
     setProps: vi.fn(function (this: any) {
-      return this;
+      return this
     }),
-    on: vi.fn(function (this: any) {
-      return this;
+    on: vi.fn(function (this: any, event: string, listener: (...args: any[]) => void) {
+      emitter.on(event, listener)
+      return this
     }),
-  };
-  return char;
+    emit: vi.fn(function (this: any, event: string, ...args: any[]) {
+      return emitter.emit(event, ...args)
+    }),
+  }
+  return char
 }
