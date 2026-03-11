@@ -1,3 +1,9 @@
+## [1.2.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.1...v1.2.2) (2026-03-11)
+
+### Bug Fixes
+
+- remove peerDependencies to pass homebridge plugin verification ([c390137](https://github.com/nubisco/homebridge-tuya-local-platform/commit/c390137f37d3a1c58c6cdf13bae97497705b7df1))
+
 ## [1.2.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.0...v1.2.1) (2026-03-11)
 
 ### Bug Fixes
