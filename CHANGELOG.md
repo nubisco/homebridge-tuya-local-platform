@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.0...v1.2.1) (2026-03-11)
+
+### Bug Fixes
+
+- address homebridge plugin verification failures ([56e47bb](https://github.com/nubisco/homebridge-tuya-local-platform/commit/56e47bb24a0383b6091805105653a21928c03b3e))
+
 # [1.2.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.1.2...v1.2.0) (2026-03-09)
 
 ### Features
