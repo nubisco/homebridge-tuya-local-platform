@@ -71,7 +71,19 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
   }
 
   _registerCharacteristics(dps: DPSState): void {
-    const { Characteristic, EnergyCharacteristics } = this.hap
+    const { Service, Characteristic, EnergyCharacteristics } = this.hap
+
+    // For cached accessories _registerPlatformAccessory() is skipped (isNew=false),
+    // so service references must be resolved here if not already set.
+    if (!this.temperatureSensor) {
+      this.temperatureSensor = this.accessory.getService(Service.TemperatureSensor)
+    }
+    if (!this.leakSensor) {
+      this.leakSensor = this.accessory.getService(Service.LeakSensor)
+    }
+    if (!this.faultSensor) {
+      this.faultSensor = this.accessory.getService(Service.ContactSensor)
+    }
 
     // DP configuration with defaults
     this.dpTemperature = this._getCustomDP(this.device.context.dpTemperature) || '103'
