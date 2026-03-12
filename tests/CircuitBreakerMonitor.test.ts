@@ -48,7 +48,7 @@ function createCircuitBreaker(contextOverrides = {}) {
   acc.dpTotalForwardEnergy = '1'
   acc.dpSwitch = '16'
   acc.dpPhaseA = '6'
-  acc.temperatureDivisor = 10
+  acc.temperatureDivisor = 1
   acc.energyDivisor = 100
   acc.leakageThreshold = 30
   acc.telemetry = {
@@ -76,8 +76,34 @@ describe('CircuitBreakerMonitorAccessory', () => {
   it('parses temperature and energy values using configured divisors', () => {
     const { acc } = createCircuitBreaker()
 
-    expect(acc._getTemperature({ '103': 250 })).toBe(25)
+    expect(acc._getTemperature({ '103': 25 })).toBe(25)
     expect(acc._getEnergy({ '1': 1234 })).toBe(12.34)
+  })
+
+  it('applies temperatureDivisor when device reports tenths of a degree', () => {
+    const { acc } = createCircuitBreaker()
+    acc.temperatureDivisor = 10
+
+    expect(acc._getTemperature({ '103': 250 })).toBe(25)
+    expect(acc._getTemperature({ '103': 245 })).toBe(24.5)
+  })
+
+  it('getTemperature returns error when DP value is not yet available', () => {
+    const { acc } = createCircuitBreaker()
+    acc.device.connected = true
+    acc.device.state = {}
+
+    let cbErr: Error | null = null
+    acc.getTemperature((err: Error | null) => {
+      cbErr = err
+    })
+
+    return new Promise<void>((resolve) => {
+      process.nextTick(() => {
+        expect(cbErr).toBeInstanceOf(Error)
+        resolve()
+      })
+    })
   })
 
   it('warns and returns zero when temperature or energy DPS are missing', () => {
@@ -112,14 +138,14 @@ describe('CircuitBreakerMonitorAccessory', () => {
 
     acc._updateTelemetry({
       '1': 500,
-      '103': 245,
+      '103': 25,
       '15': 12,
       '9': 4,
       '16': true,
     })
 
     expect(acc.telemetry.totalForwardEnergy).toBe(5)
-    expect(acc.telemetry.temperature).toBe(24.5)
+    expect(acc.telemetry.temperature).toBe(25)
     expect(acc.telemetry.leakageCurrent).toBe(12)
     expect(acc.telemetry.fault).toBe(4)
     expect(acc.telemetry.switchState).toBe(true)
