@@ -58,11 +58,11 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run lint:fix",
+      "npm run format"
     ],
-    "tests/**/*.ts": "prettier --write",
-    "*.{json,md,mts,mjs}": "prettier --write"
+    "tests/**/*.ts": "npm run format",
+    "*.{json,md,mts,mjs}": "npm run format"
   },
   "dependencies": {
     "async": "^3.2.6"

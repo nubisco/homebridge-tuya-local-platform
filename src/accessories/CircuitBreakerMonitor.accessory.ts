@@ -102,14 +102,20 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
     if (this.temperatureSensor) {
       this._checkServiceName(this.temperatureSensor, this.device.context.name)
 
-      this.temperatureSensor
+      const tempChar = this.temperatureSensor
         .getCharacteristic(Characteristic.CurrentTemperature)
         .setProps({
           minValue: -100,
           maxValue: 150,
         })
-        .updateValue(this._getTemperature(dps))
         .on('get', this.getTemperature.bind(this))
+
+      // Only set initial value if the DP is already present in state.
+      // If absent (device hasn't pushed it yet), leave the characteristic
+      // empty so HomeKit shows "—" rather than a bogus 0°C.
+      if (dps[this.dpTemperature] !== undefined && dps[this.dpTemperature] !== null) {
+        tempChar.updateValue(this._getTemperature(dps))
+      }
 
       // Add total energy consumption characteristic
       if (this.device.context.exposeEnergyCharacteristic !== false) {
@@ -162,6 +168,7 @@ class CircuitBreakerMonitorAccessory extends BaseAccessory {
   getTemperature(callback: HomebridgeCallback): void {
     this.getState(this.dpTemperature, (err: Error | null, dp: DPSValue) => {
       if (err) return callback(err)
+      if (dp === undefined || dp === null) return callback(new Error('Temperature not yet available'))
       callback(null, this._getTemperature({ [this.dpTemperature]: dp }))
     })
   }
