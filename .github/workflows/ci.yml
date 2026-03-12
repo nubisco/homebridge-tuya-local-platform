@@ -83,8 +83,20 @@ jobs:
           name: coverage-report
           path: coverage/
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Generate coverage badge JSON
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          COVERAGE=$(node -e "const s=require('./coverage/coverage-summary.json'); console.log(Math.round(s.total.lines.pct))")
+          COLOR=$(node -e "const p=$COVERAGE; process.stdout.write(p>=90?'brightgreen':p>=75?'green':p>=60?'yellowgreen':p>=50?'yellow':'red')")
+          mkdir -p badge-output
+          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${COVERAGE}%\",\"color\":\"${COLOR}\"}" > badge-output/coverage.json
+
+      - name: Deploy coverage badge
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./badge-output
+          publish_branch: badges
+          keep_files: true
+          commit_message: 'chore: update coverage badge [skip ci]'

@@ -15,7 +15,7 @@
 [![CI](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml)
 [![GitHub release](https://img.shields.io/github/v/release/nubisco/homebridge-tuya-local-platform)](https://github.com/nubisco/homebridge-tuya-local-platform/releases)
 [![npm version](https://img.shields.io/npm/v/@nubisco/homebridge-tuya-local-platform)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
-[![Coverage](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform/graph/badge.svg)](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform)
+[![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/nubisco/homebridge-tuya-local-platform/badges/coverage.json)](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-339933)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
 [![Homebridge](https://img.shields.io/badge/homebridge-%3E%3D1.6.0-blue)](https://homebridge.io)
 [![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform)](LICENSE)
