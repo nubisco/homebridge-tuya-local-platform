@@ -4,22 +4,22 @@
 
   <img src="docs/public/logo.svg" alt="Nubisco" width="96" />
 
-  <br /><br />
+<br /><br />
 
-  # Homebridge Tuya Local Platform
+# Homebridge Tuya Local Platform
 
-  **Control Tuya smart devices locally over LAN through Apple HomeKit. No cloud, no latency.**
+**Control Tuya smart devices locally over LAN through Apple HomeKit. No cloud, no latency.**
 
   <br />
 
-  [![CI](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml)
-  [![GitHub release](https://img.shields.io/github/v/release/nubisco/homebridge-tuya-local-platform)](https://github.com/nubisco/homebridge-tuya-local-platform/releases)
-  [![npm version](https://img.shields.io/npm/v/@nubisco/homebridge-tuya-local-platform)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
-  [![Coverage](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform/graph/badge.svg)](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform)
-  [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-339933)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
-  [![Homebridge](https://img.shields.io/badge/homebridge-%3E%3D1.6.0-blue)](https://homebridge.io)
-  [![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform)](LICENSE)
-  [![Docs](https://img.shields.io/website?url=https%3A%2F%2Fnubisco.github.io%2Fhomebridge-tuya-local-platform%2F&label=docs)](https://nubisco.github.io/homebridge-tuya-local-platform/)
+[![CI](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/nubisco/homebridge-tuya-local-platform/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/nubisco/homebridge-tuya-local-platform)](https://github.com/nubisco/homebridge-tuya-local-platform/releases)
+[![npm version](https://img.shields.io/npm/v/@nubisco/homebridge-tuya-local-platform)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
+[![Coverage](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform/graph/badge.svg)](https://codecov.io/gh/nubisco/homebridge-tuya-local-platform)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-339933)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
+[![Homebridge](https://img.shields.io/badge/homebridge-%3E%3D1.6.0-blue)](https://homebridge.io)
+[![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform)](LICENSE)
+[![Docs](https://img.shields.io/website?url=https%3A%2F%2Fnubisco.github.io%2Fhomebridge-tuya-local-platform%2F&label=docs)](https://nubisco.github.io/homebridge-tuya-local-platform/)
 
 </div>
 
@@ -104,31 +104,31 @@ Tuya's cloud relies on remote servers — any outage, policy change, or internet
 
 ## Supported Devices
 
-| Device | Type key |
-| :----- | :------: |
-| Air Conditioner | `AirConditioner` |
-| Air Purifier | `AirPurifier` |
+| Device                                |        Type key         |
+| :------------------------------------ | :---------------------: |
+| Air Conditioner                       |    `AirConditioner`     |
+| Air Purifier                          |      `AirPurifier`      |
 | Circuit Breaker Monitor _(read-only)_ | `CircuitBreakerMonitor` |
-| Heat Convector | `Convector` |
-| Non-sequential Power Strip | `CustomMultiOutlet` |
-| Dehumidifier | `Dehumidifier` |
-| Smart Fan Regulator | `Fan` |
-| Smart Fan with Light | `FanLight` |
-| Garage Door | `GarageDoor` |
-| Mapped Heat Pump Heater | `MappedHeatPumpHeater` |
-| Smart Power Strip | `MultiOutlet` |
-| Oil Diffuser | `OilDiffuser` |
-| Smart Plug | `Outlet` |
-| Smart Plug w/ Color Lights | `RGBTWOutlet` |
-| White and Color Light Bulb | `RGBTWLight` |
-| Simple Blinds | `SimpleBlinds` |
-| Simple Dimmer | `SimpleDimmer` |
-| Simple Dimmer 2 | `SimpleDimmer2` |
-| Simple Heater | `SimpleHeater` |
-| Simple Light Bulb | `SimpleLight` |
-| Multi-Switch | `Switch` |
-| Tunable White Light Bulb | `TWLight` |
-| Water Valve | `WaterValve` |
+| Heat Convector                        |       `Convector`       |
+| Non-sequential Power Strip            |   `CustomMultiOutlet`   |
+| Dehumidifier                          |     `Dehumidifier`      |
+| Smart Fan Regulator                   |          `Fan`          |
+| Smart Fan with Light                  |       `FanLight`        |
+| Garage Door                           |      `GarageDoor`       |
+| Mapped Heat Pump Heater               | `MappedHeatPumpHeater`  |
+| Smart Power Strip                     |      `MultiOutlet`      |
+| Oil Diffuser                          |      `OilDiffuser`      |
+| Smart Plug                            |        `Outlet`         |
+| Smart Plug w/ Color Lights            |      `RGBTWOutlet`      |
+| White and Color Light Bulb            |      `RGBTWLight`       |
+| Simple Blinds                         |     `SimpleBlinds`      |
+| Simple Dimmer                         |     `SimpleDimmer`      |
+| Simple Dimmer 2                       |     `SimpleDimmer2`     |
+| Simple Heater                         |     `SimpleHeater`      |
+| Simple Light Bulb                     |      `SimpleLight`      |
+| Multi-Switch                          |        `Switch`         |
+| Tunable White Light Bulb              |        `TWLight`        |
+| Water Valve                           |      `WaterValve`       |
 
 > The `type` value is **case-insensitive**. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.
 
