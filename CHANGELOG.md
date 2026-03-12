@@ -1,3 +1,9 @@
+## [1.2.5](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.4...v1.2.5) (2026-03-12)
+
+### Bug Fixes
+
+- replace Codecov badge with self-hosted GitHub coverage badge ([a66e474](https://github.com/nubisco/homebridge-tuya-local-platform/commit/a66e4745a094d52d866f665742962b302709739b))
+
 ## [1.2.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.3...v1.2.4) (2026-03-12)
 
 ### Bug Fixes
