@@ -1,3 +1,9 @@
+## [1.2.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.3...v1.2.4) (2026-03-12)
+
+### Bug Fixes
+
+- **circuit-breaker:** resolve services from cache when accessory is not new ([bfed970](https://github.com/nubisco/homebridge-tuya-local-platform/commit/bfed9701ae1a05748746df8cb750969b72ce6609))
+
 ## [1.2.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.2...v1.2.3) (2026-03-12)
 
 ### Bug Fixes
