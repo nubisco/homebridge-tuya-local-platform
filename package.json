@@ -1,6 +1,6 @@
 {
   "name": "@nubisco/homebridge-tuya-local-platform",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Homebridge plugin to control Tuya devices locally over LAN",
   "repository": {
     "type": "git",

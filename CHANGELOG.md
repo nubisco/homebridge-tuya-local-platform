@@ -1,3 +1,9 @@
+## [1.2.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.2...v1.2.3) (2026-03-12)
+
+### Bug Fixes
+
+- **circuit-breaker:** don't set temperature to 0 when DP 103 is absent on connect ([#8](https://github.com/nubisco/homebridge-tuya-local-platform/issues/8)) ([f9a4fac](https://github.com/nubisco/homebridge-tuya-local-platform/commit/f9a4fac1abb5c4a2c726c3d381d829a692b063bc))
+
 ## [1.2.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.1...v1.2.2) (2026-03-11)
 
 ### Bug Fixes
