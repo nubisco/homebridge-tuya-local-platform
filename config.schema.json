@@ -2,7 +2,7 @@
   "pluginAlias": "TuyaLocalPlatform",
   "pluginType": "platform",
   "singular": true,
-  "headerDisplay": "For setup instructions, device configuration, and troubleshooting, visit the [documentation](https://nubisco.github.io/homebridge-tuya-local-platform/).",
+  "headerDisplay": "For setup instructions, device configuration, and troubleshooting, visit the [documentation](https://docs.nubisco.io/homebridge-tuya-local-platform/).",
   "footerDisplay": "",
   "schema": {
     "type": "object",
@@ -115,7 +115,7 @@
             "id": {
               "type": "string",
               "title": "Tuya ID",
-              "description": "If you don't have the Tuya ID or Key, follow the steps in the <a href='https://nubisco.github.io/homebridge-tuya-local-platform/get-local-keys' target='_blank'>Getting Local Keys</a> guide.",
+              "description": "If you don't have the Tuya ID or Key, follow the steps in the <a href='https://docs.nubisco.io/homebridge-tuya-local-platform/get-local-keys' target='_blank'>Getting Local Keys</a> guide.",
               "condition": {
                 "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
               }

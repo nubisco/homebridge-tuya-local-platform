@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nubisco.github.io/homebridge-tuya-local-platform/sitemap.xml
+Sitemap: https://docs.nubisco.io/homebridge-tuya-local-platform/sitemap.xml

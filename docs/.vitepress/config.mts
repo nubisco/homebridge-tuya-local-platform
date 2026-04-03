@@ -16,7 +16,7 @@ export default defineConfig({
   ],
 
   sitemap: {
-    hostname: 'https://nubisco.github.io/homebridge-tuya-local-platform/',
+    hostname: 'https://docs.nubisco.io/homebridge-tuya-local-platform/',
   },
 
   lastUpdated: true,

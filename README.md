@@ -19,7 +19,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-339933)](https://www.npmjs.com/package/@nubisco/homebridge-tuya-local-platform)
 [![Homebridge](https://img.shields.io/badge/homebridge-%3E%3D1.6.0-blue)](https://homebridge.io)
 [![license](https://img.shields.io/npm/l/@nubisco/homebridge-tuya-local-platform)](LICENSE)
-[![Docs](https://img.shields.io/website?url=https%3A%2F%2Fnubisco.github.io%2Fhomebridge-tuya-local-platform%2F&label=docs)](https://nubisco.github.io/homebridge-tuya-local-platform/)
+[![Docs](https://img.shields.io/website?url=https%3A%2F%2Fdocs.nubisco.io%2Fhomebridge-tuya-local-platform%2F&label=docs)](https://docs.nubisco.io/homebridge-tuya-local-platform/)
 
 </div>
 
@@ -75,7 +75,7 @@ Add to your Homebridge `config.json`:
 }
 ```
 
-> **Need your device credentials?** See the [Getting Local Keys](https://nubisco.github.io/homebridge-tuya-local-platform/get-local-keys) guide.
+> **Need your device credentials?** See the [Getting Local Keys](https://docs.nubisco.io/homebridge-tuya-local-platform/get-local-keys) guide.
 
 ---
 
@@ -132,19 +132,19 @@ Tuya's cloud relies on remote servers — any outage, policy change, or internet
 
 > The `type` value is **case-insensitive**. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.
 
-Full per-device configuration details and DataPoint overrides are covered in the [Supported Device Types](https://nubisco.github.io/homebridge-tuya-local-platform/device-types) docs.
+Full per-device configuration details and DataPoint overrides are covered in the [Supported Device Types](https://docs.nubisco.io/homebridge-tuya-local-platform/device-types) docs.
 
 ---
 
 ## Documentation
 
-Full documentation is available at **[nubisco.github.io/homebridge-tuya-local-platform](https://nubisco.github.io/homebridge-tuya-local-platform/)**, including:
+Full documentation is available at **[docs.nubisco.io/homebridge-tuya-local-platform](https://docs.nubisco.io/homebridge-tuya-local-platform/)**, including:
 
-- [Installation](https://nubisco.github.io/homebridge-tuya-local-platform/installation)
-- [Getting Local Keys](https://nubisco.github.io/homebridge-tuya-local-platform/get-local-keys)
-- [Configuration](https://nubisco.github.io/homebridge-tuya-local-platform/configuration)
-- [Supported Device Types](https://nubisco.github.io/homebridge-tuya-local-platform/device-types)
-- [Troubleshooting](https://nubisco.github.io/homebridge-tuya-local-platform/troubleshooting)
+- [Installation](https://docs.nubisco.io/homebridge-tuya-local-platform/installation)
+- [Getting Local Keys](https://docs.nubisco.io/homebridge-tuya-local-platform/get-local-keys)
+- [Configuration](https://docs.nubisco.io/homebridge-tuya-local-platform/configuration)
+- [Supported Device Types](https://docs.nubisco.io/homebridge-tuya-local-platform/device-types)
+- [Troubleshooting](https://docs.nubisco.io/homebridge-tuya-local-platform/troubleshooting)
 
 ---
 
