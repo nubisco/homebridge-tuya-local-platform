@@ -13,8 +13,15 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Homebridge Tuya Local Platform' }],
     ['meta', { property: 'og:description', content: 'Control Tuya devices locally over LAN through Apple HomeKit.' }],
+    [
+      'script',
+      {
+        defer: '',
+        'data-domain': 'docs.nubisco.io',
+        src: 'https://plausible.io/js/script.outbound-links.js',
+      },
+    ],
   ],
-
   sitemap: {
     hostname: 'https://docs.nubisco.io/homebridge-tuya-local-platform/',
   },
