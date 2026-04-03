@@ -1,3 +1,9 @@
+# [1.3.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.5...v1.3.0) (2026-04-03)
+
+### Features
+
+- **docs:** reference docs.nubisco.io ([635ef47](https://github.com/nubisco/homebridge-tuya-local-platform/commit/635ef476bf8003c2c63c80d6e85dc24b107ad7ad))
+
 ## [1.2.5](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.4...v1.2.5) (2026-03-12)
 
 ### Bug Fixes
