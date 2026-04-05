@@ -1,3 +1,9 @@
+# [1.4.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.3.0...v1.4.0) (2026-04-05)
+
+### Features
+
+- new nubisco analytics integration ([f0c753e](https://github.com/nubisco/homebridge-tuya-local-platform/commit/f0c753e48bd044d1b909dfbd1e244b54820fc9e0))
+
 # [1.3.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.2.5...v1.3.0) (2026-04-03)
 
 ### Features
