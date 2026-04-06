@@ -17,7 +17,7 @@ export default defineConfig({
       'script',
       {
         defer: '',
-        src: 'https://nubisco-analytics.nubisco-6bc.workers.dev/script.js',
+        src: 'https://analytics.nubisco.io/script.js',
       },
     ],
   ],
