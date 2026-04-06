@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.0...v1.4.1) (2026-04-06)
+
+### Bug Fixes
+
+- point analytics script to self-hosted NAS endpoint ([a6b6f8e](https://github.com/nubisco/homebridge-tuya-local-platform/commit/a6b6f8ef5d6120b6eb24c8909d670c17e6f75ffd))
+
 # [1.4.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.3.0...v1.4.0) (2026-04-05)
 
 ### Features
