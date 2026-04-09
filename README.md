@@ -43,13 +43,13 @@
 
 ## Quick Start
 
-**Option 1 — Homebridge UI (recommended):**
+**Option 1: Homebridge UI (recommended):**
 
 1. Open the Homebridge web UI and navigate to the **Plugins** tab.
 2. Search for `@nubisco/homebridge-tuya-local-platform` and click **Install**.
 3. Use the plugin's settings form to add your devices, then restart Homebridge.
 
-**Option 2 — Command line:**
+**Option 2: Command line:**
 
 ```bash
 npm install -g @nubisco/homebridge-tuya-local-platform
@@ -81,24 +81,24 @@ Add to your Homebridge `config.json`:
 
 ## Why Local Control?
 
-Tuya's cloud relies on remote servers — any outage, policy change, or internet disruption can leave your automations unresponsive. This plugin talks directly to your devices over your LAN using the Tuya protocol (v3.1, v3.3, v3.4):
+Tuya's cloud relies on remote servers. Any outage, policy change, or internet disruption can leave your automations unresponsive. This plugin talks directly to your devices over your LAN using the Tuya protocol (v3.1, v3.3, v3.4):
 
-- **Works offline** — your smart home keeps working even when the internet is down
-- **Instant response** — no round-trip to the cloud; commands execute in milliseconds
-- **No subscription** — zero dependency on Tuya's infrastructure or account
+- **Works offline:** your smart home keeps working even when the internet is down
+- **Instant response:** no round-trip to the cloud; commands execute in milliseconds
+- **No subscription:** zero dependency on Tuya's infrastructure or account
 
 ---
 
 ## Features
 
-- **Local LAN Control** — Communicates directly with devices; no cloud, no internet dependency
-- **23 Device Types** — Outlets, lights, dimmers, fans, sensors, climate control, and more
-- **Adaptive Lighting** — HomeKit Adaptive Lighting on compatible tunable white and RGBTW accessories
-- **Energy Monitoring** — Real-time voltage, current, and power readings on supported devices
-- **Automatic Discovery** — UDP broadcast discovery finds devices on your local network automatically
-- **Flexible Configuration** — Override DataPoints (DPs) and tune device behavior per accessory
-- **Multi-protocol Support** — Full encryption and authentication for Tuya protocol v3.1, v3.3, and v3.4
-- **TypeScript** — Fully typed codebase with comprehensive test coverage
+- **Local LAN Control:** Communicates directly with devices; no cloud, no internet dependency
+- **23 Device Types:** Outlets, lights, dimmers, fans, sensors, climate control, and more
+- **Adaptive Lighting:** HomeKit Adaptive Lighting on compatible tunable white and RGBTW accessories
+- **Energy Monitoring:** Real-time voltage, current, and power readings on supported devices
+- **Automatic Discovery:** UDP broadcast discovery finds devices on your local network automatically
+- **Flexible Configuration:** Override DataPoints (DPs) and tune device behavior per accessory
+- **Multi-protocol Support:** Full encryption and authentication for Tuya protocol v3.1, v3.3, and v3.4
+- **TypeScript:** Fully typed codebase with comprehensive test coverage
 
 ---
 
@@ -162,7 +162,7 @@ For security vulnerabilities, please see [SECURITY.md](SECURITY.md) for responsi
 
 ## Support this project
 
-If this plugin helps your Homebridge setup, consider sponsoring development. Maintaining device integrations, testing hardware, and providing support takes significant time — GitHub Sponsors helps ensure long-term maintenance.
+If this plugin helps your Homebridge setup, consider sponsoring development. Maintaining device integrations, testing hardware, and providing support takes significant time. GitHub Sponsors helps ensure long-term maintenance.
 
 - ❤️ [Sponsor via GitHub](https://github.com/sponsors/joseporto)
 - ⭐ [Star the repository](https://github.com/nubisco/homebridge-tuya-local-platform)
