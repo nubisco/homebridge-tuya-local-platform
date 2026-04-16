@@ -48,13 +48,15 @@
     "types:check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "quality:check": "npm test && npm run lint && npm run format:check && npm run types:check",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "prepare": "simple-git-hooks"
   },
   "simple-git-hooks": {
-    "pre-commit": "npm test && npx lint-staged"
+    "pre-commit": "npx lint-staged && npm run quality:check",
+    "pre-push": "npm run quality:check"
   },
   "lint-staged": {
     "src/**/*.ts": [

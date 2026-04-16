@@ -57,3 +57,13 @@ Compatibility policy:
 - Avoid unrelated refactors in the same PR
 - Update docs when behavior, configuration, or supported devices change
 - Add or update tests for non-trivial logic changes
+
+## Quality gate
+
+Before committing or pushing, run:
+
+```sh
+npm run quality:check
+```
+
+The local Git hooks are expected to enforce the same gate automatically. Commits must not proceed unless tests, linting, formatting, and type checks all pass.
