@@ -109,38 +109,64 @@ class TuyaDiscovery extends EventEmitter {
 
   private _onDgramMessage(port: number, msg: Buffer, info: dgram.RemoteInfo): void {
     const len = msg.length
-    if (len < 16 || msg.readUInt32BE(0) !== 0x000055aa || msg.readUInt32BE(len - 4) !== 0x0000aa55) {
+    if (len < 16) {
       this.log.error(`Discovery - UDP from ${info.address}:${port}`, msg.toString('hex'))
       return
     }
 
-    const size = msg.readUInt32BE(12)
-    if (len - size < 8) {
-      this.log.error(`Discovery - UDP from ${info.address}:${port} size ${len - size}`)
+    const prefix = msg.readUInt32BE(0)
+    const suffix = msg.readUInt32BE(len - 4)
+
+    let decryptedMsg: string | undefined
+    if (prefix === 0x000055aa && suffix === 0x0000aa55) {
+      const size = msg.readUInt32BE(12)
+      if (len - size < 8) {
+        this.log.error(`Discovery - UDP from ${info.address}:${port} size ${len - size}`)
+        return
+      }
+
+      const cleanMsg = msg.slice(len - size + 4, len - 8)
+
+      if (port === 6667) {
+        try {
+          const decipher = crypto.createDecipheriv('aes-128-ecb', UDP_KEY, '')
+          decryptedMsg = decipher.update(cleanMsg, undefined, 'utf8')
+          decryptedMsg += decipher.final('utf8')
+        } catch (_ex) {
+          return
+        }
+      }
+
+      if (!decryptedMsg) decryptedMsg = cleanMsg.toString('utf8')
+    } else if (prefix === 0x00006699 && suffix === 0x00009966) {
+      if (len < 50) return
+      const declaredLen = msg.readUInt32BE(14)
+      if (len !== 18 + declaredLen + 4) return
+
+      const aad = msg.slice(4, 18)
+      const iv = msg.slice(18, 30)
+      const tag = msg.slice(len - 20, len - 4)
+      const ciphertext = msg.slice(30, len - 20)
+
+      try {
+        const decipher = crypto.createDecipheriv('aes-128-gcm', UDP_KEY, iv)
+        decipher.setAuthTag(tag)
+        decipher.setAAD(aad)
+        const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+        const stripped = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
+        decryptedMsg = stripped.toString('utf8')
+      } catch (_ex) {
+        return
+      }
+    } else {
+      this.log.error(`Discovery - UDP from ${info.address}:${port}`, msg.toString('hex'))
       return
     }
 
-    const cleanMsg = msg.slice(len - size + 4, len - 8)
-
-    let decryptedMsg: string | undefined
-    if (port === 6667) {
-      try {
-        const decipher = crypto.createDecipheriv('aes-128-ecb', UDP_KEY, '')
-        decryptedMsg = decipher.update(cleanMsg, undefined, 'utf8')
-        decryptedMsg += decipher.final('utf8')
-      } catch (_ex) {
-        // Encrypted broadcast could not be decrypted — device may already
-        // have been discovered on port 6666.  Silently ignore.
-        return
-      }
-    }
-
-    if (!decryptedMsg) decryptedMsg = cleanMsg.toString('utf8')
-
     try {
-      const result = JSON.parse(decryptedMsg)
+      const result = JSON.parse(decryptedMsg!)
       if (result && result.gwId && result.ip) this._onDiscover(result)
-      else this.log.error(`Discovery - UDP from ${info.address}:${port} decrypted`, cleanMsg.toString('hex'))
+      else this.log.error(`Discovery - UDP from ${info.address}:${port} decrypted`, decryptedMsg)
     } catch (_ex) {
       this.log.error(`Discovery - Failed to parse discovery response on port ${port}: ${decryptedMsg}`)
       this.log.error(`Discovery - Failed to parse discovery raw message on port ${port}: ${msg.toString('hex')}`)

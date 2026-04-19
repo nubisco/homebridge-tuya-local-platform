@@ -45,4 +45,4 @@ If a device does not respond, try setting the `"version"` parameter explicitly:
 }
 ```
 
-Supported versions: `3.1`, `3.3`, `3.4`.
+Supported versions: `3.1`, `3.3`, `3.4`, `3.5` (experimental).

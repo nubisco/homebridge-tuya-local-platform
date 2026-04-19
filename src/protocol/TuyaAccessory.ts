@@ -50,6 +50,8 @@ class TuyaAccessory extends EventEmitter {
   private _sendCounter = 0
   private _tmpLocalKey: Buffer | null = null
   private _tmpRemoteKey: Buffer | null = null
+  private _framePrefixHex = '000055aa'
+  private _frameSuffixHex = '0000aa55'
   session_key: Buffer | null = null
 
   constructor(props: Partial<TuyaDeviceContext> & { log: Logger; fake?: boolean; port?: number; connect?: boolean }) {
@@ -67,8 +69,19 @@ class TuyaAccessory extends EventEmitter {
 
     const version = parseFloat(this.context.version || '3.1')
     const handlerName =
-      version < 3.2 ? '_msgHandler_3_1' : this.context.version === '3.4' ? '_msgHandler_3_4' : '_msgHandler_3_3'
+      version < 3.2
+        ? '_msgHandler_3_1'
+        : this.context.version === '3.4'
+          ? '_msgHandler_3_4'
+          : this.context.version === '3.5'
+            ? '_msgHandler_3_5'
+            : '_msgHandler_3_3'
     this._msgQueue = async.queue(this[handlerName].bind(this) as async.AsyncWorker<MessageTask>, 1)
+
+    if (this.context.version === '3.5') {
+      this._framePrefixHex = '00006699'
+      this._frameSuffixHex = '00009966'
+    }
 
     if (version >= 3.2) {
       this.context.pingGap = Math.min(this.context.pingGap || 9, 9)
@@ -144,7 +157,7 @@ class TuyaAccessory extends EventEmitter {
     }
 
     this._socket.on('connect', () => {
-      if (this.context.version !== '3.4') {
+      if (this.context.version !== '3.4' && this.context.version !== '3.5') {
         clearTimeout(this._socket._connTimeout!)
 
         this.connected = true
@@ -163,7 +176,7 @@ class TuyaAccessory extends EventEmitter {
       if (this.context.intro === false) return
       this.connected = true
 
-      if (this.context.version === '3.4') {
+      if (this.context.version === '3.4' || this.context.version === '3.5') {
         this._tmpLocalKey = crypto.randomBytes(16)
         const payload: SendPayload = {
           data: this._tmpLocalKey,
@@ -180,14 +193,14 @@ class TuyaAccessory extends EventEmitter {
       this._cachedBuffer = Buffer.concat([this._cachedBuffer, msg])
 
       do {
-        const startingIndex = this._cachedBuffer.indexOf('000055aa', 'hex')
+        const startingIndex = this._cachedBuffer.indexOf(this._framePrefixHex, 0, 'hex')
         if (startingIndex === -1) {
           this._cachedBuffer = Buffer.allocUnsafe(0)
           break
         }
         if (startingIndex !== 0) this._cachedBuffer = this._cachedBuffer.slice(startingIndex)
 
-        let endingIndex = this._cachedBuffer.indexOf('0000aa55', 'hex')
+        let endingIndex = this._cachedBuffer.indexOf(this._frameSuffixHex, 0, 'hex')
         if (endingIndex === -1) break
 
         endingIndex += 4
@@ -582,6 +595,8 @@ class TuyaAccessory extends EventEmitter {
       return true
     }
 
+    const isNewProtocol = this.context.version === '3.4' || this.context.version === '3.5'
+
     let result: boolean | undefined
     if (hasDataPoint) {
       const t = (Date.now() / 1000).toFixed(0)
@@ -591,21 +606,20 @@ class TuyaAccessory extends EventEmitter {
         t,
         dps,
       }
-      const data =
-        this.context.version === '3.4'
-          ? {
-              data: { ...payload, ctype: 0, t: undefined },
-              protocol: 5,
-              t,
-            }
-          : payload
+      const data = isNewProtocol
+        ? {
+            data: { ...payload, ctype: 0, t: undefined },
+            protocol: 5,
+            t,
+          }
+        : payload
       result = this._send({
         data: data as Record<string, unknown>,
-        cmd: this.context.version === '3.4' ? 13 : 7,
+        cmd: isNewProtocol ? 13 : 7,
       })
       if (result !== true) this.log.info(' Result', result)
       if (this.context.sendEmptyUpdate) {
-        this._send({ cmd: this.context.version === '3.4' ? 13 : 7 })
+        this._send({ cmd: isNewProtocol ? 13 : 7 })
       }
     } else {
       result = this._send({
@@ -613,7 +627,7 @@ class TuyaAccessory extends EventEmitter {
           gwId: this.context.id,
           devId: this.context.id,
         },
-        cmd: this.context.version === '3.4' ? 16 : 10,
+        cmd: isNewProtocol ? 16 : 10,
       })
     }
 
@@ -643,6 +657,7 @@ class TuyaAccessory extends EventEmitter {
     const version = parseFloat(this.context.version || '3.1')
     if (version < 3.2) return this._send_3_1(o)
     if (this.context.version === '3.3') return this._send_3_3(o)
+    if (this.context.version === '3.5') return this._send_3_5(o)
     return this._send_3_4(o)
   }
 
@@ -771,6 +786,189 @@ class TuyaAccessory extends EventEmitter {
 
     return this._socket.write(buffer)
   }
+
+  private _msgHandler_3_5(task: MessageTask, callback: () => void): void {
+    if (!(task.msg instanceof Buffer)) return callback()
+
+    const len = task.msg.length
+    if (len < 22 || task.msg.readUInt32BE(0) !== 0x00006699 || task.msg.readUInt32BE(len - 4) !== 0x00009966)
+      return callback()
+
+    const declaredLen = task.msg.readUInt32BE(14)
+    if (len !== 18 + declaredLen + 4) return callback()
+
+    const cmd = task.msg.readUInt32BE(10)
+
+    if (cmd === 7 || cmd === 13) return callback()
+    if (cmd === 9) {
+      if (this._socket._pinger) clearTimeout(this._socket._pinger)
+      this._socket._pinger = setTimeout(
+        () => {
+          this._socket._ping()
+        },
+        ((this.context.pingGap || 20) as number) * 1000,
+      )
+
+      return callback()
+    }
+
+    const aad = task.msg.slice(4, 18)
+    const iv = task.msg.slice(18, 30)
+    const tag = task.msg.slice(len - 20, len - 4)
+    const ciphertext = task.msg.slice(30, len - 20)
+
+    const key = this.session_key ?? this.context.key
+    let decrypted: Buffer
+    try {
+      const decipher = crypto.createDecipheriv('aes-128-gcm', toKeyBuffer(key), iv)
+      decipher.setAuthTag(tag)
+      decipher.setAAD(aad)
+      decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+    } catch (err) {
+      this.log.info(
+        `v3.5 GCM decrypt failed for ${this.context.name} cmd ${cmd}:`,
+        (err as Error)?.message,
+        task.msg.toString('hex'),
+      )
+      return callback()
+    }
+
+    const payload = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
+
+    if (cmd === 4) {
+      if (payload.length < 48) {
+        throw new Error(`v3.5 handshake cmd 4 malformed: ${decrypted.toString('hex')}`)
+      }
+      this._tmpRemoteKey = payload.subarray(0, 16)
+      const expLocalHmac = payload.slice(16, 48).toString('hex')
+      const calcLocalHmac = hmac(this._tmpLocalKey!, this.context.key).toString('hex')
+      if (expLocalHmac !== calcLocalHmac) {
+        throw new Error(
+          `HMAC mismatch(keys): expected ${expLocalHmac}, was ${calcLocalHmac}. ${decrypted.toString('hex')}`,
+        )
+      }
+
+      this._send({
+        data: hmac(this._tmpRemoteKey!, this.context.key),
+        encrypted: true,
+        cmd: 5,
+      })
+      clearTimeout(this._socket._connTimeout!)
+
+      const xored = Buffer.alloc(16)
+      for (let i = 0; i < 16; i++) xored[i] = this._tmpLocalKey![i] ^ this._tmpRemoteKey![i]
+      this.session_key = encrypt35Block(xored, toKeyBuffer(this.context.key), this._tmpLocalKey!.slice(0, 12))
+
+      this.connected = true
+      this.update()
+      this.emit('connect')
+      if (this._socket._pinger) clearTimeout(this._socket._pinger)
+      this._socket._pinger = setTimeout(() => this._socket._ping(), 1000)
+
+      return callback()
+    }
+
+    let body = payload
+    if (body.length >= 15 && body.slice(0, 3).equals(Buffer.from('3.5'))) {
+      body = body.slice(15)
+    }
+
+    let parsedPayload: any
+    try {
+      const res = JSON.parse(body.toString('utf8'))
+      if (res && typeof res === 'object' && 'data' in res) {
+        const resdata = res.data
+        if (resdata && typeof resdata === 'object') resdata.t = res.t
+        parsedPayload = resdata
+      } else {
+        parsedPayload = res
+      }
+    } catch (_) {
+      parsedPayload = body
+    }
+
+    if (cmd === 10 && parsedPayload === 'json obj data unvalid') {
+      this.log.info(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
+      this.emit('change', {}, this.state)
+      return callback()
+    }
+
+    switch (cmd) {
+      case 8:
+      case 10:
+      case 16:
+        if (parsedPayload) {
+          if (parsedPayload.dps) {
+            this._change(parsedPayload.dps)
+          } else {
+            this.log.info(`Malformed message from ${this.context.name} with command ${cmd}:`, body.toString('utf8'))
+            this.log.info(
+              `Raw message from ${this.context.name} (${this.context.version}) with command ${cmd}:`,
+              task.msg.toString('hex'),
+            )
+          }
+        }
+        break
+
+      default:
+        this.log.info(`Odd message from ${this.context.name} with command ${cmd}:`, body.toString('utf8'))
+        this.log.info(
+          `Raw message from ${this.context.name} (${this.context.version}) with command ${cmd}:`,
+          task.msg.toString('hex'),
+        )
+    }
+
+    callback()
+  }
+
+  private _send_3_5(o: SendPayload): boolean {
+    const { cmd, data: _data } = { ...o }
+    let data = _data
+
+    if (!data) {
+      data = Buffer.allocUnsafe(0)
+    }
+    if (!(data instanceof Buffer)) {
+      if (typeof data !== 'string') {
+        data = JSON.stringify(data)
+      }
+      data = Buffer.from(data as string)
+    }
+
+    if (cmd === 13) {
+      const prefixed = Buffer.alloc((data as Buffer).length + 15)
+      Buffer.from('3.5').copy(prefixed, 0)
+      ;(data as Buffer).copy(prefixed, 15)
+      data = prefixed
+    }
+
+    if ((cmd !== 7 && cmd !== 13) || data) {
+      this._sendCounter++
+    }
+
+    const key = this.session_key ?? this.context.key
+    const iv = crypto.randomBytes(12)
+    const plaintext = data as Buffer
+    const payloadLen = plaintext.length + 28
+
+    const header = Buffer.alloc(18)
+    header.writeUInt32BE(0x00006699, 0)
+    header.writeUInt16BE(0, 4)
+    header.writeUInt32BE(this._sendCounter, 6)
+    header.writeUInt32BE(cmd, 10)
+    header.writeUInt32BE(payloadLen, 14)
+
+    const { ciphertext, tag } = encrypt35(plaintext, toKeyBuffer(key), iv, header.slice(4, 18))
+
+    const buffer = Buffer.alloc(18 + payloadLen + 4)
+    header.copy(buffer, 0)
+    iv.copy(buffer, 18)
+    ciphertext.copy(buffer, 30)
+    tag.copy(buffer, 30 + ciphertext.length)
+    buffer.writeUInt32BE(0x00009966, buffer.length - 4)
+
+    return this._socket.write(buffer)
+  }
 }
 
 const encrypt34 = (data: Buffer, encryptKey: string | Buffer): Buffer => {
@@ -779,6 +977,20 @@ const encrypt34 = (data: Buffer, encryptKey: string | Buffer): Buffer => {
   const encrypted = cipher.update(data)
   cipher.final()
   return encrypted
+}
+
+const toKeyBuffer = (key: string | Buffer): Buffer => (Buffer.isBuffer(key) ? key : Buffer.from(key, 'utf8'))
+
+const encrypt35 = (plaintext: Buffer, key: Buffer, iv: Buffer, aad: Buffer): { ciphertext: Buffer; tag: Buffer } => {
+  const cipher = crypto.createCipheriv('aes-128-gcm', key, iv)
+  cipher.setAAD(aad)
+  const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()])
+  return { ciphertext, tag: cipher.getAuthTag() }
+}
+
+const encrypt35Block = (plaintext: Buffer, key: Buffer, iv: Buffer): Buffer => {
+  const cipher = crypto.createCipheriv('aes-128-gcm', key, iv)
+  return Buffer.concat([cipher.update(plaintext), cipher.final()])
 }
 
 const hmac = (data: Buffer, hmacKey: string | Buffer): Buffer => {
