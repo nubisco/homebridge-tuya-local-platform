@@ -1,3 +1,9 @@
+# [1.5.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.1...v1.5.0) (2026-07-20)
+
+### Features
+
+- **docs:** new plugin icon and favicon ([9d0008a](https://github.com/nubisco/homebridge-tuya-local-platform/commit/9d0008aa1fb37b5495ad308bd7894ef6ac4fd9a3))
+
 ## [1.4.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.0...v1.4.1) (2026-04-06)
 
 ### Bug Fixes
