@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.0...v1.5.1) (2026-08-05)
+
+### Bug Fixes
+
+- **docs:** restore the Homebridge-appropriate branding ([15f3025](https://github.com/nubisco/homebridge-tuya-local-platform/commit/15f3025578ee82c02e2e5bd2a3ebae42ca5171f0))
+
 # [1.5.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.1...v1.5.0) (2026-07-20)
 
 ### Features
