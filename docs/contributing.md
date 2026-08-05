@@ -205,7 +205,7 @@ When opening an issue, include:
 - **Device information**:
   - Device type (from your config)
   - Manufacturer and model
-  - Tuya protocol version (3.1, 3.3, or 3.4)
+  - Tuya protocol version (3.1, 3.3, 3.4, or 3.5)
 - **Relevant Homebridge log output** (enable debug mode if needed)
 - **Device signature** (DPS state from logs) — redact device ID and key
 
