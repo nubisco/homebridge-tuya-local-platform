@@ -1,0 +1,43 @@
+import BaseAccessory from './Base.accessory';
+import type { DPSState, DPSValue, HomebridgeCallback } from '../types';
+declare class ConvectorAccessory extends BaseAccessory {
+    static getCategory(Categories: any): number;
+    dpActive: string;
+    dpDesiredTemperature: string;
+    dpCurrentTemperature: string;
+    dpRotationSpeed: string;
+    dpChildLock: string;
+    dpTemperatureDisplayUnits: string;
+    cmdLow: string;
+    cmdHigh: string;
+    enableFlipSpeedSlider: boolean;
+    characteristicActive: any;
+    characteristicHeatingThresholdTemperature: any;
+    characteristicRotationSpeed: any;
+    _hkRotationSpeed?: number;
+    constructor(...props: any[]);
+    _registerPlatformAccessory(): void;
+    _registerCharacteristics(dps: DPSState): void;
+    getActive(callback: HomebridgeCallback): void;
+    _getActive(dp: DPSValue): number;
+    setActive(value: DPSValue, callback: HomebridgeCallback): void;
+    getLockPhysicalControls(callback: HomebridgeCallback): void;
+    _getLockPhysicalControls(dp: DPSValue): number;
+    setLockPhysicalControls(value: DPSValue, callback: HomebridgeCallback): void;
+    getCurrentHeaterCoolerState(callback: HomebridgeCallback): void;
+    _getCurrentHeaterCoolerState(dps: DPSState): number;
+    getTargetHeaterCoolerState(callback: HomebridgeCallback): void;
+    _getTargetHeaterCoolerState(): number;
+    setTargetHeaterCoolerState(value: DPSValue, callback: HomebridgeCallback): void;
+    setTargetThresholdTemperature(value: DPSValue, callback: HomebridgeCallback): void;
+    getTemperatureDisplayUnits(callback: HomebridgeCallback): void;
+    _getTemperatureDisplayUnits(dp: DPSValue): number;
+    setTemperatureDisplayUnits(value: DPSValue, callback: HomebridgeCallback): void;
+    getRotationSpeed(callback: HomebridgeCallback): void;
+    _getRotationSpeed(dps: DPSState): number;
+    setRotationSpeed(value: number, callback: HomebridgeCallback): void;
+    convertRotationSpeedFromTuyaToHomeKit(value: DPSValue): number;
+    convertRotationSpeedFromHomeKitToTuya(value: number): string;
+}
+export default ConvectorAccessory;
+//# sourceMappingURL=Convector.accessory.d.ts.map

@@ -1,0 +1,43 @@
+import type { PlatformAccessory, Service as HAPService, Characteristic as HAPCharacteristic, WithUUID } from 'homebridge';
+import type TuyaAccessory from '../protocol/TuyaAccessory';
+import type { DPSState, DPSValue, HAPContext, HomebridgeCallback, HSBColor } from '../types';
+declare class BaseAccessory {
+    platform: any;
+    accessory: PlatformAccessory;
+    device: TuyaAccessory;
+    log: any;
+    hap: HAPContext;
+    colorFunction?: string;
+    dpColor: string;
+    private __ret?;
+    constructor(...props: any[]);
+    _registerPlatformAccessory(): void;
+    _registerCharacteristics(_dps: DPSState): void;
+    _checkServiceName(service: HAPService, name: string): void;
+    _removeCharacteristic(service: HAPService, characteristicType: WithUUID<new () => HAPCharacteristic>): void;
+    _getCustomDP(numeral: unknown): string | false;
+    _coerceBoolean(b: unknown, defaultValue?: boolean): boolean;
+    getState(dp: string | string[], callback: HomebridgeCallback): void;
+    setState(dp: string, value: DPSValue, callback?: HomebridgeCallback): void;
+    setMultiStateLegacy(dps: DPSState, callback: HomebridgeCallback): void;
+    setMultiState(dps: DPSState, callback?: HomebridgeCallback): void;
+    getDividedState(dp: string, divisor: number, callback: HomebridgeCallback): void;
+    _getDividedState(dp: number | string, divisor: number): number;
+    _detectColorFunction(value: string | undefined): void;
+    convertBrightnessFromHomeKitToTuya(value: number): number;
+    convertBrightnessFromTuyaToHomeKit(value: number | string): number;
+    convertRotationSpeedFromHomeKitToTuya(value: number): number | string;
+    convertRotationSpeedFromTuyaToHomeKit(value: number | string): number;
+    convertColorTemperatureFromHomeKitToTuya(value: number): number;
+    convertColorTemperatureFromTuyaToHomeKit(value: number | string): number;
+    convertColorFromHomeKitToTuya(value: Partial<HSBColor>, dpValue?: string): string;
+    convertColorFromHomeKitToTuya_HEXHSB(value: Partial<HSBColor>, dpValue?: string): string;
+    convertColorFromHomeKitToTuya_HSB(value: Partial<HSBColor>, dpValue?: string): string;
+    convertColorFromTuyaToHomeKit(value: string): HSBColor;
+    convertColorFromTuya_HEXHSB_ToHomeKit(value: string): HSBColor;
+    convertColorFromTuya_HSB_ToHomeKit(value: string): HSBColor;
+    convertHomeKitColorTemperatureToHomeKitColor(value: number): HSBColor;
+    adaptiveLightingSupport(): boolean;
+}
+export default BaseAccessory;
+//# sourceMappingURL=Base.accessory.d.ts.map
