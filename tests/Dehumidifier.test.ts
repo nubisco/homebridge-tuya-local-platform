@@ -69,6 +69,18 @@ describe('DehumidifierAccessory', () => {
       // Non-overridden ones fall through to String(defaultDps[name])
       expect(acc.getDp('Mode')).toBe('2')
     })
+
+    it('should honour the documented dp* override convention', () => {
+      const { acc } = createDehumidifier({ dpCurrentHumidity: '3', dpActive: 10 })
+      expect(acc.getDp('CurrentHumidity')).toBe('3')
+      expect(acc.getDp('Active')).toBe(10)
+      expect(acc.getDp('Mode')).toBe('2')
+    })
+
+    it('should prefer dp* over the legacy dps* spelling', () => {
+      const { acc } = createDehumidifier({ dpActive: 10, dpsActive: 20 })
+      expect(acc.getDp('Active')).toBe(10)
+    })
   })
 
   describe('_getActive', () => {

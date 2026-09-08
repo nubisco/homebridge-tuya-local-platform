@@ -1,3 +1,27 @@
+## [1.5.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.2...v1.5.3) (2026-09-08)
+
+### Bug Fixes
+
+- **dehumidifier:** apply the documented dp\* DataPoint overrides ([#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30)) ([05dcd62](https://github.com/nubisco/homebridge-tuya-local-platform/commit/05dcd6209c668d1ec3c88673c521949007d31f49))
+
+## [1.5.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.1...v1.5.2) (2026-09-08)
+
+### Bug Fixes
+
+- **config:** show scaleBrightness for every type that supports brightness ([#29](https://github.com/nubisco/homebridge-tuya-local-platform/issues/29)) ([baa4c9a](https://github.com/nubisco/homebridge-tuya-local-platform/commit/baa4c9a64a63f1e05c1fa9e839749137ecd86690))
+
+## [1.5.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.0...v1.5.1) (2026-08-05)
+
+### Bug Fixes
+
+- **docs:** restore the Homebridge-appropriate branding ([15f3025](https://github.com/nubisco/homebridge-tuya-local-platform/commit/15f3025578ee82c02e2e5bd2a3ebae42ca5171f0))
+
+# [1.5.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.1...v1.5.0) (2026-07-20)
+
+### Features
+
+- **docs:** new plugin icon and favicon ([9d0008a](https://github.com/nubisco/homebridge-tuya-local-platform/commit/9d0008aa1fb37b5495ad308bd7894ef6ac4fd9a3))
+
 ## [1.4.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.4.0...v1.4.1) (2026-04-06)
 
 ### Bug Fixes
