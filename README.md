@@ -35,6 +35,7 @@
   - [Supported Devices](#supported-devices)
   - [Documentation](#documentation)
   - [Contributing](#contributing)
+  - [Contributors](#contributors)
   - [Security](#security)
   - [Support this project](#support-this-project)
   - [License](#license)
@@ -151,6 +152,18 @@ Full documentation is available at **[docs.nubisco.io/homebridge-tuya-local-plat
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding standards, and pull request guidelines.
+
+---
+
+## Contributors
+
+Thank you to everyone who has contributed to this plugin. Protocol support, device types and bug fixes here come from people testing against hardware we do not own, and the plugin is better for it.
+
+<a href="https://github.com/nubisco/homebridge-tuya-local-platform/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=nubisco/homebridge-tuya-local-platform" alt="Contributors to homebridge-tuya-local-platform" />
+</a>
+
+Reporting a device that does not work, or confirming that one does, is a real contribution too. See [open issues](https://github.com/nubisco/homebridge-tuya-local-platform/issues).
 
 ---
 
