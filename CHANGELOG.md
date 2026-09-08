@@ -1,3 +1,9 @@
+## [1.5.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.2...v1.5.3) (2026-09-08)
+
+### Bug Fixes
+
+- **dehumidifier:** apply the documented dp\* DataPoint overrides ([#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30)) ([05dcd62](https://github.com/nubisco/homebridge-tuya-local-platform/commit/05dcd6209c668d1ec3c88673c521949007d31f49))
+
 ## [1.5.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.1...v1.5.2) (2026-09-08)
 
 ### Bug Fixes
