@@ -300,7 +300,12 @@ class DehumidifierAccessory extends BaseAccessory {
   }
 
   getDp(name: string): string {
-    return this.device.context['dps' + name] ? this.device.context['dps' + name] : String(this.defaultDps[name])
+    // Config overrides use the documented `dp*` convention (`dpCurrentHumidity`,
+    // `dpActive`, ...) that config.schema.json exposes and every other accessory
+    // reads. This looked up `dps*` instead, so no documented override ever applied
+    // here. `dps*` stays supported so configs that worked around it keep working.
+    const override = this.device.context['dp' + name] || this.device.context['dps' + name]
+    return override || String(this.defaultDps[name])
   }
 }
 
