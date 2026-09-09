@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.0...v1.6.1) (2026-09-09)
+
+### Bug Fixes
+
+- **repo:** remove a tracked node_modules symlink from the repository ([#36](https://github.com/nubisco/homebridge-tuya-local-platform/issues/36)) ([d27d04f](https://github.com/nubisco/homebridge-tuya-local-platform/commit/d27d04f05a7dcf27fb3c945f7a2b62930efd8fa4))
+
 # [1.6.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.4...v1.6.0) (2026-09-09)
 
 ### Features
