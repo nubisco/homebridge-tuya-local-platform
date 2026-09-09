@@ -11,7 +11,7 @@ Control Tuya-based smart devices locally over LAN through Apple HomeKit.
 - **Apple HomeKit integration** — full support via Homebridge
 - **Adaptive Lighting** — supported on compatible light accessories
 - **Energy monitoring** — power, voltage, and current readings on supported outlets
-- **Multi-protocol** — supports Tuya protocol versions 3.1, 3.3, and 3.4
+- **Multi-protocol** — supports Tuya protocol versions 3.1, 3.3, 3.4, and 3.5 (experimental)
 
 ## Supported Device Types
 

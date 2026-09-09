@@ -40,6 +40,37 @@ function buildEncryptedDiscoveryFrame(payload: Record<string, unknown>): Buffer 
   return buf
 }
 
+/**
+ * Build a v3.5 GCM-encrypted discovery broadcast (0x00006699 / 0x00009966 magic).
+ */
+function buildV35DiscoveryFrame(payload: Record<string, unknown>): Buffer {
+  const retcode = Buffer.alloc(4, 0)
+  const json = Buffer.from(JSON.stringify(payload), 'utf8')
+  const plaintext = Buffer.concat([retcode, json])
+  const iv = crypto.randomBytes(12)
+  const payloadLen = plaintext.length + 28
+
+  const header = Buffer.alloc(18)
+  header.writeUInt32BE(0x00006699, 0)
+  header.writeUInt16BE(0, 4)
+  header.writeUInt32BE(0, 6) // seqno
+  header.writeUInt32BE(0x13, 10) // cmd = UDP_NEW
+  header.writeUInt32BE(payloadLen, 14)
+
+  const cipher = crypto.createCipheriv('aes-128-gcm', UDP_KEY, iv)
+  cipher.setAAD(header.slice(4, 18))
+  const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()])
+  const tag = cipher.getAuthTag()
+
+  const frame = Buffer.alloc(18 + payloadLen + 4)
+  header.copy(frame, 0)
+  iv.copy(frame, 18)
+  ciphertext.copy(frame, 30)
+  tag.copy(frame, 30 + ciphertext.length)
+  frame.writeUInt32BE(0x00009966, frame.length - 4)
+  return frame
+}
+
 // Mock dgram so no actual UDP sockets are opened
 vi.mock('dgram', () => {
   const { EventEmitter } = require('events')
@@ -153,6 +184,39 @@ describe('TuyaDiscovery', () => {
 
       expect(discoverSpy).toHaveBeenCalledTimes(1)
       expect(discoverSpy.mock.calls[0][0].id).toBe('enc-device')
+      discovery.stop()
+    })
+
+    it('should parse v3.5 GCM-encrypted discovery broadcasts on port 6667', () => {
+      discovery.start({ log, ids: ['v35-device'] })
+      const discoverSpy = vi.fn()
+      discovery.on('discover', discoverSpy)
+
+      const payload = { gwId: 'v35-device', ip: '192.168.1.80', version: '3.5' }
+      const frame = buildV35DiscoveryFrame(payload)
+      const info = { address: '192.168.1.80', port: 6667, family: 'IPv4', size: frame.length }
+
+      ;(discovery as any)._onDgramMessage(6667, frame, info)
+
+      expect(discoverSpy).toHaveBeenCalledTimes(1)
+      expect(discoverSpy.mock.calls[0][0].id).toBe('v35-device')
+      expect(discoverSpy.mock.calls[0][0].version).toBe('3.5')
+      discovery.stop()
+    })
+
+    it('should silently drop v3.5 frames with a bad GCM auth tag', () => {
+      discovery.start({ log })
+      const discoverSpy = vi.fn()
+      discovery.on('discover', discoverSpy)
+
+      const frame = buildV35DiscoveryFrame({ gwId: 'x', ip: '1.2.3.4' })
+      frame[frame.length - 5] ^= 0xff // corrupt tag
+
+      const info = { address: '1.2.3.4', port: 6667, family: 'IPv4', size: frame.length }
+      ;(discovery as any)._onDgramMessage(6667, frame, info)
+
+      expect(discoverSpy).not.toHaveBeenCalled()
+      expect(log.error).not.toHaveBeenCalled()
       discovery.stop()
     })
 

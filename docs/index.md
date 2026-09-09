@@ -34,7 +34,7 @@ features:
     details: Outlets, lights, dimmers, fans, blinds, climate, garage doors, valves, and more. Each with dedicated HomeKit mapping.
   - icon:
       src: /tuya-logo.svg
-    title: Tuya Protocol v3.1 / 3.3 / 3.4
+    title: Tuya Protocol v3.1 / 3.3 / 3.4 / 3.5
     details: Full encryption and authentication support across all major Tuya LAN protocol versions.
   - icon:
       src: /bulb.svg

@@ -4,7 +4,7 @@ This file helps AI coding agents understand the structure, conventions, and work
 
 ## Project Overview
 
-**@nubisco/homebridge-tuya-local-platform** is a Homebridge plugin that controls Tuya-based smart devices over LAN without cloud dependency. It communicates directly with devices using their Device ID and Local Key via the Tuya protocol (versions 3.1, 3.3, 3.4).
+**@nubisco/homebridge-tuya-local-platform** is a Homebridge plugin that controls Tuya-based smart devices over LAN without cloud dependency. It communicates directly with devices using their Device ID and Local Key via the Tuya protocol (versions 3.1, 3.3, 3.4, 3.5).
 
 - **Plugin name**: `homebridge-tuya-local-platform`
 - **Platform alias**: `TuyaLocalPlatform` (used in Homebridge `config.json` and `config.schema.json`)

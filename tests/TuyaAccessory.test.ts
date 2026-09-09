@@ -401,5 +401,119 @@ describe('TuyaAccessory', () => {
       const acc = new TuyaAccessory(makeProps({ version: '3.4' }) as any)
       expect(acc).toBeInstanceOf(TuyaAccessory)
     })
+
+    it('selects _msgHandler_3_5 for version 3.5', () => {
+      const acc = new TuyaAccessory(makeProps({ version: '3.5' }) as any)
+      expect(acc).toBeInstanceOf(TuyaAccessory)
+    })
+  })
+
+  // ── v3.5 protocol ─────────────────────────────────────────────────────────────
+  describe('v3.5 protocol', () => {
+    const crypto = require('crypto')
+
+    function decryptV35Frame(frame: Buffer, key: Buffer) {
+      expect(frame.readUInt32BE(0)).toBe(0x00006699)
+      expect(frame.readUInt32BE(frame.length - 4)).toBe(0x00009966)
+
+      const seqno = frame.readUInt32BE(6)
+      const cmd = frame.readUInt32BE(10)
+      const declaredLen = frame.readUInt32BE(14)
+      expect(frame.length).toBe(18 + declaredLen + 4)
+
+      const aad = frame.slice(4, 18)
+      const iv = frame.slice(18, 30)
+      const tag = frame.slice(frame.length - 20, frame.length - 4)
+      const ciphertext = frame.slice(30, frame.length - 20)
+
+      const decipher = crypto.createDecipheriv('aes-128-gcm', key, iv)
+      decipher.setAuthTag(tag)
+      decipher.setAAD(aad)
+      const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+      return { seqno, cmd, plaintext }
+    }
+
+    function encryptV35Frame(cmd: number, seqno: number, plaintext: Buffer, key: Buffer) {
+      const iv = crypto.randomBytes(12)
+      const payloadLen = plaintext.length + 28
+
+      const header = Buffer.alloc(18)
+      header.writeUInt32BE(0x00006699, 0)
+      header.writeUInt16BE(0, 4)
+      header.writeUInt32BE(seqno, 6)
+      header.writeUInt32BE(cmd, 10)
+      header.writeUInt32BE(payloadLen, 14)
+
+      const cipher = crypto.createCipheriv('aes-128-gcm', key, iv)
+      cipher.setAAD(header.slice(4, 18))
+      const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()])
+      const tag = cipher.getAuthTag()
+
+      const frame = Buffer.alloc(18 + payloadLen + 4)
+      header.copy(frame, 0)
+      iv.copy(frame, 18)
+      ciphertext.copy(frame, 30)
+      tag.copy(frame, 30 + ciphertext.length)
+      frame.writeUInt32BE(0x00009966, frame.length - 4)
+      return frame
+    }
+
+    it('emits a 6699-framed GCM frame on a v3.5 DP set command', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key, connect: true }) as any)
+      ;(acc as any).connected = true
+
+      acc.update({ '1': true })
+
+      expect(lastSocket.write).toHaveBeenCalledTimes(1)
+      const frame: Buffer = lastSocket.write.mock.calls[0][0]
+
+      const { cmd, plaintext } = decryptV35Frame(frame, Buffer.from(key, 'utf8'))
+      expect(cmd).toBe(0x0d)
+      expect(plaintext.slice(0, 3).toString()).toBe('3.5')
+      expect(plaintext.slice(3, 15).equals(Buffer.alloc(12, 0))).toBe(true)
+
+      const body = JSON.parse(plaintext.slice(15).toString('utf8'))
+      expect(body.protocol).toBe(5)
+      expect(body.data.dps).toEqual({ '1': true })
+      expect(body.data.ctype).toBe(0)
+    })
+
+    it('decodes an incoming v3.5 status frame and emits change', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key }) as any)
+      ;(acc as any).session_key = Buffer.from(key, 'utf8')
+
+      const changeHandler = vi.fn()
+      acc.on('change', changeHandler)
+
+      const retcode = Buffer.alloc(4, 0)
+      const json = Buffer.from(JSON.stringify({ dps: { '1': true, '2': false } }), 'utf8')
+      const plaintext = Buffer.concat([retcode, json])
+      const frame = encryptV35Frame(0x08, 1, plaintext, Buffer.from(key, 'utf8'))
+
+      ;(acc as any)._msgHandler_3_5({ msg: frame }, () => {})
+
+      expect(changeHandler).toHaveBeenCalledTimes(1)
+      expect(changeHandler.mock.calls[0][0]).toEqual({ '1': true, '2': false })
+    })
+
+    it('silently drops a v3.5 frame with an invalid GCM auth tag', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key }) as any)
+      ;(acc as any).session_key = Buffer.from(key, 'utf8')
+
+      const handler = vi.fn()
+      acc.on('change', handler)
+
+      const frame = encryptV35Frame(0x08, 1, Buffer.from('{"dps":{"1":true}}', 'utf8'), Buffer.from(key, 'utf8'))
+      frame[frame.length - 5] ^= 0xff // corrupt auth tag
+
+      const callback = vi.fn()
+      ;(acc as any)._msgHandler_3_5({ msg: frame }, callback)
+
+      expect(handler).not.toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
   })
 })
