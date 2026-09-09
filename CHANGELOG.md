@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.1...v1.7.0) (2026-09-09)
+
+### Features
+
+- **config:** add a per-device disabled option ([#35](https://github.com/nubisco/homebridge-tuya-local-platform/issues/35)) ([ac197e5](https://github.com/nubisco/homebridge-tuya-local-platform/commit/ac197e5f9b1582a4d8a76ea2a6554c4ab31d38b2)), closes [#24](https://github.com/nubisco/homebridge-tuya-local-platform/issues/24)
+- **protocol:** report a device outage once instead of once per retry ([#34](https://github.com/nubisco/homebridge-tuya-local-platform/issues/34)) ([d834123](https://github.com/nubisco/homebridge-tuya-local-platform/commit/d8341230fd09d66d4a37da2d79dc2c8ce8588cc1)), closes [#26](https://github.com/nubisco/homebridge-tuya-local-platform/issues/26)
+
 ## [1.6.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.0...v1.6.1) (2026-09-09)
 
 ### Bug Fixes
