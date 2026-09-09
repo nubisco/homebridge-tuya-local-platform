@@ -1,3 +1,9 @@
+# [1.6.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.4...v1.6.0) (2026-09-09)
+
+### Features
+
+- **platform:** connect directly to devices configured with an IP and version ([#33](https://github.com/nubisco/homebridge-tuya-local-platform/issues/33)) ([e166668](https://github.com/nubisco/homebridge-tuya-local-platform/commit/e1666682c9f98c48da2add64d8f216c13f749404)), closes [#23](https://github.com/nubisco/homebridge-tuya-local-platform/issues/23)
+
 ## [1.5.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.3...v1.5.4) (2026-09-09)
 
 ### Bug Fixes
