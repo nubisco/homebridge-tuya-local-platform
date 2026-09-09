@@ -67,7 +67,10 @@ module.exports = function (homebridge: any): void {
     hap: {
       Characteristic,
       Service,
-      Accessory: { Categories },
+      // Homebridge 2.x / modern hap-nodejs exports Categories on hap itself.
+      // Accessory.Categories is undefined there and crashes addAccessory with:
+      //   TypeError: Cannot read properties of undefined (reading 'FAN')
+      Categories,
       uuid: UUID,
     },
   } = homebridge)
@@ -93,9 +96,12 @@ class TuyaLocalPlatform {
       return
     }
 
-    this._expectedUUIDs = this.config.devices.map((device: TuyaDeviceConfig) =>
-      UUID.generate(PLUGIN_NAME + (device.fake ? ':fake:' : ':') + device.id),
-    )
+    // A disabled device is deliberately left out of the expected set, so its cached
+    // accessory is dropped by configureAccessory instead of lingering in HomeKit as an
+    // unresponsive tile.
+    this._expectedUUIDs = this.config.devices
+      .filter((device: TuyaDeviceConfig) => !device.disabled)
+      .map((device: TuyaDeviceConfig) => UUID.generate(PLUGIN_NAME + (device.fake ? ':fake:' : ':') + device.id))
 
     this.api.on('didFinishLaunching', () => {
       this.discoverDevices()
@@ -117,6 +123,9 @@ class TuyaLocalPlatform {
         /* ignore */
       }
 
+      if (device.disabled)
+        return this.log.info('Skipping disabled device %s (%s).', device.name || 'Unnamed device', device.id)
+
       if (!device.type)
         return this.log.error("%s (%s) doesn't have a type defined.", device.name || 'Unnamed device', device.id)
       if (!CLASS_DEF[device.type.toLowerCase()])
@@ -127,34 +136,54 @@ class TuyaLocalPlatform {
     })
 
     const deviceIds = Object.keys(devices)
-    if (deviceIds.length === 0) return this.log.error('No valid configured devices found.')
+    if (deviceIds.length === 0) {
+      if (this.config.devices.some((device: TuyaDeviceConfig) => device.disabled) && fakeDevices.length === 0)
+        return this.log.info('All configured devices are disabled.')
 
-    this.log.info('Starting discovery...')
+      return this.log.error('No valid configured devices found.')
+    }
 
-    TuyaDiscovery.start({ ids: deviceIds, log: this.log }).on('discover', (config: any) => {
-      if (!config || !config.id) return
-      if (!devices[config.id])
-        return this.log.warn('Discovered a device that has not been configured yet (%s@%s).', config.id, config.ip)
+    // A device configured with both an IP and a protocol version has nothing left to
+    // learn from UDP discovery, so it connects straight away instead of waiting out the
+    // discovery window. This is what makes routed setups work: discovery relies on UDP
+    // broadcasts, and those do not cross subnets, so a device on a separate IoT VLAN can
+    // never be discovered no matter how long we wait for it.
+    //
+    // A device with an IP but no version still goes through discovery, because discovery
+    // is where the version is learned. Guessing is worse than waiting here: the fallback
+    // is 3.1, and speaking 3.1 to a 3.3 device fails without saying why.
+    const directIds = deviceIds.filter((deviceId) => devices[deviceId].ip && devices[deviceId].version)
+    const discoveryIds = deviceIds.filter((deviceId) => !directIds.includes(deviceId))
 
-      connectedDevices.push(config.id)
+    directIds.forEach((deviceId) => {
+      connectedDevices.push(deviceId)
 
-      this.log.info(
-        'Discovered %s (%s) identified as %s (%s)',
-        devices[config.id].name,
-        config.id,
-        devices[config.id].type,
-        config.version,
-      )
+      this.log.info('Connecting directly to %s (%s) via %s.', devices[deviceId].name, deviceId, devices[deviceId].ip)
 
-      const device = new TuyaAccessory({
-        ...devices[config.id],
-        ...config,
-        log: this.log,
-        UUID: UUID.generate(PLUGIN_NAME + ':' + config.id),
-        connect: false,
-      })
-      this.addAccessory(device)
+      this.addDeviceAccessory(devices[deviceId], deviceId)
     })
+
+    if (discoveryIds.length > 0) {
+      this.log.info('Starting discovery...')
+
+      TuyaDiscovery.start({ ids: discoveryIds, log: this.log }).on('discover', (config: any) => {
+        if (!config || !config.id) return
+        if (!devices[config.id])
+          return this.log.warn('Discovered a device that has not been configured yet (%s@%s).', config.id, config.ip)
+
+        connectedDevices.push(config.id)
+
+        this.log.info(
+          'Discovered %s (%s) identified as %s (%s)',
+          devices[config.id].name,
+          config.id,
+          devices[config.id].type,
+          config.version,
+        )
+
+        this.addDeviceAccessory({ ...devices[config.id], ...config }, config.id, 'discovered accessory')
+      })
+    }
 
     fakeDevices.forEach((config) => {
       this.log.info('Adding fake device: %s', config.name)
@@ -168,8 +197,11 @@ class TuyaLocalPlatform {
       )
     })
 
+    // Nothing is waiting on discovery, so there is no window to time out.
+    if (discoveryIds.length === 0) return
+
     setTimeout(() => {
-      deviceIds.forEach((deviceId) => {
+      discoveryIds.forEach((deviceId) => {
         if (connectedDevices.includes(deviceId)) return
 
         if (devices[deviceId].ip) {
@@ -180,18 +212,26 @@ class TuyaLocalPlatform {
             devices[deviceId].ip,
           )
 
-          const device = new TuyaAccessory({
-            ...devices[deviceId],
-            log: this.log,
-            UUID: UUID.generate(PLUGIN_NAME + ':' + deviceId),
-            connect: false,
-          })
-          this.addAccessory(device)
+          this.addDeviceAccessory(devices[deviceId], deviceId)
         } else {
           this.log.warn('Failed to discover %s (%s) in time but will keep looking.', devices[deviceId].name, deviceId)
         }
       })
     }, 60000)
+  }
+
+  addDeviceAccessory(config: TuyaDeviceConfig & { name: string }, deviceId: string, label: string = 'accessory'): void {
+    try {
+      const device = new TuyaAccessory({
+        ...config,
+        log: this.log,
+        UUID: UUID.generate(PLUGIN_NAME + ':' + deviceId),
+        connect: false,
+      })
+      this.addAccessory(device)
+    } catch (err: any) {
+      this.log.error('Failed to add %s %s (%s): %s', label, config.name, deviceId, err && err.stack ? err.stack : err)
+    }
   }
 
   registerPlatformAccessories(platformAccessories: any | any[]): void {

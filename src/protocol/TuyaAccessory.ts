@@ -11,6 +11,17 @@ const isNonEmptyPlainObject = (o: unknown): o is Record<string, unknown> => {
   return false
 }
 
+const formatOutage = (ms: number): string => {
+  const totalSeconds = Math.max(0, Math.round(ms / 1000))
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`
+  if (minutes > 0) return `${minutes}m ${seconds}s`
+  return `${seconds}s`
+}
+
 interface TuyaSocket extends net.Socket {
   _pinger?: ReturnType<typeof setTimeout> | null
   _connTimeout?: ReturnType<typeof setTimeout> | null
@@ -47,6 +58,7 @@ class TuyaAccessory extends EventEmitter {
   private _msgQueue!: async.QueueObject<MessageTask>
   private _socket!: TuyaSocket
   private _connectionAttempts = 0
+  private _unreachableSince: number | null = null
   private _sendCounter = 0
   private _tmpLocalKey: Buffer | null = null
   private _tmpRemoteKey: Buffer | null = null
@@ -200,7 +212,7 @@ class TuyaAccessory extends EventEmitter {
 
     this._socket.on('error', (err: NodeJS.ErrnoException) => {
       this.connected = false
-      this.log.info(`Socket had a problem and will reconnect to ${this.context.name} (${(err && err.code) || err})`)
+      this._reportUnreachable(err)
 
       if (err && (err.code === 'ECONNRESET' || err.code === 'EPIPE') && this._connectionAttempts < 10) {
         this.log.debug(`Reconnecting with connection attempts =  ${this._connectionAttempts}`)
@@ -213,12 +225,12 @@ class TuyaAccessory extends EventEmitter {
       if (err) {
         if (err.code === 'ENOBUFS') {
           this.log.warn('Operating system complained of resource exhaustion; did I open too many sockets?')
-          this.log.info(
+          this._logOutageDetail(
             'Slowing down retry attempts; if you see this happening often, it could mean some sort of incompatibility.',
           )
           delay = 60000
         } else if (this._connectionAttempts > 10) {
-          this.log.info(
+          this._logOutageDetail(
             'Slowing down retry attempts; if you see this happening often, it could mean some sort of incompatibility.',
           )
           delay = 60000
@@ -318,7 +330,9 @@ class TuyaAccessory extends EventEmitter {
       case 10:
         if (data) {
           if (data === 'json obj data unvalid') {
-            this.log.info(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
+            this._logOutageDetail(
+              `${this.context.name} (${this.context.version}) didn't respond with its current state.`,
+            )
             this.emit('change', {}, this.state)
             break
           }
@@ -391,7 +405,7 @@ class TuyaAccessory extends EventEmitter {
     }
 
     if (cmd === 10 && decryptedMsg === 'json obj data unvalid') {
-      this.log.info(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
+      this._logOutageDetail(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
       this.emit('change', {}, this.state)
       return callback()
     }
@@ -532,7 +546,7 @@ class TuyaAccessory extends EventEmitter {
     }
 
     if (cmd === 10 && parsedPayload === 'json obj data unvalid') {
-      this.log.info(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
+      this._logOutageDetail(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
       this.emit('change', {}, this.state)
       return callback()
     }
@@ -620,8 +634,44 @@ class TuyaAccessory extends EventEmitter {
     return result as boolean
   }
 
+  // An outage is reported once, not once per retry. A device that drops off the
+  // network otherwise produces a socket error every few seconds for as long as it
+  // is gone, which drowns the Homebridge log for anyone with a device that is
+  // intentionally off (seasonal lights, a plug on a switched socket).
+  private _reportUnreachable(err: NodeJS.ErrnoException): void {
+    const reason = (err && (err.code || err.message)) || String(err)
+
+    if (this._unreachableSince === null) {
+      this._unreachableSince = Date.now()
+      this.log.info(`Device ${this.context.name} became unreachable; attempting to reconnect (${reason})`)
+      return
+    }
+
+    this.log.debug(`Socket error for ${this.context.name}: ${reason}; reconnecting`)
+  }
+
+  private _reportReachable(): void {
+    if (this._unreachableSince === null) return
+
+    const outage = formatOutage(Date.now() - this._unreachableSince)
+    this._unreachableSince = null
+    this.log.info(`Device ${this.context.name} is reachable again (${outage})`)
+  }
+
+  // Detail that is worth a normal log line the first time, and noise once the
+  // device is already known to be unreachable.
+  private _logOutageDetail(message: string): void {
+    if (this._unreachableSince === null) return this.log.info(message)
+
+    this.log.debug(message)
+  }
+
   private _change(data: DPSState): void {
     if (!isNonEmptyPlainObject(data)) return
+
+    // A valid state payload is the first thing that proves the device is actually
+    // talking to us again, rather than merely accepting a TCP connection.
+    this._reportReachable()
 
     const changes: DPSState = {}
     Object.keys(data).forEach((key) => {
