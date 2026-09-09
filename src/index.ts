@@ -67,7 +67,10 @@ module.exports = function (homebridge: any): void {
     hap: {
       Characteristic,
       Service,
-      Accessory: { Categories },
+      // Homebridge 2.x / modern hap-nodejs exports Categories on hap itself.
+      // Accessory.Categories is undefined there and crashes addAccessory with:
+      //   TypeError: Cannot read properties of undefined (reading 'FAN')
+      Categories,
       uuid: UUID,
     },
   } = homebridge)
@@ -146,14 +149,23 @@ class TuyaLocalPlatform {
         config.version,
       )
 
-      const device = new TuyaAccessory({
-        ...devices[config.id],
-        ...config,
-        log: this.log,
-        UUID: UUID.generate(PLUGIN_NAME + ':' + config.id),
-        connect: false,
-      })
-      this.addAccessory(device)
+      try {
+        const device = new TuyaAccessory({
+          ...devices[config.id],
+          ...config,
+          log: this.log,
+          UUID: UUID.generate(PLUGIN_NAME + ':' + config.id),
+          connect: false,
+        })
+        this.addAccessory(device)
+      } catch (err: any) {
+        this.log.error(
+          'Failed to add discovered accessory %s (%s): %s',
+          devices[config.id].name,
+          config.id,
+          err && err.stack ? err.stack : err,
+        )
+      }
     })
 
     fakeDevices.forEach((config) => {
@@ -180,13 +192,22 @@ class TuyaLocalPlatform {
             devices[deviceId].ip,
           )
 
-          const device = new TuyaAccessory({
-            ...devices[deviceId],
-            log: this.log,
-            UUID: UUID.generate(PLUGIN_NAME + ':' + deviceId),
-            connect: false,
-          })
-          this.addAccessory(device)
+          try {
+            const device = new TuyaAccessory({
+              ...devices[deviceId],
+              log: this.log,
+              UUID: UUID.generate(PLUGIN_NAME + ':' + deviceId),
+              connect: false,
+            })
+            this.addAccessory(device)
+          } catch (err: any) {
+            this.log.error(
+              'Failed to add accessory %s (%s): %s',
+              devices[deviceId].name,
+              deviceId,
+              err && err.stack ? err.stack : err,
+            )
+          }
         } else {
           this.log.warn('Failed to discover %s (%s) in time but will keep looking.', devices[deviceId].name, deviceId)
         }
