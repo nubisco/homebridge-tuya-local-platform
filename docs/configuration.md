@@ -30,13 +30,23 @@ Add the plugin to the `platforms` array in your Homebridge `config.json`.
 | `type`         | Yes      | Device type identifier (see [Supported Device Types](./device-types)) |
 | `id`           | Yes      | Tuya Device ID                                                        |
 | `key`          | Yes      | Local Key for LAN communication                                       |
-| `ip`           | No       | Static IP address (only if auto-discovery fails)                      |
+| `ip`           | No       | Static IP address (skips auto-discovery when `version` is also set)   |
 | `manufacturer` | No       | Manufacturer name shown in HomeKit                                    |
 | `model`        | No       | Model name shown in HomeKit                                           |
 | `version`      | No       | Tuya protocol version (`3.1`, `3.3`, or `3.4`)                        |
 
 ::: tip
 The `type` value is case-insensitive. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.
+:::
+
+::: tip Skipping discovery
+A device configured with **both** `ip` and `version` is connected immediately, and is left out
+of UDP discovery entirely. If every device is configured that way, discovery never runs.
+
+Set `version` as well as `ip` if your devices are on a different subnet from Homebridge.
+Discovery uses UDP broadcasts, which routers do not forward, so those devices can never be
+discovered. With only `ip` set, the plugin still waits out the discovery window first,
+because discovery is where the protocol version would otherwise come from.
 :::
 
 ## Multiple Devices

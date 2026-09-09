@@ -7,6 +7,27 @@
 - Try adding the `"ip"` parameter to the device config to bypass auto-discovery.
 - Check that no other application (e.g. another Tuya plugin) is holding a connection — Tuya devices typically allow only **one LAN connection** at a time.
 
+## Devices on a Separate Subnet or VLAN
+
+UDP discovery broadcasts do not cross routers, so a device on an IoT VLAN separated from
+Homebridge will never be discovered.
+
+Configure both `ip` and `version` for those devices. The plugin then connects to them
+directly at startup and does not wait for, or run, discovery on their behalf:
+
+```json
+{
+  "type": "Outlet",
+  "name": "Plug",
+  "id": "xxxxxxxxxxxxxxxxxxxx",
+  "key": "xxxxxxxxxxxxxxxx",
+  "ip": "192.168.30.20",
+  "version": "3.3"
+}
+```
+
+TCP port 6668 must be reachable from Homebridge to the device.
+
 ## Device Appears but Cannot Be Controlled
 
 This usually means the DataPoint (DP) mapping is wrong for your device:
