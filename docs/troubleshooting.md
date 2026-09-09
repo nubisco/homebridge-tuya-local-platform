@@ -42,6 +42,21 @@ This usually means the DataPoint (DP) mapping is wrong for your device:
 - Restart Homebridge to trigger re-discovery.
 - Set a static IP on the device via your router's DHCP settings and add `"ip"` to the config.
 
+## Repeated Reconnect Messages
+
+A device that is unreachable is reported once, not once per retry:
+
+```
+[TuyaLocalPlatform] Device A2 Bulb 100w became unreachable; attempting to reconnect (ERR_PING_TIMED_OUT)
+[TuyaLocalPlatform] Device A2 Bulb 100w is reachable again (1m 22s)
+```
+
+The individual socket errors behind an ongoing outage (`ECONNRESET`, `EHOSTUNREACH`,
+`ERR_PING_TIMED_OUT`, `ERR_CONNECTION_TIMED_OUT`) are still logged at debug level. Enable
+Homebridge debug mode (`homebridge -D`, or the debug toggle in the Homebridge UI) to see them.
+
+Reconnection behaviour itself is unchanged: the plugin keeps retrying either way.
+
 ## Local Key Changed
 
 Local keys can rotate when:

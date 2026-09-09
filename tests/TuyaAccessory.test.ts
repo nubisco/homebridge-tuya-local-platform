@@ -402,4 +402,98 @@ describe('TuyaAccessory', () => {
       expect(acc).toBeInstanceOf(TuyaAccessory)
     })
   })
+  // ── reachability reporting ────────────────────────────────────────────────────
+  describe('reachability reporting', () => {
+    const socketError = (code: string) => {
+      const err: NodeJS.ErrnoException = new Error(code)
+      err.code = code
+      return err
+    }
+
+    it('reports the first socket error of an outage at info level', () => {
+      new TuyaAccessory({ ...makeProps({ connect: true }), log } as any)
+
+      lastSocket.emit('error', socketError('ERR_CONNECTION_TIMED_OUT'))
+
+      expect(log.info).toHaveBeenCalledWith(
+        'Device Test Device became unreachable; attempting to reconnect (ERR_CONNECTION_TIMED_OUT)',
+      )
+    })
+
+    it('sends every later socket error of the same outage to debug', () => {
+      new TuyaAccessory({ ...makeProps({ connect: true }), log } as any)
+
+      lastSocket.emit('error', socketError('ERR_CONNECTION_TIMED_OUT'))
+      log.info.mockClear()
+
+      lastSocket.emit('error', socketError('ERR_PING_TIMED_OUT'))
+      lastSocket.emit('error', socketError('EHOSTUNREACH'))
+      lastSocket.emit('error', socketError('ERR_CONNECTION_TIMED_OUT'))
+
+      expect(log.info).not.toHaveBeenCalled()
+      expect(log.debug).toHaveBeenCalledWith('Socket error for Test Device: ERR_PING_TIMED_OUT; reconnecting')
+      expect(log.debug).toHaveBeenCalledWith('Socket error for Test Device: EHOSTUNREACH; reconnecting')
+    })
+
+    it('reports recovery with the outage duration once a valid state arrives', async () => {
+      vi.useRealTimers()
+
+      const acc = new TuyaAccessory({ ...makeProps({ connect: true, version: '3.1' }), log } as any)
+      const nowSpy = vi.spyOn(Date, 'now')
+
+      nowSpy.mockReturnValue(1_000_000)
+      lastSocket.emit('error', socketError('ERR_PING_TIMED_OUT'))
+
+      nowSpy.mockReturnValue(1_000_000 + 82_000)
+      lastSocket.emit('connect')
+      lastSocket.emit('data', buildFrame(10, Buffer.from(JSON.stringify({ dps: { '1': true } }))))
+
+      await new Promise<void>((resolve) => setImmediate(resolve))
+      await new Promise<void>((resolve) => setImmediate(resolve))
+
+      expect(log.info).toHaveBeenCalledWith('Device Test Device is reachable again (1m 22s)')
+      expect(acc.state).toMatchObject({ '1': true })
+
+      nowSpy.mockRestore()
+      vi.useFakeTimers()
+    })
+
+    it('reports a second outage normally after a recovery', async () => {
+      vi.useRealTimers()
+
+      new TuyaAccessory({ ...makeProps({ connect: true, version: '3.1' }), log } as any)
+
+      lastSocket.emit('error', socketError('ERR_PING_TIMED_OUT'))
+      lastSocket.emit('connect')
+      lastSocket.emit('data', buildFrame(10, Buffer.from(JSON.stringify({ dps: { '1': true } }))))
+
+      await new Promise<void>((resolve) => setImmediate(resolve))
+      await new Promise<void>((resolve) => setImmediate(resolve))
+
+      log.info.mockClear()
+      lastSocket.emit('error', socketError('EHOSTUNREACH'))
+
+      expect(log.info).toHaveBeenCalledWith(
+        'Device Test Device became unreachable; attempting to reconnect (EHOSTUNREACH)',
+      )
+
+      vi.useFakeTimers()
+    })
+
+    it('does not claim recovery for a device that was never reported unreachable', async () => {
+      vi.useRealTimers()
+
+      new TuyaAccessory({ ...makeProps({ connect: true, version: '3.1' }), log } as any)
+
+      lastSocket.emit('connect')
+      lastSocket.emit('data', buildFrame(10, Buffer.from(JSON.stringify({ dps: { '1': true } }))))
+
+      await new Promise<void>((resolve) => setImmediate(resolve))
+      await new Promise<void>((resolve) => setImmediate(resolve))
+
+      expect(log.info).not.toHaveBeenCalledWith(expect.stringContaining('is reachable again'))
+
+      vi.useFakeTimers()
+    })
+  })
 })
