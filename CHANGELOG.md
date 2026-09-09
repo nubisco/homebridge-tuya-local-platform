@@ -1,3 +1,9 @@
+## [1.5.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.3...v1.5.4) (2026-09-09)
+
+### Bug Fixes
+
+- load HAP Categories from hap.Categories for Homebridge 2 ([#25](https://github.com/nubisco/homebridge-tuya-local-platform/issues/25)) ([78d11f0](https://github.com/nubisco/homebridge-tuya-local-platform/commit/78d11f01f9c5803ec012c1f03d7e05ed396ba9b9)), closes [#22](https://github.com/nubisco/homebridge-tuya-local-platform/issues/22) [#18](https://github.com/nubisco/homebridge-tuya-local-platform/issues/18)
+
 ## [1.5.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.2...v1.5.3) (2026-09-08)
 
 ### Bug Fixes
