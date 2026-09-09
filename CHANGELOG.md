@@ -1,3 +1,9 @@
+## [1.7.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.0...v1.7.1) (2026-09-09)
+
+### Bug Fixes
+
+- **dehumidifier:** resolve dpTargetHumidity and fix the change-handler key ([#31](https://github.com/nubisco/homebridge-tuya-local-platform/issues/31)) ([66b6fea](https://github.com/nubisco/homebridge-tuya-local-platform/commit/66b6feaa6e6ff13f08f6951e864b28ec7aaac8de)), closes [#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30) [#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30)
+
 # [1.7.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.1...v1.7.0) (2026-09-09)
 
 ### Features
