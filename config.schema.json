@@ -127,6 +127,15 @@
                 "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
               }
             },
+            "disabled": {
+              "title": "Disabled",
+              "description": "Skip this device entirely and remove it from HomeKit, without deleting its configuration. Useful for devices that are offline for long periods.",
+              "type": "boolean",
+              "default": false,
+              "condition": {
+                "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
+              }
+            },
             "ip": {
               "title": "IP Address",
               "type": "string",
