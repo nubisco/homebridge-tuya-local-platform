@@ -172,4 +172,46 @@ describe('discoverDevices', () => {
     expect(accessoryInstances).toHaveLength(1)
     expect(log.warn).not.toHaveBeenCalled()
   })
+  it('skips a disabled device entirely', () => {
+    const { platform, log } = buildPlatform([
+      { id: 'aaaaaaaaaaaaaaaaaaa1', key: 'k', type: 'outlet', ip: '192.168.0.30', version: '3.3', disabled: true },
+      { id: 'bbbbbbbbbbbbbbbbbbb2', key: 'k', type: 'outlet', ip: '192.168.0.31', version: '3.3' },
+    ])
+
+    platform.discoverDevices()
+
+    expect(accessoryInstances).toHaveLength(1)
+    expect(accessoryInstances[0]).toMatchObject({ id: 'bbbbbbbbbbbbbbbbbbb2' })
+    expect(log.info).toHaveBeenCalledWith('Skipping disabled device %s (%s).', 'Unnamed device', 'aaaaaaaaaaaaaaaaaaa1')
+  })
+
+  it('does not put a disabled device into discovery', () => {
+    const { platform } = buildPlatform([
+      { id: 'aaaaaaaaaaaaaaaaaaa1', key: 'k', type: 'outlet', disabled: true },
+      { id: 'bbbbbbbbbbbbbbbbbbb2', key: 'k', type: 'outlet' },
+    ])
+
+    platform.discoverDevices()
+
+    expect(discoveryStart.mock.calls[0][0]).toMatchObject({ ids: ['bbbbbbbbbbbbbbbbbbb2'] })
+  })
+
+  it('leaves a disabled device out of the expected UUIDs so its cached accessory is dropped', () => {
+    const { platform } = buildPlatform([
+      { id: 'aaaaaaaaaaaaaaaaaaa1', key: 'k', type: 'outlet', disabled: true },
+      { id: 'bbbbbbbbbbbbbbbbbbb2', key: 'k', type: 'outlet' },
+    ])
+
+    expect(platform._expectedUUIDs).toEqual(['uuid-homebridge-tuya-local-platform:bbbbbbbbbbbbbbbbbbb2'])
+  })
+
+  it('says so plainly when every device is disabled, rather than claiming the config is invalid', () => {
+    const { platform, log } = buildPlatform([{ id: 'aaaaaaaaaaaaaaaaaaa1', key: 'k', type: 'outlet', disabled: true }])
+
+    platform.discoverDevices()
+
+    expect(log.info).toHaveBeenCalledWith('All configured devices are disabled.')
+    expect(log.error).not.toHaveBeenCalled()
+    expect(discoveryStart).not.toHaveBeenCalled()
+  })
 })

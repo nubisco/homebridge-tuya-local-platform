@@ -96,9 +96,12 @@ class TuyaLocalPlatform {
       return
     }
 
-    this._expectedUUIDs = this.config.devices.map((device: TuyaDeviceConfig) =>
-      UUID.generate(PLUGIN_NAME + (device.fake ? ':fake:' : ':') + device.id),
-    )
+    // A disabled device is deliberately left out of the expected set, so its cached
+    // accessory is dropped by configureAccessory instead of lingering in HomeKit as an
+    // unresponsive tile.
+    this._expectedUUIDs = this.config.devices
+      .filter((device: TuyaDeviceConfig) => !device.disabled)
+      .map((device: TuyaDeviceConfig) => UUID.generate(PLUGIN_NAME + (device.fake ? ':fake:' : ':') + device.id))
 
     this.api.on('didFinishLaunching', () => {
       this.discoverDevices()
@@ -120,6 +123,9 @@ class TuyaLocalPlatform {
         /* ignore */
       }
 
+      if (device.disabled)
+        return this.log.info('Skipping disabled device %s (%s).', device.name || 'Unnamed device', device.id)
+
       if (!device.type)
         return this.log.error("%s (%s) doesn't have a type defined.", device.name || 'Unnamed device', device.id)
       if (!CLASS_DEF[device.type.toLowerCase()])
@@ -130,7 +136,12 @@ class TuyaLocalPlatform {
     })
 
     const deviceIds = Object.keys(devices)
-    if (deviceIds.length === 0) return this.log.error('No valid configured devices found.')
+    if (deviceIds.length === 0) {
+      if (this.config.devices.some((device: TuyaDeviceConfig) => device.disabled) && fakeDevices.length === 0)
+        return this.log.info('All configured devices are disabled.')
+
+      return this.log.error('No valid configured devices found.')
+    }
 
     // A device configured with both an IP and a protocol version has nothing left to
     // learn from UDP discovery, so it connects straight away instead of waiting out the

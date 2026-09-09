@@ -34,6 +34,7 @@ Add the plugin to the `platforms` array in your Homebridge `config.json`.
 | `manufacturer` | No       | Manufacturer name shown in HomeKit                                    |
 | `model`        | No       | Model name shown in HomeKit                                           |
 | `version`      | No       | Tuya protocol version (`3.1`, `3.3`, or `3.4`)                        |
+| `disabled`     | No       | Skip this device and remove it from HomeKit, keeping its config       |
 
 ::: tip
 The `type` value is case-insensitive. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.
@@ -48,6 +49,29 @@ Discovery uses UDP broadcasts, which routers do not forward, so those devices ca
 discovered. With only `ip` set, the plugin still waits out the discovery window first,
 because discovery is where the protocol version would otherwise come from.
 :::
+
+## Temporarily Disabling a Device
+
+Set `disabled` to skip a device without deleting the configuration you had to work to
+obtain:
+
+```json
+{
+  "type": "Outlet",
+  "name": "Holiday Lights",
+  "id": "xxxxxxxxxxxxxxxxxxxx",
+  "key": "xxxxxxxxxxxxxxxx",
+  "ip": "192.168.0.120",
+  "version": "3.3",
+  "disabled": true
+}
+```
+
+A disabled device is left out of discovery, is never connected to, and its cached accessory
+is removed from HomeKit on the next restart. Nothing about it is retried, so it produces no
+reconnect messages while it is off.
+
+Clear the flag and restart to bring it back.
 
 ## Multiple Devices
 
