@@ -1,0 +1,91 @@
+/**
+ * Homebridge Tuya Local Platform's documentation identity.
+ *
+ * VitePress ships a perfectly good white default, which is exactly the problem:
+ * it looks like every other VitePress site and nothing like a Nubisco project.
+ * This maps --vp-* onto the plugin's palette so the docs read as ours the
+ * moment the page paints. See "Documentation sites (VitePress)" in the
+ * workspace AGENTS.md, and acta/docs for the reference implementation.
+ *
+ * Written out rather than imported from @nubisco/ui: the docs build checks out
+ * this repository alone, so an import would build locally and fail in CI.
+ */
+
+:root {
+  --plug-accent: #2f855a;
+  --plug-accent-bright: #5fc48d;
+  --plug-deep: #0e1c15;
+  --plug-panel: #152a20;
+
+  --vp-c-brand-1: var(--plug-accent);
+  --vp-c-brand-2: var(--plug-accent-bright);
+  --vp-c-brand-3: var(--plug-accent);
+  --vp-c-brand-soft: color-mix(in srgb, var(--plug-accent) 12%, transparent);
+
+  /* Two tones, light. Paper rather than pure white, so the sidebar, the code
+     blocks and the cards have something to lift off. */
+  --vp-c-bg: #f1f5f2;
+  --vp-c-bg-alt: #ffffff;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #ffffff;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    var(--plug-accent) 20%,
+    var(--plug-accent-bright) 100%
+  );
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    var(--plug-accent) 25%,
+    var(--plug-accent-bright) 100%
+  );
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --vp-home-hero-image-filter: blur(56px);
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-home-hero-image-filter: blur(68px);
+  }
+}
+
+/* The nav keeps VitePress's own treatment. Forcing a dark bar here breaks in
+   light mode, where the bar is transparent at the top of the page and the link
+   colours chosen for it land on pale grey. */
+
+.dark {
+  /* Two tones, dark: the deep ground, and one step up for anything raised. */
+  --vp-c-bg: var(--plug-deep);
+  --vp-c-bg-alt: var(--plug-panel);
+  --vp-c-bg-elv: var(--plug-panel);
+  --vp-c-bg-soft: var(--plug-panel);
+  --vp-c-brand-1: var(--plug-accent-bright);
+  --vp-nav-bg-color: var(--plug-deep);
+  --vp-c-gutter: #000000;
+}
+
+/* Screenshots of a device or a config screen are the argument on these pages,
+   so they get a frame rather than floating in the text as a bare rectangle. */
+.vp-doc img[src^='/media/'] {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 12%);
+  margin-block: 1.5rem;
+}
+
+.VPFeature {
+  border-color: var(--vp-c-divider);
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
+}
