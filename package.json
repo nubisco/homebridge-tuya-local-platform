@@ -56,7 +56,7 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged && npm run quality:check",
-    "pre-push": "npm run quality:check"
+    "pre-push": "npm run quality:check && npm run build"
   },
   "lint-staged": {
     "src/**/*.ts": [
