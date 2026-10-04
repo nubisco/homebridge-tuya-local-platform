@@ -161,7 +161,7 @@ class RGBTWLightAccessory extends BaseAccessory {
 
             if (oldColor.b !== newColor.b) characteristicBrightness.updateValue(newColor.b)
             if (oldColor.h !== newColor.h) characteristicHue.updateValue(newColor.h)
-            if (oldColor.s !== newColor.s) characteristicSaturation.updateValue(newColor.h)
+            if (oldColor.s !== newColor.s) characteristicSaturation.updateValue(newColor.s)
             if (characteristicColorTemperature.value !== 0) characteristicColorTemperature.updateValue(0)
           } else if (changes[this.dpMode]) {
             if (characteristicColorTemperature.value !== 0) characteristicColorTemperature.updateValue(0)
