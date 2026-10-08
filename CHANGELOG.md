@@ -1,3 +1,9 @@
+## [1.7.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.2...v1.7.3) (2026-10-08)
+
+### Bug Fixes
+
+- support Homebridge 2 APIs ([#39](https://github.com/nubisco/homebridge-tuya-local-platform/issues/39)) ([916f8c5](https://github.com/nubisco/homebridge-tuya-local-platform/commit/916f8c5d3955dba95a7bbffdf46d31b33ac955af))
+
 ## [1.7.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.1...v1.7.2) (2026-10-08)
 
 ### Bug Fixes
