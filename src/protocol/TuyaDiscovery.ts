@@ -133,6 +133,8 @@ class TuyaDiscovery extends EventEmitter {
           decryptedMsg = decipher.update(cleanMsg, undefined, 'utf8')
           decryptedMsg += decipher.final('utf8')
         } catch (_ex) {
+          // Encrypted broadcast could not be decrypted; the device may already
+          // have been discovered on port 6666. Silently ignore.
           return
         }
       }
@@ -156,6 +158,8 @@ class TuyaDiscovery extends EventEmitter {
         const stripped = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
         decryptedMsg = stripped.toString('utf8')
       } catch (_ex) {
+        // GCM auth failed: not a v3.5 broadcast we can read. Silently ignore,
+        // same as the ECB path above.
         return
       }
     } else {

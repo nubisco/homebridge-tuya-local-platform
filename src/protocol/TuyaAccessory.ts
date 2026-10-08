@@ -883,6 +883,8 @@ class TuyaAccessory extends EventEmitter {
       return callback()
     }
 
+    // Every v3.5 response carries a 4-byte retcode prefix, including the cmd 4
+    // handshake reply, so it is stripped unconditionally before the HMAC check.
     const payload = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
 
     if (cmd === 4) {
@@ -938,7 +940,7 @@ class TuyaAccessory extends EventEmitter {
     }
 
     if (cmd === 10 && parsedPayload === 'json obj data unvalid') {
-      this.log.info(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
+      this._logOutageDetail(`${this.context.name} (${this.context.version}) didn't respond with its current state.`)
       this.emit('change', {}, this.state)
       return callback()
     }
