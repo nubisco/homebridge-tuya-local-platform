@@ -6,7 +6,7 @@
 
 ## Protocol Limitations
 
-- Protocol version **3.5** is not currently supported.
+- Protocol version **3.5** support is experimental. It has only been validated against a limited set of devices; please open an issue with logs if your v3.5 device misbehaves.
 - Some newer Tuya devices may use protocol versions or encryption methods not yet implemented.
 
 ## Single Connection Limit

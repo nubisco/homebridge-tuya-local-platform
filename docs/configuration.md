@@ -33,7 +33,7 @@ Add the plugin to the `platforms` array in your Homebridge `config.json`.
 | `ip`           | No       | Static IP address (skips auto-discovery when `version` is also set)   |
 | `manufacturer` | No       | Manufacturer name shown in HomeKit                                    |
 | `model`        | No       | Model name shown in HomeKit                                           |
-| `version`      | No       | Tuya protocol version (`3.1`, `3.3`, or `3.4`)                        |
+| `version`      | No       | Tuya protocol version (`3.1`, `3.3`, `3.4`, or `3.5`)                 |
 | `disabled`     | No       | Skip this device and remove it from HomeKit, keeping its config       |
 
 ::: tip
