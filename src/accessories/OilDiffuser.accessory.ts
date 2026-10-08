@@ -66,12 +66,12 @@ class OilDiffuserAccessory extends BaseAccessory {
     const { Service } = this.hap
 
     const humidifierName = this.device.context.name
-    let humidifierService = this.accessory.getServiceByUUIDAndSubType(Service.HumidifierDehumidifier, 'humidifier')
+    let humidifierService = this.accessory.getServiceById(Service.HumidifierDehumidifier, 'humidifier')
     if (humidifierService) this._checkServiceName(humidifierService, humidifierName)
     else humidifierService = this.accessory.addService(Service.HumidifierDehumidifier, humidifierName, 'humidifier')
 
     const lightName = this.device.context.name + ' Light'
-    let lightService = this.accessory.getServiceByUUIDAndSubType(Service.Lightbulb, 'lightbulb')
+    let lightService = this.accessory.getServiceById(Service.Lightbulb, 'lightbulb')
     if (lightService) this._checkServiceName(lightService, lightName)
     else lightService = this.accessory.addService(Service.Lightbulb, lightName, 'lightbulb')
 
@@ -89,8 +89,8 @@ class OilDiffuserAccessory extends BaseAccessory {
 
     const { Service, AdaptiveLightingController, Characteristic } = this.hap
 
-    const humidifierService = this.accessory.getServiceByUUIDAndSubType(Service.HumidifierDehumidifier, 'humidifier')
-    const lightService = this.accessory.getServiceByUUIDAndSubType(Service.Lightbulb, 'lightbulb')
+    const humidifierService = this.accessory.getServiceById(Service.HumidifierDehumidifier, 'humidifier')
+    const lightService = this.accessory.getServiceById(Service.Lightbulb, 'lightbulb')
 
     this.dpLight = this._getCustomDP(this.device.context.dpLight) || '5'
     this.dpMode = this._getCustomDP(this.device.context.dpMode) || '6'

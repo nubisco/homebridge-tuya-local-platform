@@ -27,7 +27,6 @@ export function createMockCharacteristic() {
     CurrentTemperature: 'current-temperature',
     CurrentRelativeHumidity: 'current-humidity',
     Active: { ACTIVE: 1, INACTIVE: 0 },
-    Perms: { WRITE: 'pw', NOTIFY: 'ev', READ: 'pr' },
     On: 'on',
     LockCurrentState: 'lock-current',
     LockTargetState: 'lock-target',
@@ -146,7 +145,7 @@ export function createMockPlatformAccessory(contextOverrides: any = {}) {
       const uuid = typeof type === 'object' ? type.UUID : type
       return services.get(uuid)
     }),
-    getServiceByUUIDAndSubType: vi.fn((type: any, subtype: string) => {
+    getServiceById: vi.fn((type: any, subtype: string) => {
       const uuid = typeof type === 'object' ? type.UUID : type
       const key = `${uuid}:${subtype}`
       return servicesBySubtype.get(key)

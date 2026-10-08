@@ -59,7 +59,7 @@ const CLASS_DEF: ClassDefMap = {
   oildiffuser: OilDiffuserAccessory,
 }
 
-let Characteristic: any, PlatformAccessory: any, Service: any, Categories: any, UUID: any
+let Characteristic: any, PlatformAccessory: any, Service: any, Categories: any, Perms: any, UUID: any
 
 module.exports = function (homebridge: any): void {
   ;({
@@ -67,6 +67,7 @@ module.exports = function (homebridge: any): void {
     hap: {
       Characteristic,
       Service,
+      Perms,
       // Homebridge 2.x / modern hap-nodejs exports Categories on hap itself.
       // Accessory.Categories is undefined there and crashes addAccessory with:
       //   TypeError: Cannot read properties of undefined (reading 'FAN')
@@ -89,7 +90,11 @@ class TuyaLocalPlatform {
     ;[this.log, this.config, this.api] = [...props]
 
     this.cachedAccessories = new Map()
-    this.api.hap.EnergyCharacteristics = EnergyCharacteristicsFactory(this.api.hap.Characteristic)
+    this.api.hap.EnergyCharacteristics = EnergyCharacteristicsFactory(
+      this.api.hap.Characteristic,
+      this.api.hap.Formats,
+      this.api.hap.Perms,
+    )
 
     if (!this.config || !this.config.devices) {
       this.log('No devices found. Check that you have specified them in your config.json file.')
@@ -253,8 +258,8 @@ class TuyaLocalPlatform {
             !Array.isArray(characteristic.props.perms) ||
             characteristic.props.perms.length !== 3 ||
             !(
-              characteristic.props.perms.includes(Characteristic.Perms.WRITE) &&
-              characteristic.props.perms.includes(Characteristic.Perms.NOTIFY)
+              characteristic.props.perms.includes(Perms.PAIRED_WRITE) &&
+              characteristic.props.perms.includes(Perms.NOTIFY)
             )
           )
             return

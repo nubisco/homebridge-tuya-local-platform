@@ -35,7 +35,7 @@ class MultiOutletAccessory extends BaseAccessory {
     const outletCount = parseInt(this.device.context.outletCount) || 1
     const _validServices: any[] = []
     for (let i = 0; i++ < outletCount; ) {
-      let service = this.accessory.getServiceByUUIDAndSubType(Service.Outlet, 'outlet ' + i)
+      let service = this.accessory.getServiceById(Service.Outlet, 'outlet ' + i)
       if (service) this._checkServiceName(service, this.device.context.name + ' ' + i)
       else service = this.accessory.addService(Service.Outlet, this.device.context.name + ' ' + i, 'outlet ' + i)
 

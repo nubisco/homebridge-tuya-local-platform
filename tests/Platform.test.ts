@@ -16,8 +16,6 @@ describe('Platform Registration', () => {
 
     // Characteristic must be a real constructor because EnergyCharacteristicsFactory extends it
     class MockCharacteristic {
-      static Formats = { FLOAT: 'float', STRING: 'string', BOOL: 'bool' }
-      static Perms = { WRITE: 'pw', NOTIFY: 'ev', READ: 'pr', PAIRED_READ: 'pr' }
       static Manufacturer = 'Manufacturer'
       static Model = 'Model'
       static SerialNumber = 'SerialNumber'
@@ -110,6 +108,8 @@ describe('Platform Registration', () => {
       },
       hap: {
         Characteristic: MockCharacteristic,
+        Formats: { FLOAT: 'float', STRING: 'string', BOOL: 'bool' },
+        Perms: { PAIRED_READ: 'pr', PAIRED_WRITE: 'pw', NOTIFY: 'ev' },
         Service: {
           AccessoryInformation: { UUID: 'AccessoryInformation' },
         },
@@ -205,6 +205,41 @@ describe('Platform Registration', () => {
     expect(platform._expectedUUIDs).toHaveLength(2)
     expect(platform._expectedUUIDs[0]).toBe('uuid-homebridge-tuya-local-platform:abc123')
     expect(platform._expectedUUIDs[1]).toBe('uuid-homebridge-tuya-local-platform:fake:def456')
+  })
+
+  it('should restore cached accessories with Homebridge 2 HAP constants', () => {
+    registerFn(mockHomebridge)
+
+    const log = Object.assign(vi.fn(), { info: vi.fn(), warn: vi.fn(), error: vi.fn() })
+    const config = { devices: [{ id: 'abc123', key: 'key1', type: 'outlet' }] }
+    const api = {
+      hap: mockHomebridge.hap,
+      on: vi.fn(),
+      registerPlatformAccessories: vi.fn(),
+      unregisterPlatformAccessories: vi.fn(),
+    }
+    const platform = new registeredPlatform(log, config, api)
+    const accessory = new mockHomebridge.platformAccessory(
+      'Cached Device',
+      'uuid-homebridge-tuya-local-platform:abc123',
+      mockHomebridge.hap.Categories.OUTLET,
+    )
+    const updateValue = vi.fn()
+    accessory.services.push({
+      UUID: 'Outlet',
+      displayName: 'Outlet',
+      characteristics: [
+        {
+          displayName: 'On',
+          props: { perms: ['pr', 'pw', 'ev'] },
+          updateValue,
+        },
+      ],
+    })
+
+    expect(() => platform.configureAccessory(accessory)).not.toThrow()
+    expect(platform.cachedAccessories.get(accessory.UUID)).toBe(accessory)
+    expect(updateValue).toHaveBeenCalledWith(expect.any(Error))
   })
 
   it('should register one or many platform accessories', () => {
