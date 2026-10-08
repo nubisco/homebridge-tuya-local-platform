@@ -61,7 +61,7 @@ describe('SwitchAccessory', () => {
 
       switchAcc._registerPlatformAccessory()
 
-      const service = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
+      const service = accessory.getServiceById(Service.Switch, 'switch 1')
       expect(service).toBeDefined()
       expect(service!.displayName).toContain('1')
     })
@@ -72,7 +72,7 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': true })
 
-      const service = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
+      const service = accessory.getServiceById(Service.Switch, 'switch 1')
       const char = service!.getCharacteristic(Characteristic.On)
 
       expect(char.value).toBe(true)
@@ -84,7 +84,7 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': false })
 
-      const service = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
+      const service = accessory.getServiceById(Service.Switch, 'switch 1')
       const char = service!.getCharacteristic(Characteristic.On)
       const updateSpy = vi.spyOn(char, 'updateValue')
 
@@ -101,9 +101,9 @@ describe('SwitchAccessory', () => {
 
       switchAcc._registerPlatformAccessory()
 
-      const service1 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
-      const service2 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 2')
-      const service3 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 3')
+      const service1 = accessory.getServiceById(Service.Switch, 'switch 1')
+      const service2 = accessory.getServiceById(Service.Switch, 'switch 2')
+      const service3 = accessory.getServiceById(Service.Switch, 'switch 3')
 
       expect(service1).toBeDefined()
       expect(service2).toBeDefined()
@@ -116,9 +116,9 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': true, '2': false, '3': true })
 
-      const service1 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
-      const service2 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 2')
-      const service3 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 3')
+      const service1 = accessory.getServiceById(Service.Switch, 'switch 1')
+      const service2 = accessory.getServiceById(Service.Switch, 'switch 2')
+      const service3 = accessory.getServiceById(Service.Switch, 'switch 3')
 
       expect(service1!.getCharacteristic(Characteristic.On).value).toBe(true)
       expect(service2!.getCharacteristic(Characteristic.On).value).toBe(false)
@@ -131,9 +131,9 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': false, '2': false, '3': false })
 
-      const service1 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
-      const service2 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 2')
-      const service3 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 3')
+      const service1 = accessory.getServiceById(Service.Switch, 'switch 1')
+      const service2 = accessory.getServiceById(Service.Switch, 'switch 2')
+      const service3 = accessory.getServiceById(Service.Switch, 'switch 3')
 
       // Emit change for only switch 2
       device.state = { '1': false, '2': true, '3': false }
@@ -156,8 +156,8 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': false, '2': false })
 
-      const service1 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
-      const service2 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 2')
+      const service1 = accessory.getServiceById(Service.Switch, 'switch 1')
+      const service2 = accessory.getServiceById(Service.Switch, 'switch 2')
 
       const char1 = service1!.getCharacteristic(Characteristic.On)
       const char2 = service2!.getCharacteristic(Characteristic.On)
@@ -192,8 +192,8 @@ describe('SwitchAccessory', () => {
       switchAcc._registerPlatformAccessory()
       switchAcc._registerCharacteristics({ '1': false, '2': false })
 
-      const service1 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 1')
-      const service2 = accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch 2')
+      const service1 = accessory.getServiceById(Service.Switch, 'switch 1')
+      const service2 = accessory.getServiceById(Service.Switch, 'switch 2')
 
       const char1 = service1!.getCharacteristic(Characteristic.On)
       const char2 = service2!.getCharacteristic(Characteristic.On)

@@ -5,6 +5,9 @@ interface DefaultDpsMap {
   [name: string]: number
 }
 
+// Documented override names that do not follow the `dp` + defaultDps-key pattern.
+const DP_ALIASES: Record<string, string> = { Humidity: 'dpTargetHumidity' }
+
 class DehumidifierAccessory extends BaseAccessory {
   static getCategory(Categories: any): number {
     return Categories.AIR_DEHUMIDIFIER
@@ -159,7 +162,10 @@ class DehumidifierAccessory extends BaseAccessory {
         }
       }
 
-      if (changes.hasOwnProperty('Humidity') && this.characteristicHumidity.value !== changes[this.getDp('Humidity')])
+      if (
+        changes.hasOwnProperty(this.getDp('Humidity')) &&
+        this.characteristicHumidity.value !== changes[this.getDp('Humidity')]
+      )
         this.characteristicHumidity.updateValue(changes[this.getDp('Humidity')])
 
       if (characteristicChildLock && changes.hasOwnProperty(this.getDp('ChildLock'))) {
@@ -304,7 +310,14 @@ class DehumidifierAccessory extends BaseAccessory {
     // `dpActive`, ...) that config.schema.json exposes and every other accessory
     // reads. This looked up `dps*` instead, so no documented override ever applied
     // here. `dps*` stays supported so configs that worked around it keep working.
-    const override = this.device.context['dp' + name] || this.device.context['dps' + name]
+    //
+    // One documented name does not follow `dp` + key: the target humidity DataPoint
+    // is keyed `Humidity` internally but documented as `dpTargetHumidity` in
+    // docs/device-types.md and docs/config-example.md, so it needs an explicit alias.
+    const override =
+      this.device.context['dp' + name] ||
+      (DP_ALIASES[name] ? this.device.context[DP_ALIASES[name]] : undefined) ||
+      this.device.context['dps' + name]
     return override || String(this.defaultDps[name])
   }
 }

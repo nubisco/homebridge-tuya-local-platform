@@ -2,9 +2,6 @@ import { describe, it, expect } from 'vitest'
 import EnergyCharacteristicsFactory from '../src/accessories/EnergyCharacteristics'
 
 class MockCharacteristic {
-  static Formats = { FLOAT: 'float' }
-  static Perms = { PAIRED_READ: 'pr', NOTIFY: 'ev' }
-
   value: unknown
   props: Record<string, unknown> = {}
   displayName: string
@@ -26,9 +23,12 @@ class MockCharacteristic {
   }
 }
 
+const Formats = { FLOAT: 'float' }
+const Perms = { PAIRED_READ: 'pr', NOTIFY: 'ev' }
+
 describe('EnergyCharacteristicsFactory', () => {
   it('creates all expected custom energy characteristics', () => {
-    const energy = EnergyCharacteristicsFactory(MockCharacteristic)
+    const energy = EnergyCharacteristicsFactory(MockCharacteristic, Formats, Perms)
 
     expect(energy.Amperes).toBeDefined()
     expect(energy.KilowattHours).toBeDefined()
@@ -39,7 +39,7 @@ describe('EnergyCharacteristicsFactory', () => {
   })
 
   it('sets units and minimum step values correctly', () => {
-    const energy = EnergyCharacteristicsFactory(MockCharacteristic)
+    const energy = EnergyCharacteristicsFactory(MockCharacteristic, Formats, Perms)
 
     const amperes = new energy.Amperes()
     const kwh = new energy.KilowattHours()
@@ -49,6 +49,8 @@ describe('EnergyCharacteristicsFactory', () => {
     const watts = new energy.Watts()
 
     expect(amperes.displayName).toBe('Amperes')
+    expect(amperes.props.format).toBe('float')
+    expect(amperes.props.perms).toEqual(['pr', 'ev'])
     expect(amperes.props.unit).toBe('A')
     expect(amperes.props.minStep).toBe(0.001)
 

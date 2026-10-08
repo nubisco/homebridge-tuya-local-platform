@@ -1,3 +1,46 @@
+## [1.7.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.2...v1.7.3) (2026-10-08)
+
+### Bug Fixes
+
+- support Homebridge 2 APIs ([#39](https://github.com/nubisco/homebridge-tuya-local-platform/issues/39)) ([916f8c5](https://github.com/nubisco/homebridge-tuya-local-platform/commit/916f8c5d3955dba95a7bbffdf46d31b33ac955af))
+
+## [1.7.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.1...v1.7.2) (2026-10-08)
+
+### Bug Fixes
+
+- **rgbtwlight:** update Saturation with the saturation value, not the hue ([#41](https://github.com/nubisco/homebridge-tuya-local-platform/issues/41)) ([0c9714d](https://github.com/nubisco/homebridge-tuya-local-platform/commit/0c9714d9a35156cb6f530770ed26f2f1f5f874cd))
+
+## [1.7.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.0...v1.7.1) (2026-09-09)
+
+### Bug Fixes
+
+- **dehumidifier:** resolve dpTargetHumidity and fix the change-handler key ([#31](https://github.com/nubisco/homebridge-tuya-local-platform/issues/31)) ([66b6fea](https://github.com/nubisco/homebridge-tuya-local-platform/commit/66b6feaa6e6ff13f08f6951e864b28ec7aaac8de)), closes [#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30) [#30](https://github.com/nubisco/homebridge-tuya-local-platform/issues/30)
+
+# [1.7.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.1...v1.7.0) (2026-09-09)
+
+### Features
+
+- **config:** add a per-device disabled option ([#35](https://github.com/nubisco/homebridge-tuya-local-platform/issues/35)) ([ac197e5](https://github.com/nubisco/homebridge-tuya-local-platform/commit/ac197e5f9b1582a4d8a76ea2a6554c4ab31d38b2)), closes [#24](https://github.com/nubisco/homebridge-tuya-local-platform/issues/24)
+- **protocol:** report a device outage once instead of once per retry ([#34](https://github.com/nubisco/homebridge-tuya-local-platform/issues/34)) ([d834123](https://github.com/nubisco/homebridge-tuya-local-platform/commit/d8341230fd09d66d4a37da2d79dc2c8ce8588cc1)), closes [#26](https://github.com/nubisco/homebridge-tuya-local-platform/issues/26)
+
+## [1.6.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.6.0...v1.6.1) (2026-09-09)
+
+### Bug Fixes
+
+- **repo:** remove a tracked node_modules symlink from the repository ([#36](https://github.com/nubisco/homebridge-tuya-local-platform/issues/36)) ([d27d04f](https://github.com/nubisco/homebridge-tuya-local-platform/commit/d27d04f05a7dcf27fb3c945f7a2b62930efd8fa4))
+
+# [1.6.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.4...v1.6.0) (2026-09-09)
+
+### Features
+
+- **platform:** connect directly to devices configured with an IP and version ([#33](https://github.com/nubisco/homebridge-tuya-local-platform/issues/33)) ([e166668](https://github.com/nubisco/homebridge-tuya-local-platform/commit/e1666682c9f98c48da2add64d8f216c13f749404)), closes [#23](https://github.com/nubisco/homebridge-tuya-local-platform/issues/23)
+
+## [1.5.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.3...v1.5.4) (2026-09-09)
+
+### Bug Fixes
+
+- load HAP Categories from hap.Categories for Homebridge 2 ([#25](https://github.com/nubisco/homebridge-tuya-local-platform/issues/25)) ([78d11f0](https://github.com/nubisco/homebridge-tuya-local-platform/commit/78d11f01f9c5803ec012c1f03d7e05ed396ba9b9)), closes [#22](https://github.com/nubisco/homebridge-tuya-local-platform/issues/22) [#18](https://github.com/nubisco/homebridge-tuya-local-platform/issues/18)
+
 ## [1.5.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.5.2...v1.5.3) (2026-09-08)
 
 ### Bug Fixes

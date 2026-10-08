@@ -60,6 +60,7 @@ export interface TuyaDeviceConfig {
   type: string
   version?: string
   fake?: boolean
+  disabled?: boolean
   manufacturer?: string
   model?: string
   [key: string]: any

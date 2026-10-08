@@ -34,7 +34,7 @@ class SwitchAccessory extends BaseAccessory {
     const switchCount = parseInt(this.device.context.switchCount) || 1
     const _validServices: any[] = []
     for (let i = 0; i++ < switchCount; ) {
-      let service = this.accessory.getServiceByUUIDAndSubType(Service.Switch, 'switch ' + i)
+      let service = this.accessory.getServiceById(Service.Switch, 'switch ' + i)
       if (service) this._checkServiceName(service, this.device.context.name + ' ' + i)
       else service = this.accessory.addService(Service.Switch, this.device.context.name + ' ' + i, 'switch ' + i)
 

@@ -81,6 +81,23 @@ describe('DehumidifierAccessory', () => {
       const { acc } = createDehumidifier({ dpActive: 10, dpsActive: 20 })
       expect(acc.getDp('Active')).toBe(10)
     })
+
+    it('should honour dpTargetHumidity, the documented name for the Humidity DataPoint', () => {
+      // docs/device-types.md and docs/config-example.md both document this key as
+      // dpTargetHumidity, while the internal defaultDps key is `Humidity`.
+      const { acc } = createDehumidifier({ dpTargetHumidity: '9' })
+      expect(acc.getDp('Humidity')).toBe('9')
+    })
+
+    it('should still accept dpHumidity and prefer it over the alias', () => {
+      const { acc } = createDehumidifier({ dpHumidity: '7', dpTargetHumidity: '9' })
+      expect(acc.getDp('Humidity')).toBe('7')
+    })
+
+    it('should fall back to the default when no humidity override is given', () => {
+      const { acc } = createDehumidifier()
+      expect(acc.getDp('Humidity')).toBe('4')
+    })
   })
 
   describe('_getActive', () => {

@@ -1,7 +1,15 @@
 name: Label PRs
 
+# pull_request_target, not pull_request: a `pull_request` event from a fork gets a
+# read-only GITHUB_TOKEN, so actions/labeler fails with "Resource not accessible by
+# integration" and every outside contributor sees a failing check they cannot fix.
+# pull_request_target runs the workflow from the base branch with a writable token.
+#
+# This is only safe because the job never checks out or executes PR code: it reads
+# the labeler config from the base branch and calls the labels API. Do not add a
+# checkout of the PR head here.
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
 
 permissions:
@@ -12,7 +20,7 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v7
         with:
           configuration-path: .github/labeler.yml
           sync-labels: true
