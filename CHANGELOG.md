@@ -1,3 +1,9 @@
+## [1.7.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.1...v1.7.2) (2026-10-08)
+
+### Bug Fixes
+
+- **rgbtwlight:** update Saturation with the saturation value, not the hue ([#41](https://github.com/nubisco/homebridge-tuya-local-platform/issues/41)) ([0c9714d](https://github.com/nubisco/homebridge-tuya-local-platform/commit/0c9714d9a35156cb6f530770ed26f2f1f5f874cd))
+
 ## [1.7.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.0...v1.7.1) (2026-09-09)
 
 ### Bug Fixes
