@@ -30,6 +30,13 @@ import {
 
 import type { ClassDefMap, TuyaDeviceConfig, TuyaPlatformConfig } from './types'
 
+// Do not change this to the scoped package name. It seeds every accessory UUID, so a
+// new value gives users new accessories and HomeKit drops their rooms and automations.
+// It is also the plugin identifier stored in every user's accessory cache. Homebridge
+// maps it to '@nubisco/homebridge-tuya-local-platform' on its own, and only logs the
+// "incorrect plugin identifier" notice in debug mode. Registering under the scoped name
+// would migrate caches through a fallback lookup by platform name, which deletes the
+// accessories as orphans if another installed plugin also registers 'TuyaLocalPlatform'.
 const PLUGIN_NAME = 'homebridge-tuya-local-platform'
 const PLATFORM_NAME = 'TuyaLocalPlatform'
 
