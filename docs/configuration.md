@@ -24,17 +24,18 @@ Add the plugin to the `platforms` array in your Homebridge `config.json`.
 
 ## Device Parameters
 
-| Parameter      | Required | Description                                                           |
-| -------------- | -------- | --------------------------------------------------------------------- |
-| `name`         | Yes      | Friendly name shown in HomeKit                                        |
-| `type`         | Yes      | Device type identifier (see [Supported Device Types](./device-types)) |
-| `id`           | Yes      | Tuya Device ID                                                        |
-| `key`          | Yes      | Local Key for LAN communication                                       |
-| `ip`           | No       | Static IP address (skips auto-discovery when `version` is also set)   |
-| `manufacturer` | No       | Manufacturer name shown in HomeKit                                    |
-| `model`        | No       | Model name shown in HomeKit                                           |
-| `version`      | No       | Tuya protocol version (`3.1`, `3.3`, or `3.4`)                        |
-| `disabled`     | No       | Skip this device and remove it from HomeKit, keeping its config       |
+| Parameter      | Required | Description                                                                |
+| -------------- | -------- | -------------------------------------------------------------------------- |
+| `name`         | Yes      | Friendly name shown in HomeKit                                             |
+| `type`         | Yes      | Device type identifier (see [Supported Device Types](./device-types))      |
+| `id`           | Yes      | Tuya Device ID                                                             |
+| `key`          | Yes      | Local Key for LAN communication                                            |
+| `ip`           | No       | Static IP address (skips auto-discovery when `version` is also set)        |
+| `manufacturer` | No       | Manufacturer name shown in HomeKit                                         |
+| `model`        | No       | Model name shown in HomeKit                                                |
+| `version`      | No       | Tuya protocol version (`3.1`, `3.3`, or `3.4`)                             |
+| `disabled`     | No       | Skip this device and remove it from HomeKit, keeping its config            |
+| `matter`       | No       | Also expose this device over Matter (Homebridge 2, see [Matter](./matter)) |
 
 ::: tip
 The `type` value is case-insensitive. `"SimpleLight"`, `"simplelight"`, and `"SIMPLELIGHT"` all work.

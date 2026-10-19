@@ -16,6 +16,7 @@ const usingIt = [
       { text: 'Configuration', link: '/configuration' },
       { text: 'Supported Device Types', link: '/device-types' },
       { text: 'Examples', link: '/config-example' },
+      { text: 'Matter', link: '/matter' },
     ],
   },
   {

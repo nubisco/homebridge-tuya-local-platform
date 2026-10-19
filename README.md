@@ -95,6 +95,7 @@ Tuya's cloud relies on remote servers. Any outage, policy change, or internet di
 - **Local LAN Control:** Communicates directly with devices; no cloud, no internet dependency
 - **23 Device Types:** Outlets, lights, dimmers, fans, sensors, climate control, and more
 - **Adaptive Lighting:** HomeKit Adaptive Lighting on compatible tunable white and RGBTW accessories
+- **Matter (Homebridge 2):** Lights, plugs, power strips and switches can also be exposed to Google Home, Alexa and other Matter controllers
 - **Energy Monitoring:** Real-time voltage, current, and power readings on supported devices
 - **Automatic Discovery:** UDP broadcast discovery finds devices on your local network automatically
 - **Flexible Configuration:** Override DataPoints (DPs) and tune device behavior per accessory
@@ -145,6 +146,7 @@ Full documentation is available at **[docs.nubisco.io/homebridge-tuya-local-plat
 - [Getting Local Keys](https://docs.nubisco.io/homebridge-tuya-local-platform/get-local-keys)
 - [Configuration](https://docs.nubisco.io/homebridge-tuya-local-platform/configuration)
 - [Supported Device Types](https://docs.nubisco.io/homebridge-tuya-local-platform/device-types)
+- [Matter](https://docs.nubisco.io/homebridge-tuya-local-platform/matter)
 - [Troubleshooting](https://docs.nubisco.io/homebridge-tuya-local-platform/troubleshooting)
 
 ---

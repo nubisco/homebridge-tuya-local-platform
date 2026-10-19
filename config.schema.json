@@ -136,6 +136,15 @@
                 "functionBody": "return model.devices && model.devices[arrayIndices].type !== 'null';"
               }
             },
+            "matter": {
+              "title": "Expose over Matter",
+              "description": "Also expose this device over Matter, for Google Home, Alexa and other Matter controllers. Needs Homebridge 2 with Matter turned on for the bridge. The HomeKit accessory is kept as it is.",
+              "type": "boolean",
+              "default": false,
+              "condition": {
+                "functionBody": "return model.devices && ['simplelight', 'simpledimmer', 'simpledimmer2', 'twlight', 'rgbtwlight', 'outlet', 'multioutlet', 'custommultioutlet', 'switch'].includes(String(model.devices[arrayIndices].type || '').toLowerCase());"
+              }
+            },
             "ip": {
               "title": "IP Address",
               "type": "string",

@@ -27,6 +27,7 @@ import {
   ValveAccessory,
   OilDiffuserAccessory,
 } from './accessories'
+import { MATTER_CLASS_DEF } from './matter'
 
 import type { ClassDefMap, TuyaDeviceConfig, TuyaPlatformConfig } from './types'
 
@@ -92,6 +93,9 @@ class TuyaLocalPlatform {
   api: any
   cachedAccessories: Map<string, any>
   _expectedUUIDs?: string[]
+  _expectedMatterUUIDs: string[] = []
+  _cachedMatterAccessories: any[] = []
+  _warnedMatterUnavailable = false
 
   constructor(...props: any[]) {
     ;[this.log, this.config, this.api] = [...props]
@@ -115,7 +119,12 @@ class TuyaLocalPlatform {
       .filter((device: TuyaDeviceConfig) => !device.disabled)
       .map((device: TuyaDeviceConfig) => UUID.generate(PLUGIN_NAME + (device.fake ? ':fake:' : ':') + device.id))
 
+    this._expectedMatterUUIDs = this.config.devices
+      .filter((device: TuyaDeviceConfig) => !device.disabled && device.matter)
+      .map((device: TuyaDeviceConfig) => this._getMatterUUID(device))
+
     this.api.on('didFinishLaunching', () => {
+      this._removeStaleMatterAccessories()
       this.discoverDevices()
     })
   }
@@ -289,6 +298,61 @@ class TuyaLocalPlatform {
     }
   }
 
+  // A seed of its own, so a device's Matter accessory never shares a UUID with its
+  // HomeKit one.
+  _getMatterUUID(device: TuyaDeviceConfig): string {
+    return UUID.generate(PLUGIN_NAME + ':matter:' + (device.fake ? 'fake:' : '') + ('' + device.id).trim())
+  }
+
+  configureMatterAccessory(accessory: any): void {
+    this._cachedMatterAccessories.push(accessory)
+  }
+
+  // Matter accessories of devices that were removed, disabled or switched back to
+  // HomeKit only. The ones still wanted are re-registered by addMatterAccessory, which
+  // Homebridge attaches to the cached endpoint so controllers keep the device.
+  _removeStaleMatterAccessories(): void {
+    const stale = this._cachedMatterAccessories.filter(
+      (accessory: any) => !this._expectedMatterUUIDs.includes(accessory.UUID),
+    )
+    this._cachedMatterAccessories = []
+    if (!stale.length || !this.api.matter) return
+
+    stale.forEach((accessory: any) => this.log.warn('Unregistering Matter accessory', accessory.displayName))
+    this.api.matter.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, stale).catch((err: any) => {
+      this.log.error('Failed to unregister stale Matter accessories: %s', err && err.message ? err.message : err)
+    })
+  }
+
+  addMatterAccessory(device: any): void {
+    const deviceConfig = device.context
+    if (!deviceConfig.matter) return
+
+    if (!this.api.matter) {
+      if (!this._warnedMatterUnavailable)
+        this.log.warn(
+          'Some devices ask to be exposed over Matter, but Matter is not enabled for this bridge. ' +
+            'It needs Homebridge 2 with Matter turned on in the bridge settings. They stay available in HomeKit.',
+        )
+      this._warnedMatterUnavailable = true
+      return
+    }
+
+    const MatterAccessory = MATTER_CLASS_DEF[(deviceConfig.type || '').toLowerCase()]
+    if (!MatterAccessory)
+      return this.log.warn(
+        '%s (%s) cannot be exposed over Matter yet. It stays available in HomeKit.',
+        deviceConfig.name,
+        deviceConfig.type,
+      )
+
+    new MatterAccessory(this, device, this._getMatterUUID(deviceConfig))
+      .register(PLUGIN_NAME, PLATFORM_NAME)
+      .catch((err: any) => {
+        this.log.error('Failed to expose %s over Matter: %s', deviceConfig.name, err && err.stack ? err.stack : err)
+      })
+  }
+
   addAccessory(device: any): void {
     const deviceConfig = device.context
     const type = (deviceConfig.type || '').toLowerCase()
@@ -331,6 +395,8 @@ class TuyaLocalPlatform {
     }
 
     this.cachedAccessories.set(deviceConfig.UUID, new Accessory(this, accessory, device, !isCached))
+
+    this.addMatterAccessory(device)
   }
 
   removeAccessory(homebridgeAccessory: any): void {
