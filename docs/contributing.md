@@ -49,7 +49,7 @@ npm test -- --watch     # Run tests in watch mode
 - Add tests for new device types and accessory logic
 - Mock HAP services/characteristics using the helpers in `tests/helpers.ts`
 - Target 80%+ code coverage for new features
-- Tests run in CI on Node 20 and 22
+- Tests run in CI on Node 22 and 24
 
 ## Adding a New Device Type
 
@@ -162,8 +162,8 @@ BREAKING CHANGE: dpPower now requires string instead of number
 
 6. Wait for CI checks to pass:
    - Linting (Node 22)
-   - Build (Node 20, 22)
-   - Tests (Node 20, 22)
+   - Build (Node 22, 24)
+   - Tests (Node 22, 24)
 
 7. Address any review feedback
 

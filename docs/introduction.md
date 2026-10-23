@@ -45,6 +45,6 @@ See [Supported Device Types](./device-types) for detailed configuration paramete
 
 ## Requirements
 
-- **Node.js** >= 18.0.0
+- **Node.js** >= 22.23.4
 - **Homebridge** >= 1.6.0
 - Tuya device **Local Key** (see [Getting Local Keys](./get-local-keys))

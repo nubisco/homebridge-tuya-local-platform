@@ -16,7 +16,7 @@ This file helps AI coding agents understand the structure, conventions, and work
 - **Language**: TypeScript (strict mode, `strictNullChecks` and `strictFunctionTypes` off)
 - **Module system**: CommonJS (output to `dist/`)
 - **Target**: ES2022
-- **Runtime**: Node.js >= 18, Homebridge >= 1.6.0
+- **Runtime**: Node.js >= 22.23.4, Homebridge >= 1.6.0
 - **Documentation**: VitePress (source in `docs/`, deployed to GitHub Pages)
 
 ## Directory Structure
