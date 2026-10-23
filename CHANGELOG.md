@@ -1,3 +1,17 @@
+# [2.0.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.8.0...v2.0.0) (2026-10-23)
+
+- feat!: require Node.js 22.23.4 or newer ([3681c1f](https://github.com/nubisco/homebridge-tuya-local-platform/commit/3681c1ffd7b26240ea153821b86e5f6ab7fabc48))
+
+### BREAKING CHANGES
+
+- Node.js 20 is no longer supported. Node 20 reached end of
+  life in April 2026 and gets no security fixes, so it stays exposed to the
+  October 2026 Node.js security release (the Brotli remote code execution
+  CVE-2026-111497 and the TLS hostname verification bypasses). Node 22
+  releases before 22.23.4 are affected by the same release. Run Homebridge on
+  Node.js 22.23.4 or newer, or any Node 24 release, before updating this
+  plugin.
+
 # [1.8.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.3...v1.8.0) (2026-10-19)
 
 ### Features
