@@ -1,4 +1,3 @@
-import DefaultTheme from 'vitepress/theme'
-import './custom.css'
+import theme from '@nubisco/docs-sdk/theme'
 
-export default DefaultTheme
+export default theme

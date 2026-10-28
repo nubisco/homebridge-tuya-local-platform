@@ -1,4 +1,7 @@
-# Configuration Examples
+---
+layout: nubisco
+title: 'Configuration Examples'
+---
 
 ## Simple Light
 

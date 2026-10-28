@@ -1,4 +1,7 @@
-# Known Issues
+---
+layout: nubisco
+title: 'Known Issues'
+---
 
 ## Unsupported Devices
 

@@ -1,6 +1,8 @@
-# Contributing
-
-Contributions are welcome! This project follows strict code quality standards and automated testing to maintain reliability.
+---
+layout: nubisco
+title: 'Contributing'
+intro: 'Contributions are welcome! This project follows strict code quality standards and automated testing to maintain reliability.'
+---
 
 ## Development Setup
 

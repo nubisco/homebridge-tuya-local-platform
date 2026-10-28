@@ -1,6 +1,8 @@
-# Configuration
-
-Add the plugin to the `platforms` array in your Homebridge `config.json`.
+---
+layout: nubisco
+title: 'Configuration'
+intro: 'Add the plugin to the `platforms` array in your Homebridge `config.json`.'
+---
 
 ## Minimal Example
 

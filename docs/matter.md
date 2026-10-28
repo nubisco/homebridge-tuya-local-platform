@@ -1,8 +1,8 @@
-# Matter
-
-Homebridge 2 can expose accessories over Matter as well as HomeKit. With Matter, a Tuya
-device configured here can also be added to Google Home, Amazon Alexa, SmartThings and other
-Matter controllers, still controlled locally over your LAN.
+---
+layout: nubisco
+title: 'Matter'
+intro: 'Homebridge 2 can expose accessories over Matter as well as HomeKit. With Matter, a Tuya device configured here can also be added to Google Home, Amazon Alexa, SmartThings and other Matter controllers, still controlled locally over your LAN.'
+---
 
 Matter is opt-in, per device. A device that asks for it keeps its HomeKit accessory exactly as
 before, rooms and automations included. It is exposed over Matter **as well**, through the same
