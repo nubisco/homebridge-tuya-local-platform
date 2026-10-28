@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.0...v2.0.1) (2026-10-28)
+
+### Bug Fixes
+
+- **deps:** complete the lockfile for npm 10, which CI runs ([1f61c64](https://github.com/nubisco/homebridge-tuya-local-platform/commit/1f61c64b283ca9de345c599939cc53e2f0ade504))
+
 # [2.0.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.8.0...v2.0.0) (2026-10-23)
 
 - feat!: require Node.js 22.23.4 or newer ([3681c1f](https://github.com/nubisco/homebridge-tuya-local-platform/commit/3681c1ffd7b26240ea153821b86e5f6ab7fabc48))
