@@ -24,6 +24,7 @@ class BaseAccessory {
       log: this.log,
       api: { hap: this.hap },
     } = this.platform)
+    this.hap = { ...this.hap, EnergyCharacteristics: this.platform.energyCharacteristics }
 
     if (isNew) this._registerPlatformAccessory()
 
