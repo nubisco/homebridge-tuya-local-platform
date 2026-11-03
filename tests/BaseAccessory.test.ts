@@ -200,6 +200,30 @@ describe('BaseAccessory', () => {
     })
   })
 
+  describe('color conversion (auto-detected format)', () => {
+    let base: BaseAccessory
+
+    beforeEach(() => {
+      ;({ base } = createBaseAccessory())
+      base.dpColor = '5'
+      base.device.state['5'] = '000003e803e8'
+    })
+
+    it('should use the detected HSB format when colorFunction is not configured', () => {
+      expect((base.device.context as any).colorFunction).toBeUndefined()
+      base._detectColorFunction('000003e803e8')
+
+      expect(base.convertColorFromTuyaToHomeKit('007803e801f4')).toEqual({ h: 120, s: 100, b: 50 })
+      expect(base.convertColorFromHomeKitToTuya({ h: 120, s: 100, b: 50 })).toBe('007803e801f4')
+    })
+
+    it('should fall back to the configured colorFunction when detection has not run', () => {
+      ;(base.device.context as any).colorFunction = 'HSB'
+
+      expect(base.convertColorFromHomeKitToTuya({ h: 120, s: 100, b: 50 })).toBe('007803e801f4')
+    })
+  })
+
   describe('color temperature conversion', () => {
     let base: BaseAccessory
 
