@@ -91,6 +91,9 @@ export default defineNubiscoDocs({
     copyright: 'Copyright © 2026 <a href="https://nubisco.io">Nubisco</a>',
   },
   vitepress: {
+    // One address per page: /page, never also /page.html. Links, search and
+    // the sitemap use the clean form, and the gateway 301s the .html one.
+    cleanUrls: true,
     head: [
       ['meta', { name: 'keywords', content: 'homebridge, tuya, local, homekit, plugin' }],
       ['meta', { property: 'og:type', content: 'website' }],
