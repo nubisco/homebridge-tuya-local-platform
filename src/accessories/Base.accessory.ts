@@ -209,8 +209,14 @@ class BaseAccessory {
     return Math.min(600, Math.max(71, convertedValue))
   }
 
+  // Prefer the format _detectColorFunction found (which honours the config override),
+  // falling back to the config for codecs that never run detection (Matter).
+  _getColorFunction(): string | undefined {
+    return this.colorFunction || (this.device.context as any).colorFunction
+  }
+
   convertColorFromHomeKitToTuya(value: Partial<HSBColor>, dpValue?: string): string {
-    switch ((this.device.context as any).colorFunction) {
+    switch (this._getColorFunction()) {
       case 'HSB':
         return this.convertColorFromHomeKitToTuya_HSB(value, dpValue)
       default:
@@ -270,7 +276,7 @@ class BaseAccessory {
   }
 
   convertColorFromTuyaToHomeKit(value: string): HSBColor {
-    switch ((this.device.context as any).colorFunction) {
+    switch (this._getColorFunction()) {
       case 'HSB':
         return this.convertColorFromTuya_HSB_ToHomeKit(value)
       default:
