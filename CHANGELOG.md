@@ -1,3 +1,9 @@
+## [2.0.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.1...v2.0.2) (2026-11-12)
+
+### Bug Fixes
+
+- don't assign EnergyCharacteristics onto api.hap (crashes on Homebridge 2.x) ([#50](https://github.com/nubisco/homebridge-tuya-local-platform/issues/50)) ([2294826](https://github.com/nubisco/homebridge-tuya-local-platform/commit/22948262e8489c0953d1e51b4592b8c8567f02d2))
+
 ## [2.0.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.0...v2.0.1) (2026-10-28)
 
 ### Bug Fixes
