@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { EventEmitter } from 'events'
+import crypto from 'crypto'
 import TuyaAccessory from '../src/protocol/TuyaAccessory'
 import { createMockLogger } from './helpers'
 
@@ -59,6 +60,31 @@ function buildFrame(cmd: number, payload: Buffer): Buffer {
   buf.writeUInt32BE(0, 16 + payload.length) // crc stub
   buf.writeUInt32BE(0x0000aa55, total - 4)
   return buf
+}
+
+// Build a v3.4 frame the way a device does: AES-128-ECB payload after a 4-byte
+// retcode, then an HMAC-SHA256 of everything before it.
+function build34Frame(cmd: number, plaintext: Buffer, key: string, { badHmac = false } = {}): Buffer {
+  const cipher = crypto.createCipheriv('aes-128-ecb', key, null)
+  const body = Buffer.concat([Buffer.alloc(4), cipher.update(plaintext), cipher.final()])
+  const header = Buffer.alloc(16)
+  header.writeUInt32BE(0x000055aa, 0)
+  header.writeUInt32BE(1, 4)
+  header.writeUInt32BE(cmd, 8)
+  header.writeUInt32BE(body.length + 32 + 4, 12)
+  const mac = badHmac
+    ? Buffer.alloc(32)
+    : crypto
+        .createHmac('sha256', key)
+        .update(Buffer.concat([header, body]))
+        .digest()
+  const suffix = Buffer.from('0000aa55', 'hex')
+  return Buffer.concat([header, body, mac, suffix])
+}
+
+// The message queue runs its worker on a microtask, so let it drain.
+async function drainQueue(): Promise<void> {
+  for (let i = 0; i < 10; i++) await Promise.resolve()
 }
 
 // ─── tests ────────────────────────────────────────────────────────────────────
@@ -400,6 +426,81 @@ describe('TuyaAccessory', () => {
     it('selects _msgHandler_3_4 for version 3.4', () => {
       const acc = new TuyaAccessory(makeProps({ version: '3.4' }) as any)
       expect(acc).toBeInstanceOf(TuyaAccessory)
+    })
+
+    it.each([
+      [3.4, '3.4'],
+      ['3.40', '3.4'],
+      [' 3.3', '3.3'],
+      [undefined, '3.1'],
+      ['garbage', '3.1'],
+    ])('normalises version %j to %j', (version, expected) => {
+      const acc = new TuyaAccessory(makeProps({ version }) as any)
+      expect(acc.context.version).toBe(expected)
+    })
+
+    it('decodes v3.4 frames when the version is configured as a JSON number', async () => {
+      const acc = new TuyaAccessory(makeProps({ version: 3.4, connect: true }) as any)
+      const changes = vi.fn()
+      acc.on('change', changes)
+
+      lastSocket.emit('data', build34Frame(8, Buffer.from(JSON.stringify({ dps: { '1': true } })), 'abcdef1234567890'))
+      await drainQueue()
+
+      expect(changes).toHaveBeenCalledWith({ '1': true }, expect.objectContaining({ '1': true }))
+    })
+  })
+
+  // ── v3.4 frames that fail verification ──────────────────────────────────────
+  // These used to throw inside the message queue worker, an uncaught exception
+  // that took down Homebridge (or the child bridge) with every other device on it.
+  describe('v3.4 frames that fail verification', () => {
+    const key = 'abcdef1234567890'
+    let acc: TuyaAccessory
+    let socketErrors: Error[]
+
+    beforeEach(() => {
+      acc = new TuyaAccessory(makeProps({ version: '3.4', connect: true }) as any)
+      socketErrors = []
+      lastSocket.on('error', (err: Error) => socketErrors.push(err))
+    })
+
+    it('reports a status frame with a bad HMAC as a socket error', async () => {
+      lastSocket.emit('data', build34Frame(8, Buffer.from('{"dps":{"1":true}}'), key, { badHmac: true }))
+      await drainQueue()
+
+      expect(socketErrors).toHaveLength(1)
+      expect(socketErrors[0].message).toMatch(/HMAC mismatch/)
+    })
+
+    it('keeps processing frames after a bad one', async () => {
+      const changes = vi.fn()
+      acc.on('change', changes)
+
+      lastSocket.emit('data', build34Frame(8, Buffer.from('{"dps":{"1":true}}'), key, { badHmac: true }))
+      lastSocket.emit('data', build34Frame(8, Buffer.from('{"dps":{"1":false}}'), key))
+      await drainQueue()
+
+      expect(changes).toHaveBeenCalledWith({ '1': false }, expect.anything())
+    })
+
+    it('reports a handshake reply signed with another key as a socket error', async () => {
+      lastSocket.emit('ready')
+      const reply = Buffer.concat([crypto.randomBytes(16), crypto.randomBytes(32)])
+      lastSocket.emit('data', build34Frame(4, reply, key))
+      await drainQueue()
+
+      expect(socketErrors).toHaveLength(1)
+      expect(socketErrors[0].message).toMatch(/Check the local key/)
+    })
+
+    it('reports a handshake reply that is too short as a socket error', async () => {
+      lastSocket.emit('ready')
+      lastSocket.emit('data', build34Frame(4, crypto.randomBytes(16), key))
+      await drainQueue()
+
+      expect(socketErrors).toHaveLength(1)
+      expect(socketErrors[0].message).toMatch(/handshake/)
     })
   })
   // ── reachability reporting ────────────────────────────────────────────────────
