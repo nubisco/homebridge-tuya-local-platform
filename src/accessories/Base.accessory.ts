@@ -210,9 +210,11 @@ class BaseAccessory {
   }
 
   // Prefer the format _detectColorFunction found (which honours the config override),
-  // falling back to the config for codecs that never run detection (Matter).
+  // falling back to the config until detection has run (a Matter light before the
+  // device reports a colour). The config value is matched in any case, as detection does.
   _getColorFunction(): string | undefined {
-    return this.colorFunction || (this.device.context as any).colorFunction
+    const configured = (this.device.context as any).colorFunction
+    return this.colorFunction || (configured ? String(configured).toUpperCase() : undefined)
   }
 
   convertColorFromHomeKitToTuya(value: Partial<HSBColor>, dpValue?: string): string {

@@ -389,6 +389,51 @@ describe('LightMatterAccessory', () => {
         undefined,
       )
     })
+
+    describe('HSB bulbs (12-character colour)', () => {
+      // Green at full saturation and brightness: hue 0x0078, saturation and value 0x03e8.
+      const hsbState = { ...colourState, '5': '007803e803e8' }
+
+      it('detects the format from the reported colour without colorFunction set', async () => {
+        const { registered, device } = await register(LightMatterAccessory, { type: 'rgbtwlight' }, hsbState)
+
+        expect(registered.clusters.colorControl).toMatchObject({ currentHue: 85, currentSaturation: 254 })
+
+        registered.handlers.colorControl.moveToHueAndSaturationLogic({ hue: 0, saturation: 254 })
+        // Already in colour mode, so only the colour is sent.
+        expect(device.update).toHaveBeenLastCalledWith({ '5': '000003e803e8' })
+      })
+
+      it('detects the format on the first change when registered before any state', async () => {
+        const { registered, device, matter } = await register(LightMatterAccessory, { type: 'rgbtwlight' }, {})
+        matter.updateAccessoryState.mockClear()
+
+        device.state = hsbState
+        device.emit('change', hsbState, hsbState)
+
+        expect(matter.updateAccessoryState).toHaveBeenCalledWith(
+          'matter-uuid',
+          'colorControl',
+          expect.objectContaining({ colorMode: 0, currentHue: 85, currentSaturation: 254 }),
+          undefined,
+        )
+
+        registered.handlers.colorControl.moveToHueAndSaturationLogic({ hue: 0, saturation: 254 })
+        // Already in colour mode, so only the colour is sent.
+        expect(device.update).toHaveBeenLastCalledWith({ '5': '000003e803e8' })
+      })
+
+      it('honours a lowercase colorFunction before the device reports a colour', async () => {
+        const { registered, device } = await register(
+          LightMatterAccessory,
+          { type: 'rgbtwlight', colorFunction: 'hsb' },
+          {},
+        )
+
+        registered.handlers.colorControl.moveToHueAndSaturationLogic({ hue: 85, saturation: 254 })
+        expect(device.update).toHaveBeenLastCalledWith({ '2': 'colour', '5': '007803e803e8' })
+      })
+    })
   })
 })
 
