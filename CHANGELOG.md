@@ -1,3 +1,9 @@
+## [2.0.5](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.4...v2.0.5) (2026-11-12)
+
+### Bug Fixes
+
+- **protocol:** stop a bad v3.4 frame from crashing the bridge ([#55](https://github.com/nubisco/homebridge-tuya-local-platform/issues/55)) ([0b12cb2](https://github.com/nubisco/homebridge-tuya-local-platform/commit/0b12cb2a8bcf471f028c167e43940ae4c48436b6)), closes [PKCS#7](https://github.com/PKCS/issues/7)
+
 ## [2.0.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.3...v2.0.4) (2026-11-12)
 
 ### Bug Fixes
