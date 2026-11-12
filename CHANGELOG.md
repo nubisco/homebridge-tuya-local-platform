@@ -1,3 +1,9 @@
+## [2.0.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.2...v2.0.3) (2026-11-12)
+
+### Bug Fixes
+
+- use the detected color format when converting colors ([#51](https://github.com/nubisco/homebridge-tuya-local-platform/issues/51)) ([ed6c081](https://github.com/nubisco/homebridge-tuya-local-platform/commit/ed6c081117f2ea2efacf5d0f060b390a57e5af37))
+
 ## [2.0.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.1...v2.0.2) (2026-11-12)
 
 ### Bug Fixes
