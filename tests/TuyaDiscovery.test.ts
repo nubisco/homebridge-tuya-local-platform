@@ -43,10 +43,9 @@ function buildEncryptedDiscoveryFrame(payload: Record<string, unknown>): Buffer 
 /**
  * Build a v3.5 GCM-encrypted discovery broadcast (0x00006699 / 0x00009966 magic).
  */
-function buildV35DiscoveryFrame(payload: Record<string, unknown>): Buffer {
-  const retcode = Buffer.alloc(4, 0)
+function buildV35DiscoveryFrame(payload: Record<string, unknown>, { retcode = true, trailingNuls = 0 } = {}): Buffer {
   const json = Buffer.from(JSON.stringify(payload), 'utf8')
-  const plaintext = Buffer.concat([retcode, json])
+  const plaintext = Buffer.concat([retcode ? Buffer.alloc(4) : Buffer.alloc(0), json, Buffer.alloc(trailingNuls)])
   const iv = crypto.randomBytes(12)
   const payloadLen = plaintext.length + 28
 
@@ -201,6 +200,23 @@ describe('TuyaDiscovery', () => {
       expect(discoverSpy).toHaveBeenCalledTimes(1)
       expect(discoverSpy.mock.calls[0][0].id).toBe('v35-device')
       expect(discoverSpy.mock.calls[0][0].version).toBe('3.5')
+      discovery.stop()
+    })
+
+    it.each([
+      ['without a retcode', { retcode: false }],
+      ['with trailing NUL bytes', { trailingNuls: 3 }],
+    ])('should parse a v3.5 broadcast %s', (_label, options) => {
+      discovery.start({ log, ids: ['v35-device'] })
+      const discoverSpy = vi.fn()
+      discovery.on('discover', discoverSpy)
+
+      const frame = buildV35DiscoveryFrame({ gwId: 'v35-device', ip: '192.168.1.80', version: '3.5' }, options)
+      const info = { address: '192.168.1.80', port: 6667, family: 'IPv4', size: frame.length }
+      ;(discovery as any)._onDgramMessage(6667, frame, info)
+
+      expect(discoverSpy).toHaveBeenCalledTimes(1)
+      expect(log.error).not.toHaveBeenCalled()
       discovery.stop()
     })
 

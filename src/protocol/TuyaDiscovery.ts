@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import { EventEmitter } from 'events'
 import type { Logger } from 'homebridge'
 import type { DiscoveredDevice } from '../types'
+import { stripRetcode } from './retcode'
 
 const UDP_KEY = Buffer.from('6c1ec8e2bb9bb59ab50b0daf649b410a', 'hex')
 
@@ -133,8 +134,8 @@ class TuyaDiscovery extends EventEmitter {
           decryptedMsg = decipher.update(cleanMsg, undefined, 'utf8')
           decryptedMsg += decipher.final('utf8')
         } catch (_ex) {
-          // Encrypted broadcast could not be decrypted; the device may already
-          // have been discovered on port 6666. Silently ignore.
+          // Encrypted broadcast could not be decrypted. The device may already
+          // have been discovered on port 6666, so silently ignore it.
           return
         }
       }
@@ -155,11 +156,11 @@ class TuyaDiscovery extends EventEmitter {
         decipher.setAuthTag(tag)
         decipher.setAAD(aad)
         const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()])
-        const stripped = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
-        decryptedMsg = stripped.toString('utf8')
+        // Trailing NUL bytes would make JSON.parse fail.
+        decryptedMsg = stripRetcode(decrypted).toString('utf8').replace(/\0+$/, '')
       } catch (_ex) {
-        // GCM auth failed: not a v3.5 broadcast we can read. Silently ignore,
-        // same as the ECB path above.
+        // GCM auth failed, so this is not a v3.5 broadcast we can read. Silently
+        // ignore it, the same as the ECB path above.
         return
       }
     } else {

@@ -615,6 +615,104 @@ describe('TuyaAccessory', () => {
       expect(handler).not.toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
     })
+    describe('framing and errors', () => {
+      const key = 'abcdef1234567890'
+      let acc: TuyaAccessory
+      let socketErrors: Error[]
+      let changes: ReturnType<typeof vi.fn>
+
+      beforeEach(() => {
+        acc = new TuyaAccessory(makeProps({ version: '3.5', key, connect: true }) as any)
+        socketErrors = []
+        lastSocket.on('error', (err: Error) => socketErrors.push(err))
+        changes = vi.fn()
+        acc.on('change', changes)
+      })
+
+      const statusFrame = (dps: Record<string, unknown>, retcode = true) =>
+        encryptV35Frame(
+          8,
+          1,
+          Buffer.concat([retcode ? Buffer.alloc(4) : Buffer.alloc(0), Buffer.from(JSON.stringify({ dps }))]),
+          Buffer.from(key),
+        )
+
+      it('selects 6699 framing when the version is configured as a JSON number', () => {
+        const numeric = new TuyaAccessory(makeProps({ version: 3.5 }) as any)
+        expect(numeric.context.version).toBe('3.5')
+        expect((numeric as any)._framePrefixHex).toBe('00006699')
+      })
+
+      it('cuts a frame by its declared length, not by an end marker inside the payload', () => {
+        const push = vi.spyOn((acc as any)._msgQueue, 'push')
+        const payload = Buffer.from('aaaaaaaa00009966bbbbbbbbccccccccddddddddeeeeeeee', 'hex')
+        const header = Buffer.alloc(18)
+        header.writeUInt32BE(0x00006699, 0)
+        header.writeUInt32BE(payload.length, 14)
+        const frame = Buffer.concat([header, payload, Buffer.from('00009966', 'hex')])
+
+        lastSocket.emit('data', frame)
+
+        expect(push).toHaveBeenCalledTimes(1)
+        expect((push.mock.calls[0][0] as any).msg).toEqual(frame)
+      })
+
+      it('reassembles a frame split across chunks and splits two frames in one chunk', async () => {
+        const first = statusFrame({ '1': true })
+        lastSocket.emit('data', first.subarray(0, 10))
+        lastSocket.emit('data', first.subarray(10))
+        lastSocket.emit('data', Buffer.concat([statusFrame({ '2': true }), statusFrame({ '3': true })]))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledTimes(3)
+        expect(acc.state).toMatchObject({ '1': true, '2': true, '3': true })
+      })
+
+      it('skips a prefix whose declared length is implausible and finds the next frame', async () => {
+        const bogus = Buffer.alloc(18)
+        bogus.writeUInt32BE(0x00006699, 0)
+        bogus.writeUInt32BE(0x7fffffff, 14)
+        lastSocket.emit('data', Buffer.concat([bogus, statusFrame({ '1': true })]))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
+
+      it('reads a status push that arrives without a retcode', async () => {
+        lastSocket.emit('data', statusFrame({ '1': true }, false))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
+
+      it('reports a handshake reply signed with another key as a socket error', async () => {
+        lastSocket.emit('ready')
+        const reply = Buffer.concat([Buffer.alloc(4), crypto.randomBytes(16), crypto.randomBytes(32)])
+        lastSocket.emit('data', encryptV35Frame(4, 1, reply, Buffer.from(key)))
+        await drainQueue()
+
+        expect(socketErrors).toHaveLength(1)
+        expect(socketErrors[0].message).toMatch(/Check the local key/)
+      })
+
+      it('reports a handshake reply that is too short as a socket error', async () => {
+        lastSocket.emit('ready')
+        lastSocket.emit('data', encryptV35Frame(4, 1, Buffer.alloc(20), Buffer.from(key)))
+        await drainQueue()
+
+        expect(socketErrors).toHaveLength(1)
+        expect(socketErrors[0].message).toMatch(/handshake/)
+      })
+
+      it('keeps processing frames after a rejected handshake reply', async () => {
+        lastSocket.emit('ready')
+        lastSocket.emit('data', encryptV35Frame(4, 1, Buffer.alloc(20), Buffer.from(key)))
+        lastSocket.emit('data', statusFrame({ '1': true }))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
+    })
   })
   // ── reachability reporting ────────────────────────────────────────────────────
   describe('reachability reporting', () => {

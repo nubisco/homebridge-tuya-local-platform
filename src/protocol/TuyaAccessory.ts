@@ -4,6 +4,7 @@ import crypto from 'crypto'
 import { EventEmitter } from 'events'
 import type { Logger } from 'homebridge'
 import type { DPSState, DPSValue, TuyaDeviceContext } from '../types'
+import { stripRetcode } from './retcode'
 
 const isNonEmptyPlainObject = (o: unknown): o is Record<string, unknown> => {
   if (!o || typeof o !== 'object') return false
@@ -236,10 +237,29 @@ class TuyaAccessory extends EventEmitter {
         }
         if (startingIndex !== 0) this._cachedBuffer = this._cachedBuffer.slice(startingIndex)
 
-        let endingIndex = this._cachedBuffer.indexOf(this._frameSuffixHex, 0, 'hex')
-        if (endingIndex === -1) break
-
-        endingIndex += 4
+        let endingIndex: number
+        if (this.context.version === '3.5') {
+          // A v3.5 frame says how long it is. Its end marker can also occur inside the
+          // GCM ciphertext or tag, so searching for it would cut a frame short.
+          if (this._cachedBuffer.length < 18) break
+          const declaredLen = this._cachedBuffer.readUInt32BE(14)
+          endingIndex = 18 + declaredLen + 4
+          // A length no Tuya frame comes near, or a missing end marker, means this prefix
+          // was not the start of a frame: skip it and look for the next one.
+          if (declaredLen > MAX_FRAME_PAYLOAD) {
+            this._cachedBuffer = this._cachedBuffer.slice(4)
+            continue
+          }
+          if (this._cachedBuffer.length < endingIndex) break
+          if (this._cachedBuffer.readUInt32BE(endingIndex - 4) !== 0x00009966) {
+            this._cachedBuffer = this._cachedBuffer.slice(4)
+            continue
+          }
+        } else {
+          endingIndex = this._cachedBuffer.indexOf(this._frameSuffixHex, 0, 'hex')
+          if (endingIndex === -1) break
+          endingIndex += 4
+        }
 
         this._msgQueue.push({ msg: this._cachedBuffer.slice(0, endingIndex) })
 
@@ -919,21 +939,22 @@ class TuyaAccessory extends EventEmitter {
       return callback()
     }
 
-    // Every v3.5 response carries a 4-byte retcode prefix, including the cmd 4
-    // handshake reply, so it is stripped unconditionally before the HMAC check.
-    const payload = decrypted.length >= 4 ? decrypted.slice(4) : decrypted
+    // The cmd 4 handshake reply always carries the 4-byte retcode, and its payload is
+    // binary (a nonce), so it is stripped unconditionally. Anything else may arrive
+    // without one, so stripRetcode checks first.
+    const payload = cmd === 4 ? decrypted.subarray(4) : stripRetcode(decrypted)
 
     if (cmd === 4) {
-      if (payload.length < 48) {
-        throw new Error(`v3.5 handshake cmd 4 malformed: ${decrypted.toString('hex')}`)
+      if (payload.length < 48 || !this._tmpLocalKey) {
+        this._rejectFrame(new Error('Malformed v3.5 handshake reply (cmd 4).'))
+        return callback()
       }
       this._tmpRemoteKey = payload.subarray(0, 16)
       const expLocalHmac = payload.slice(16, 48).toString('hex')
-      const calcLocalHmac = hmac(this._tmpLocalKey!, this.context.key).toString('hex')
+      const calcLocalHmac = hmac(this._tmpLocalKey, this.context.key).toString('hex')
       if (expLocalHmac !== calcLocalHmac) {
-        throw new Error(
-          `HMAC mismatch(keys): expected ${expLocalHmac}, was ${calcLocalHmac}. ${decrypted.toString('hex')}`,
-        )
+        this._rejectFrame(new Error('HMAC mismatch in the v3.5 handshake. Check the local key.'))
+        return callback()
       }
 
       this._send({
@@ -1030,9 +1051,7 @@ class TuyaAccessory extends EventEmitter {
       data = prefixed
     }
 
-    if ((cmd !== 7 && cmd !== 13) || data) {
-      this._sendCounter++
-    }
+    this._sendCounter++
 
     const key = this.session_key ?? this.context.key
     const iv = crypto.randomBytes(12)
@@ -1066,6 +1085,10 @@ const encrypt34 = (data: Buffer, encryptKey: string | Buffer): Buffer => {
   cipher.final()
   return encrypted
 }
+
+// Tuya frames are a few hundred bytes. A declared length past this is a misread prefix,
+// and waiting for it would let the receive buffer grow without bound.
+const MAX_FRAME_PAYLOAD = 0x10000
 
 const toKeyBuffer = (key: string | Buffer): Buffer => (Buffer.isBuffer(key) ? key : Buffer.from(key, 'utf8'))
 

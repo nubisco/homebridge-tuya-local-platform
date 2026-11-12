@@ -9,7 +9,8 @@ title: 'Known Issues'
 
 ## Protocol Limitations
 
-- Protocol version **3.5** support is experimental. It has only been validated against a limited set of devices; please open an issue with logs if your v3.5 device misbehaves.
+- Protocol version **3.5** support is experimental. It has only been validated against a limited set of devices. Please open an issue with logs if your v3.5 device misbehaves.
+- For a v3.5 device, set both `ip` and `version` in its configuration. Discovery of v3.5 broadcasts has not been confirmed on real devices yet, so without them the device may never be found.
 - Some newer Tuya devices may use protocol versions or encryption methods not yet implemented.
 
 ## Single Connection Limit
