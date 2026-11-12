@@ -1,3 +1,9 @@
+## [2.0.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.3...v2.0.4) (2026-11-12)
+
+### Bug Fixes
+
+- detect the colour format of HSB bulbs exposed over Matter ([#54](https://github.com/nubisco/homebridge-tuya-local-platform/issues/54)) ([c85b4a1](https://github.com/nubisco/homebridge-tuya-local-platform/commit/c85b4a1539b193e20cccb5ae1cedee9a401d4755))
+
 ## [2.0.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.2...v2.0.3) (2026-11-12)
 
 ### Bug Fixes
