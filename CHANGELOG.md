@@ -1,3 +1,9 @@
+# [2.1.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.5...v2.1.0) (2026-11-12)
+
+### Features
+
+- **protocol:** add Tuya v3.5 LAN support ([#17](https://github.com/nubisco/homebridge-tuya-local-platform/issues/17)) ([b331adc](https://github.com/nubisco/homebridge-tuya-local-platform/commit/b331adc3520143c0b030c26e11482566e6c21b77))
+
 ## [2.0.5](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.4...v2.0.5) (2026-11-12)
 
 ### Bug Fixes
