@@ -22,7 +22,7 @@ Communicates directly with devices using the Tuya protocol. No cloud servers, no
 
 Outlets, lights, dimmers, fans, blinds, climate, garage doors, valves, and more. Each with dedicated HomeKit mapping.
 
-## Tuya Protocol v3.1 / 3.3 / 3.4
+## Tuya Protocol v3.1 / 3.3 / 3.4 / 3.5
 
 Full encryption and authentication support across all major Tuya LAN protocol versions.
 

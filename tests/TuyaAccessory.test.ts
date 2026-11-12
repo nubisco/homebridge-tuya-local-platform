@@ -428,6 +428,10 @@ describe('TuyaAccessory', () => {
       expect(acc).toBeInstanceOf(TuyaAccessory)
     })
 
+    it('selects _msgHandler_3_5 for version 3.5', () => {
+      const acc = new TuyaAccessory(makeProps({ version: '3.5' }) as any)
+      expect(acc).toBeInstanceOf(TuyaAccessory)
+    })
     it.each([
       [3.4, '3.4'],
       ['3.40', '3.4'],
@@ -501,6 +505,213 @@ describe('TuyaAccessory', () => {
 
       expect(socketErrors).toHaveLength(1)
       expect(socketErrors[0].message).toMatch(/handshake/)
+    })
+  })
+
+  // ── v3.5 protocol ─────────────────────────────────────────────────────────────
+  describe('v3.5 protocol', () => {
+    const crypto = require('crypto')
+
+    function decryptV35Frame(frame: Buffer, key: Buffer) {
+      expect(frame.readUInt32BE(0)).toBe(0x00006699)
+      expect(frame.readUInt32BE(frame.length - 4)).toBe(0x00009966)
+
+      const seqno = frame.readUInt32BE(6)
+      const cmd = frame.readUInt32BE(10)
+      const declaredLen = frame.readUInt32BE(14)
+      expect(frame.length).toBe(18 + declaredLen + 4)
+
+      const aad = frame.slice(4, 18)
+      const iv = frame.slice(18, 30)
+      const tag = frame.slice(frame.length - 20, frame.length - 4)
+      const ciphertext = frame.slice(30, frame.length - 20)
+
+      const decipher = crypto.createDecipheriv('aes-128-gcm', key, iv)
+      decipher.setAuthTag(tag)
+      decipher.setAAD(aad)
+      const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+      return { seqno, cmd, plaintext }
+    }
+
+    function encryptV35Frame(cmd: number, seqno: number, plaintext: Buffer, key: Buffer) {
+      const iv = crypto.randomBytes(12)
+      const payloadLen = plaintext.length + 28
+
+      const header = Buffer.alloc(18)
+      header.writeUInt32BE(0x00006699, 0)
+      header.writeUInt16BE(0, 4)
+      header.writeUInt32BE(seqno, 6)
+      header.writeUInt32BE(cmd, 10)
+      header.writeUInt32BE(payloadLen, 14)
+
+      const cipher = crypto.createCipheriv('aes-128-gcm', key, iv)
+      cipher.setAAD(header.slice(4, 18))
+      const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()])
+      const tag = cipher.getAuthTag()
+
+      const frame = Buffer.alloc(18 + payloadLen + 4)
+      header.copy(frame, 0)
+      iv.copy(frame, 18)
+      ciphertext.copy(frame, 30)
+      tag.copy(frame, 30 + ciphertext.length)
+      frame.writeUInt32BE(0x00009966, frame.length - 4)
+      return frame
+    }
+
+    it('emits a 6699-framed GCM frame on a v3.5 DP set command', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key, connect: true }) as any)
+      ;(acc as any).connected = true
+
+      acc.update({ '1': true })
+
+      expect(lastSocket.write).toHaveBeenCalledTimes(1)
+      const frame: Buffer = lastSocket.write.mock.calls[0][0]
+
+      const { cmd, plaintext } = decryptV35Frame(frame, Buffer.from(key, 'utf8'))
+      expect(cmd).toBe(0x0d)
+      expect(plaintext.slice(0, 3).toString()).toBe('3.5')
+      expect(plaintext.slice(3, 15).equals(Buffer.alloc(12, 0))).toBe(true)
+
+      const body = JSON.parse(plaintext.slice(15).toString('utf8'))
+      expect(body.protocol).toBe(5)
+      expect(body.data.dps).toEqual({ '1': true })
+      expect(body.data.ctype).toBe(0)
+    })
+
+    it('decodes an incoming v3.5 status frame and emits change', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key }) as any)
+      ;(acc as any).session_key = Buffer.from(key, 'utf8')
+
+      const changeHandler = vi.fn()
+      acc.on('change', changeHandler)
+
+      const retcode = Buffer.alloc(4, 0)
+      const json = Buffer.from(JSON.stringify({ dps: { '1': true, '2': false } }), 'utf8')
+      const plaintext = Buffer.concat([retcode, json])
+      const frame = encryptV35Frame(0x08, 1, plaintext, Buffer.from(key, 'utf8'))
+
+      ;(acc as any)._msgHandler_3_5({ msg: frame }, () => {})
+
+      expect(changeHandler).toHaveBeenCalledTimes(1)
+      expect(changeHandler.mock.calls[0][0]).toEqual({ '1': true, '2': false })
+    })
+
+    it('silently drops a v3.5 frame with an invalid GCM auth tag', () => {
+      const key = 'abcdef1234567890'
+      const acc = new TuyaAccessory(makeProps({ version: '3.5', key }) as any)
+      ;(acc as any).session_key = Buffer.from(key, 'utf8')
+
+      const handler = vi.fn()
+      acc.on('change', handler)
+
+      const frame = encryptV35Frame(0x08, 1, Buffer.from('{"dps":{"1":true}}', 'utf8'), Buffer.from(key, 'utf8'))
+      frame[frame.length - 5] ^= 0xff // corrupt auth tag
+
+      const callback = vi.fn()
+      ;(acc as any)._msgHandler_3_5({ msg: frame }, callback)
+
+      expect(handler).not.toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+    describe('framing and errors', () => {
+      const key = 'abcdef1234567890'
+      let acc: TuyaAccessory
+      let socketErrors: Error[]
+      let changes: ReturnType<typeof vi.fn>
+
+      beforeEach(() => {
+        acc = new TuyaAccessory(makeProps({ version: '3.5', key, connect: true }) as any)
+        socketErrors = []
+        lastSocket.on('error', (err: Error) => socketErrors.push(err))
+        changes = vi.fn()
+        acc.on('change', changes)
+      })
+
+      const statusFrame = (dps: Record<string, unknown>, retcode = true) =>
+        encryptV35Frame(
+          8,
+          1,
+          Buffer.concat([retcode ? Buffer.alloc(4) : Buffer.alloc(0), Buffer.from(JSON.stringify({ dps }))]),
+          Buffer.from(key),
+        )
+
+      it('selects 6699 framing when the version is configured as a JSON number', () => {
+        const numeric = new TuyaAccessory(makeProps({ version: 3.5 }) as any)
+        expect(numeric.context.version).toBe('3.5')
+        expect((numeric as any)._framePrefixHex).toBe('00006699')
+      })
+
+      it('cuts a frame by its declared length, not by an end marker inside the payload', () => {
+        const push = vi.spyOn((acc as any)._msgQueue, 'push')
+        const payload = Buffer.from('aaaaaaaa00009966bbbbbbbbccccccccddddddddeeeeeeee', 'hex')
+        const header = Buffer.alloc(18)
+        header.writeUInt32BE(0x00006699, 0)
+        header.writeUInt32BE(payload.length, 14)
+        const frame = Buffer.concat([header, payload, Buffer.from('00009966', 'hex')])
+
+        lastSocket.emit('data', frame)
+
+        expect(push).toHaveBeenCalledTimes(1)
+        expect((push.mock.calls[0][0] as any).msg).toEqual(frame)
+      })
+
+      it('reassembles a frame split across chunks and splits two frames in one chunk', async () => {
+        const first = statusFrame({ '1': true })
+        lastSocket.emit('data', first.subarray(0, 10))
+        lastSocket.emit('data', first.subarray(10))
+        lastSocket.emit('data', Buffer.concat([statusFrame({ '2': true }), statusFrame({ '3': true })]))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledTimes(3)
+        expect(acc.state).toMatchObject({ '1': true, '2': true, '3': true })
+      })
+
+      it('skips a prefix whose declared length is implausible and finds the next frame', async () => {
+        const bogus = Buffer.alloc(18)
+        bogus.writeUInt32BE(0x00006699, 0)
+        bogus.writeUInt32BE(0x7fffffff, 14)
+        lastSocket.emit('data', Buffer.concat([bogus, statusFrame({ '1': true })]))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
+
+      it('reads a status push that arrives without a retcode', async () => {
+        lastSocket.emit('data', statusFrame({ '1': true }, false))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
+
+      it('reports a handshake reply signed with another key as a socket error', async () => {
+        lastSocket.emit('ready')
+        const reply = Buffer.concat([Buffer.alloc(4), crypto.randomBytes(16), crypto.randomBytes(32)])
+        lastSocket.emit('data', encryptV35Frame(4, 1, reply, Buffer.from(key)))
+        await drainQueue()
+
+        expect(socketErrors).toHaveLength(1)
+        expect(socketErrors[0].message).toMatch(/Check the local key/)
+      })
+
+      it('reports a handshake reply that is too short as a socket error', async () => {
+        lastSocket.emit('ready')
+        lastSocket.emit('data', encryptV35Frame(4, 1, Buffer.alloc(20), Buffer.from(key)))
+        await drainQueue()
+
+        expect(socketErrors).toHaveLength(1)
+        expect(socketErrors[0].message).toMatch(/handshake/)
+      })
+
+      it('keeps processing frames after a rejected handshake reply', async () => {
+        lastSocket.emit('ready')
+        lastSocket.emit('data', encryptV35Frame(4, 1, Buffer.alloc(20), Buffer.from(key)))
+        lastSocket.emit('data', statusFrame({ '1': true }))
+        await drainQueue()
+
+        expect(changes).toHaveBeenCalledWith({ '1': true }, expect.anything())
+      })
     })
   })
   // ── reachability reporting ────────────────────────────────────────────────────
