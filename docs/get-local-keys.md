@@ -1,6 +1,8 @@
-# Getting Local Keys
-
-To control Tuya devices locally you need two values per device:
+---
+layout: nubisco
+title: 'Getting Local Keys'
+intro: 'To control Tuya devices locally you need two values per device:'
+---
 
 - **Device ID** — unique identifier for the device
 - **Local Key** — encryption key used for LAN communication

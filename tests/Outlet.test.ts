@@ -31,9 +31,9 @@ function createOutlet(contextOverrides = {}) {
         Characteristic,
         Service,
         Categories: createMockCategories(),
-        EnergyCharacteristics,
       },
     },
+    energyCharacteristics: EnergyCharacteristics,
     registerPlatformAccessories: vi.fn(),
   }
 

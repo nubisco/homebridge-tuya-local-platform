@@ -79,7 +79,13 @@ class TuyaAccessory extends EventEmitter {
     this.state = {}
     this._cachedBuffer = Buffer.allocUnsafe(0)
 
-    const version = parseFloat(this.context.version || '3.1')
+    // Normalise the version once. Every check below compares strings, so a JSON number
+    // (3.4) or "3.40" would otherwise get the 3.3 handler and framing and no handshake,
+    // and the device would never answer with nothing in the log to say why.
+    const parsedVersion = parseFloat(String(this.context.version))
+    this.context.version = Number.isFinite(parsedVersion) ? parsedVersion.toFixed(1) : '3.1'
+
+    const version = parseFloat(this.context.version)
     const handlerName =
       version < 3.2
         ? '_msgHandler_3_1'
@@ -88,7 +94,25 @@ class TuyaAccessory extends EventEmitter {
           : this.context.version === '3.5'
             ? '_msgHandler_3_5'
             : '_msgHandler_3_3'
-    this._msgQueue = async.queue(this[handlerName].bind(this) as async.AsyncWorker<MessageTask>, 1)
+    const handler = this[handlerName].bind(this) as (task: MessageTask, callback: () => void) => void
+
+    // A handler that throws would do it on a microtask, outside any try, and take down
+    // the whole bridge with every other device on it. It would also never call back,
+    // so the queue would stop. Reject the frame instead, and let the queue move on.
+    this._msgQueue = async.queue((task: MessageTask, callback: () => void) => {
+      let called = false
+      const done = () => {
+        if (called) return
+        called = true
+        callback()
+      }
+      try {
+        handler(task, done)
+      } catch (err) {
+        this._rejectFrame(err instanceof Error ? err : new Error(String(err)))
+        done()
+      }
+    }, 1)
 
     if (this.context.version === '3.5') {
       this._framePrefixHex = '00006699'
@@ -497,7 +521,8 @@ class TuyaAccessory extends EventEmitter {
     const computedCrc = hmac(task.msg.slice(0, len - 0x24), this.session_key ?? this.context.key).toString('hex')
 
     if (expectedCrc !== computedCrc) {
-      throw new Error(`HMAC mismatch: expected ${expectedCrc}, was ${computedCrc}. ${task.msg.toString('hex')}`)
+      this._rejectFrame(new Error(`HMAC mismatch on a v3.4 frame (cmd ${cmd}). Check the local key.`))
+      return callback()
     }
 
     const decipher = crypto.createDecipheriv('aes-128-ecb', this.session_key ?? this.context.key, null)
@@ -525,13 +550,16 @@ class TuyaAccessory extends EventEmitter {
     }
 
     if (cmd === 4) {
+      if (!Buffer.isBuffer(parsedPayload) || parsedPayload.length < 48 || !this._tmpLocalKey) {
+        this._rejectFrame(new Error('Malformed v3.4 handshake reply (cmd 4).'))
+        return callback()
+      }
       this._tmpRemoteKey = parsedPayload.subarray(0, 16)
-      const calcLocalHmac = hmac(this._tmpLocalKey!, this.session_key ?? this.context.key).toString('hex')
+      const calcLocalHmac = hmac(this._tmpLocalKey, this.session_key ?? this.context.key).toString('hex')
       const expLocalHmac = parsedPayload.slice(16, 16 + 32).toString('hex')
       if (expLocalHmac !== calcLocalHmac) {
-        throw new Error(
-          `HMAC mismatch(keys): expected ${expLocalHmac}, was ${calcLocalHmac}. ${parsedPayload.toString('hex')}`,
-        )
+        this._rejectFrame(new Error('HMAC mismatch in the v3.4 handshake. Check the local key.'))
+        return callback()
       }
       const payload: SendPayload = {
         data: hmac(this._tmpRemoteKey!, this.context.key) as unknown as Buffer,
@@ -652,6 +680,14 @@ class TuyaAccessory extends EventEmitter {
   // network otherwise produces a socket error every few seconds for as long as it
   // is gone, which drowns the Homebridge log for anyone with a device that is
   // intentionally off (seasonal lights, a plug on a switched socket).
+  // A frame that cannot be trusted ends the connection through the socket's own error
+  // path: it is logged once per outage, the socket is torn down and a reconnect is
+  // scheduled, the same as any other connection failure.
+  private _rejectFrame(err: Error): void {
+    if (this._socket) this._socket.emit('error', err)
+    else this.log.debug(`${this.context.name}: ${err.message}`)
+  }
+
   private _reportUnreachable(err: NodeJS.ErrnoException): void {
     const reason = (err && (err.code || err.message)) || String(err)
 

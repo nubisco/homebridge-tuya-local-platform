@@ -169,6 +169,21 @@ describe('Platform Registration', () => {
     expect(platform.cachedAccessories).toBeInstanceOf(Map)
   })
 
+  it('should construct when api.hap is frozen (Homebridge 2.x module namespace)', () => {
+    registerFn(mockHomebridge)
+
+    const log = Object.assign(vi.fn(), { info: vi.fn(), warn: vi.fn(), error: vi.fn() })
+    const api = {
+      hap: Object.freeze({ ...mockHomebridge.hap }),
+      on: vi.fn(),
+      registerPlatformAccessories: vi.fn(),
+      unregisterPlatformAccessories: vi.fn(),
+    }
+
+    const platform = new registeredPlatform(log, { devices: [] }, api)
+    expect(platform.energyCharacteristics.Watts).toBeDefined()
+  })
+
   it('should log error if no devices are configured', () => {
     registerFn(mockHomebridge)
 

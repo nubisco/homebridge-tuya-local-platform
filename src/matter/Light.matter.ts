@@ -63,6 +63,14 @@ class LightMatterAccessory extends MatterBaseAccessory {
     this.codec.dpColor = this.dpColor
   }
 
+  // The HomeKit light detects the colour format (HSB or HEXHSB) on its own instance,
+  // so the codec has to as well, or HSB bulbs would read as red and get the wrong
+  // format. Once, from the first colour value the device reports.
+  _detectColorFormat(state: DPSState): void {
+    if (!this.hasColor || this.codec.colorFunction || typeof state[this.dpColor] !== 'string') return
+    this.codec._detectColorFunction(state[this.dpColor] as string)
+  }
+
   _getDeviceType(): unknown {
     const { deviceTypes } = this.matter
     if (this.hasColor) return deviceTypes.ExtendedColorLight
@@ -131,6 +139,7 @@ class LightMatterAccessory extends MatterBaseAccessory {
     this._readDataPoints()
 
     const state = this.device.state
+    this._detectColorFormat(state)
     const clusters: Record<string, Record<string, unknown>> = {
       onOff: { onOff: this._coerceOnOff(state[this.dpPower]) },
       levelControl: {
@@ -211,6 +220,8 @@ class LightMatterAccessory extends MatterBaseAccessory {
   }
 
   _onDeviceChange(changes: DPSState, state: DPSState): void {
+    this._detectColorFormat(state)
+
     if (changes.hasOwnProperty(this.dpPower)) this._update('onOff', { onOff: this._coerceOnOff(changes[this.dpPower]) })
 
     const white = this._isWhiteMode(state)

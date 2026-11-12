@@ -1,3 +1,47 @@
+## [2.0.5](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.4...v2.0.5) (2026-11-12)
+
+### Bug Fixes
+
+- **protocol:** stop a bad v3.4 frame from crashing the bridge ([#55](https://github.com/nubisco/homebridge-tuya-local-platform/issues/55)) ([0b12cb2](https://github.com/nubisco/homebridge-tuya-local-platform/commit/0b12cb2a8bcf471f028c167e43940ae4c48436b6)), closes [PKCS#7](https://github.com/PKCS/issues/7)
+
+## [2.0.4](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.3...v2.0.4) (2026-11-12)
+
+### Bug Fixes
+
+- detect the colour format of HSB bulbs exposed over Matter ([#54](https://github.com/nubisco/homebridge-tuya-local-platform/issues/54)) ([c85b4a1](https://github.com/nubisco/homebridge-tuya-local-platform/commit/c85b4a1539b193e20cccb5ae1cedee9a401d4755))
+
+## [2.0.3](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.2...v2.0.3) (2026-11-12)
+
+### Bug Fixes
+
+- use the detected color format when converting colors ([#51](https://github.com/nubisco/homebridge-tuya-local-platform/issues/51)) ([ed6c081](https://github.com/nubisco/homebridge-tuya-local-platform/commit/ed6c081117f2ea2efacf5d0f060b390a57e5af37))
+
+## [2.0.2](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.1...v2.0.2) (2026-11-12)
+
+### Bug Fixes
+
+- don't assign EnergyCharacteristics onto api.hap (crashes on Homebridge 2.x) ([#50](https://github.com/nubisco/homebridge-tuya-local-platform/issues/50)) ([2294826](https://github.com/nubisco/homebridge-tuya-local-platform/commit/22948262e8489c0953d1e51b4592b8c8567f02d2))
+
+## [2.0.1](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v2.0.0...v2.0.1) (2026-10-28)
+
+### Bug Fixes
+
+- **deps:** complete the lockfile for npm 10, which CI runs ([1f61c64](https://github.com/nubisco/homebridge-tuya-local-platform/commit/1f61c64b283ca9de345c599939cc53e2f0ade504))
+
+# [2.0.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.8.0...v2.0.0) (2026-10-23)
+
+- feat!: require Node.js 22.23.4 or newer ([3681c1f](https://github.com/nubisco/homebridge-tuya-local-platform/commit/3681c1ffd7b26240ea153821b86e5f6ab7fabc48))
+
+### BREAKING CHANGES
+
+- Node.js 20 is no longer supported. Node 20 reached end of
+  life in April 2026 and gets no security fixes, so it stays exposed to the
+  October 2026 Node.js security release (the Brotli remote code execution
+  CVE-2026-111497 and the TLS hostname verification bypasses). Node 22
+  releases before 22.23.4 are affected by the same release. Run Homebridge on
+  Node.js 22.23.4 or newer, or any Node 24 release, before updating this
+  plugin.
+
 # [1.8.0](https://github.com/nubisco/homebridge-tuya-local-platform/compare/v1.7.3...v1.8.0) (2026-10-19)
 
 ### Features

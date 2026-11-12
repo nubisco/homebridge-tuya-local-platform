@@ -225,8 +225,11 @@ describe('TuyaDiscovery', () => {
       const discoverSpy = vi.fn()
       discovery.on('discover', discoverSpy)
 
-      // Frame with random encrypted bytes that won't decrypt with UDP_KEY
-      const garbage = crypto.randomBytes(32)
+      // Two blocks that decrypt to zeros, so the PKCS#7 padding is always invalid.
+      // Random bytes pass the padding check about 1 time in 256 and made this flaky.
+      const cipher = crypto.createCipheriv('aes-128-ecb', UDP_KEY, null)
+      cipher.setAutoPadding(false)
+      const garbage = Buffer.concat([cipher.update(Buffer.alloc(32)), cipher.final()])
       const size = garbage.length + 12
       const buf = Buffer.alloc(4 + 4 + 4 + 4 + 4 + garbage.length + 4 + 4)
       buf.writeUInt32BE(0x000055aa, 0)

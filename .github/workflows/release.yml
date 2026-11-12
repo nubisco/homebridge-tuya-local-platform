@@ -10,6 +10,17 @@ permissions:
   pull-requests: write
   id-token: write
 
+# One release at a time. Every push to master publishes, so two quick merges
+# would otherwise start two semantic-release runs that race for the same tag
+# and changelog commit. A run that is already going is never cancelled, since
+# that could stop a publish halfway. A newer push waits behind it instead. If
+# a third push lands while one is waiting, GitHub replaces the waiting run with
+# the newest one, which is safe: it checks out the latest commit and releases
+# everything since the last tag.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     name: Semantic Release
@@ -17,15 +28,16 @@ jobs:
     environment: production
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_TOKEN }}
           persist-credentials: true
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
+          check-latest: true
           registry-url: https://registry.npmjs.org
           cache: npm
 

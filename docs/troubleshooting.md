@@ -1,4 +1,7 @@
-# Troubleshooting
+---
+layout: nubisco
+title: 'Troubleshooting'
+---
 
 ## Device Not Discovered
 

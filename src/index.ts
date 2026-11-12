@@ -29,7 +29,7 @@ import {
 } from './accessories'
 import { MATTER_CLASS_DEF } from './matter'
 
-import type { ClassDefMap, TuyaDeviceConfig, TuyaPlatformConfig } from './types'
+import type { ClassDefMap, EnergyCharacteristicsMap, TuyaDeviceConfig, TuyaPlatformConfig } from './types'
 
 // Do not change this to the scoped package name. It seeds every accessory UUID, so a
 // new value gives users new accessories and HomeKit drops their rooms and automations.
@@ -96,12 +96,15 @@ class TuyaLocalPlatform {
   _expectedMatterUUIDs: string[] = []
   _cachedMatterAccessories: any[] = []
   _warnedMatterUnavailable = false
+  energyCharacteristics: EnergyCharacteristicsMap
 
   constructor(...props: any[]) {
     ;[this.log, this.config, this.api] = [...props]
 
     this.cachedAccessories = new Map()
-    this.api.hap.EnergyCharacteristics = EnergyCharacteristicsFactory(
+    // api.hap is an ES module namespace on Homebridge 2.x and cannot be extended,
+    // so the custom characteristics live on the platform instead.
+    this.energyCharacteristics = EnergyCharacteristicsFactory(
       this.api.hap.Characteristic,
       this.api.hap.Formats,
       this.api.hap.Perms,

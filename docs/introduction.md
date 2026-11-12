@@ -1,6 +1,8 @@
-# Introduction
-
-Control Tuya-based smart devices locally over LAN through Apple HomeKit.
+---
+layout: nubisco
+title: 'Introduction'
+intro: 'Control Tuya-based smart devices locally over LAN through Apple HomeKit.'
+---
 
 `@nubisco/homebridge-tuya-local-platform` communicates directly with Tuya devices on your local network using their Device ID and Local Key — no cloud dependency required.
 
@@ -45,6 +47,6 @@ See [Supported Device Types](./device-types) for detailed configuration paramete
 
 ## Requirements
 
-- **Node.js** >= 18.0.0
+- **Node.js** >= 22.23.4
 - **Homebridge** >= 1.6.0
 - Tuya device **Local Key** (see [Getting Local Keys](./get-local-keys))

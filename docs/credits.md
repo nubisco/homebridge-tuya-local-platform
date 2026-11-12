@@ -1,6 +1,8 @@
-# Credits
-
-This project was inspired by the work of several open-source contributors:
+---
+layout: nubisco
+title: 'Credits'
+intro: 'This project was inspired by the work of several open-source contributors:'
+---
 
 - **[AMoo-Miki](https://github.com/AMoo-Miki)** — author of the original [homebridge-tuya-lan](https://github.com/AMoo-Miki/homebridge-tuya-lan) plugin that this project is forked from.
 - **[iRayanKhan](https://github.com/iRayanKhan)** — maintained [homebridge-tuya](https://github.com/iRayanKhan/homebridge-tuya), which served as an inspiration for additional device type support.

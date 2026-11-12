@@ -1,0 +1,12 @@
+# Keeps the commit-SHA pins on GitHub Actions current (AGENTS.md, "Third-party
+# actions are pinned to a commit"). Monthly, in one grouped pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ['*']
+    open-pull-requests-limit: 1

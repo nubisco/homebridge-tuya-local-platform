@@ -1,6 +1,8 @@
-# Supported Device Types
-
-This is the current list of supported device types that work with this plugin. Each type corresponds to a value you set in the `type` field of your device configuration.
+---
+layout: nubisco
+title: 'Supported Device Types'
+intro: 'This is the current list of supported device types that work with this plugin. Each type corresponds to a value you set in the `type` field of your device configuration.'
+---
 
 If you are looking for verified configurations for your specific device, see the [Configuration Examples](./config-example).
 
